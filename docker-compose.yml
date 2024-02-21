@@ -1,0 +1,13 @@
+version: '3.4'
+
+services:
+  backend-app:
+    image: docker.io/library/backend_server
+    container_name: backend-app
+    ports:
+      - "8080:80"
+    build:
+      context: ./src
+      dockerfile: Dockerfile
+    environment:
+      - ASPNETCORE_URLS=http://+:80
