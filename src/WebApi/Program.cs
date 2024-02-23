@@ -40,7 +40,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         ValidateAudience = true,
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:SecretKey"]!))
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:SecretKey"]!))
     };
 });
 
@@ -73,16 +73,21 @@ if (app.Environment.IsDevelopment()) {
     app.UseSwaggerUI();
 }
 
-
-
 app.UseHttpsRedirection();
+
 app.UseAuthentication();
+
 app.UseCors(policyBuilder => policyBuilder.AllowAnyMethod()
     .AllowAnyHeader()
     .SetIsOriginAllowed(origin => true)
     .AllowCredentials());
-app.MapControllers();
 
 app.UseAuthorization();
 
+app.MapControllers();
+
 app.Run();
+
+public partial class Program {
+
+}

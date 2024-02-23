@@ -1,0 +1,27 @@
+using Data;
+using Data.Entities;
+using Dto;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace IntegrationTests.FakeDbSetup;
+
+internal static class SeedData {
+
+    public static async Task SeedAdmin(CustomWebApplicationFactory application, AdminDto adminDto) {
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        AdminEntity entity = new AdminEntity() {
+            Id = Guid.NewGuid(),
+            Email = adminDto.Email,
+            Password = HashPassword(adminDto.Password)
+        };
+
+        await dbContext.Admins.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static string HashPassword(string password) {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+}

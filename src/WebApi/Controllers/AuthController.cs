@@ -13,11 +13,10 @@ namespace WebApi.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class AuthController(IConfiguration configuration, IAuthenticationDomain authDomain) : ControllerBase {
-
     [HttpPost, Route("login/admin")]
     public async Task<ActionResult<LoginResponseDto>> AdminLogin(LoginRequestDto loginRequest) {
         try {
-           UserDto userDto = await authDomain.ValidateAdmin(loginRequest);
+            UserDto userDto = await authDomain.ValidateAdmin(loginRequest);
             string token = GenerateJwt(userDto);
             LoginResponseDto responseDto = new LoginResponseDto(token);
             return Ok(responseDto);
@@ -31,6 +30,7 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
     }
 
     [HttpPost, Route("register/admin")]
+    [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
         try {
             await authDomain.RegisterAdmin(registerAdminRequest);
@@ -58,7 +58,7 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
             configuration["JWT:Audience"],
             claims,
             null,
-            DateTime.Now.AddHours(24)); // Todo - think about expiration time
+            DateTime.Now.AddHours(2)); // Todo - think about expiration time
 
         JwtSecurityToken token = new JwtSecurityToken(header, payload);
         string serializedToken = new JwtSecurityTokenHandler().WriteToken(token);
@@ -70,8 +70,8 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
             new Claim(JwtRegisteredClaimNames.Sub, configuration["JWT:Subject"]!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
-            new Claim(ClaimTypes.Email, userDto.Email),
-            new Claim(ClaimTypes.Role, userDto.Role )
+            new Claim(ClaimTypes.Name, userDto.Email),
+            new Claim(ClaimTypes.Role, userDto.Role)
         };
         return claims.ToList();
     }
