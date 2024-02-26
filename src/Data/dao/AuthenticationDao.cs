@@ -20,7 +20,6 @@ public class AuthenticationDao(DatabaseContext databaseContext) : IAuthenticatio
     public async Task RegisterAdmin(AdminDto adminToRegister) {
         try {
             AdminEntity adminEntity = UserConverter.ToEntity(adminToRegister);
-            Console.WriteLine(adminEntity.Email);
             await databaseContext.Admins.AddAsync(adminEntity);
             await databaseContext.SaveChangesAsync();
         }

@@ -11,7 +11,6 @@ using Microsoft.OpenApi.Models;
 var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-Console.WriteLine("Connection "+ connectionString);
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 

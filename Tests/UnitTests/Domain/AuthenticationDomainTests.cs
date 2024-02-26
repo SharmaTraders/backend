@@ -93,8 +93,8 @@ public class AuthenticationDomainTests {
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
-        Assert.Equal(exception.ErrorCode, ErrorCode.BadRequest);
-        Assert.Equal(exception.Message, ErrorMessages.InvalidEmailFormat);
+        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
+        Assert.Equal(ErrorMessages.InvalidEmailFormat, exception.Message);
     }
 
     [Fact]
@@ -107,8 +107,8 @@ public class AuthenticationDomainTests {
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
-        Assert.Equal(exception.ErrorCode, ErrorCode.BadRequest);
-        Assert.Equal(exception.Message, ErrorMessages.PasswordBiggerThan5Characters);
+        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
+        Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, exception.Message);
     }
 
     [Fact]
@@ -121,8 +121,8 @@ public class AuthenticationDomainTests {
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
-        Assert.Equal(exception.ErrorCode, ErrorCode.BadRequest);
-        Assert.Equal(exception.Message, ErrorMessages.PasswordMustContainLetterAndNumber);
+        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
+        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, exception.Message);
     }
 
 
