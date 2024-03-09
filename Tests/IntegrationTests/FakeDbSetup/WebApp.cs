@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace IntegrationTests.FakeDbSetup;
 
-internal class CustomWebApplicationFactory : WebApplicationFactory<Program> {
+internal class WebApp : WebApplicationFactory<Program> {
     protected override void ConfigureWebHost(IWebHostBuilder builder) {
         builder.ConfigureTestServices(services => {
             services.RemoveAll(typeof(DbContextOptions<DatabaseContext>));

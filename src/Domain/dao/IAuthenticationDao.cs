@@ -3,6 +3,9 @@ using Dto;
 namespace Domain.dao;
 
 public interface IAuthenticationDao {
-    Task<UserDto?> GetOrDefaultUserByEmail(string loginRequestEmail);
+    /*
+     * Returns the user with the given email if it exists, otherwise null
+     */
+    Task<UserDto?> GetUserByEmail(string loginRequestEmail);
     Task RegisterAdmin(AdminDto adminToRegister);
 }

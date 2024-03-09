@@ -30,7 +30,7 @@ public class AuthControllerTests {
         configurationMock.Setup(x => x["JWT:Audience"]).Returns("your_audience");
         configurationMock.Setup(x => x["JWT:Subject"]).Returns("your_subject");   
         
-        authDomainMock.Setup(a => a.ValidateAdmin(loginRequestDto)).ReturnsAsync((UserDto)userDto);
+        authDomainMock.Setup(a => a.ValidateAdmin(loginRequestDto)).ReturnsAsync(userDto);
 
         // Act
         ActionResult<LoginResponseDto> rootResult = await authController.AdminLogin(loginRequestDto);

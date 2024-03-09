@@ -1,39 +1,59 @@
+using System.Net;
 using Dto;
-using IntegrationTests.util;
+using IntegrationTests.FakeDbSetup;
+using Newtonsoft.Json;
 
 namespace IntegrationTests.TestFactory;
 
-public static class UserFactory {
-
-    public static AdminDto GetValidAdmin() =>
+internal static class UserFactory {
+    internal static AdminDto GetValidAdmin() =>
         new AdminDto(Guid.NewGuid().ToString(), "admin@admin.com", "somePassword1234");
 
-    public static AdminDto GetInvalidAdmin() =>
+    internal static AdminDto GetInvalidAdmin() =>
         new AdminDto(Guid.NewGuid().ToString(), "badEmail", "badPassword");
 
-    public static AdminDto GetInvalidEmailAdmin() =>
-        new AdminDto(Guid.NewGuid().ToString(), "badEmail", "goodPassword1"); 
+    internal static AdminDto GetInvalidEmailAdmin() =>
+        new AdminDto(Guid.NewGuid().ToString(), "badEmail", "goodPassword1");
 
-    public static AdminDto GetInvalidPasswordLessThan5CharsAdmin() =>
+    internal static AdminDto GetInvalidPasswordLessThan5CharsAdmin() =>
         new AdminDto(Guid.NewGuid().ToString(), "goodemail@email.com", "bad");
 
-    public static AdminDto GetInvalidPasswordLessThanNoLettersAndNumbersAdmin() =>
+    internal static AdminDto GetInvalidPasswordLessThanNoLettersAndNumbersAdmin() =>
         new AdminDto(Guid.NewGuid().ToString(), "goodemail@email.com", "badButBigger");
 
-    public static EmployeeDto GetValidEmployee() =>
+    internal static EmployeeDto GetValidEmployee() =>
         new EmployeeDto(Guid.NewGuid().ToString(), "employee@employee.com", "somePassword1234", "test user", "asdfsf",
             "12345678", "Active");
 
-    public static EmployeeDto GetInvalidEmployee() =>
+    internal static EmployeeDto GetInvalidEmployee() =>
         new EmployeeDto(Guid.NewGuid().ToString(), "badEmail", "badPassword", "test user", "asdfsf",
             "12345678", "Active");
 
+    internal static async Task<string> SetupLoggedInAdmin(WebApp app) {
+        // Arrange an already existing admin in db
+        var adminUser = UserFactory.GetValidAdmin();
+        await SeedData.SeedAdmin(app, adminUser);
 
-    public static string GetValidAdminJwtToken() =>
-    JwtUtil.GenerateJwt(GetValidAdmin());
+        var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
+        var loginRequestDto = new LoginRequestDto(adminUser.Email, adminUser.Password);
+        request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
+            "application/json");
 
-    public static string GetValidEmployeeJwtToken() =>
-        JwtUtil.GenerateJwt(GetValidEmployee());
+        HttpClient client = app.CreateClient();
 
+        HttpResponseMessage response = await client.SendAsync(request );
+        // Assert  that the login succeeds
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
+        // Assert that the jwtToken is returned
+        var responseContent = await response.Content.ReadAsStringAsync();
+        var loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(responseContent);
+
+        Assert.NotNull(loginRequestDto);
+        Assert.False(string.IsNullOrEmpty(loginResponseDto!.JwtToken));
+
+        return loginResponseDto.JwtToken;
+
+    }
 
 }

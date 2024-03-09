@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 namespace Data.dao;
 
 public class AuthenticationDao(DatabaseContext databaseContext) : IAuthenticationDao {
-    public async Task<UserDto?> GetOrDefaultUserByEmail(string loginRequestEmail) {
+    public async Task<UserDto?> GetUserByEmail(string loginRequestEmail) {
         AdminEntity? adminEntity = await databaseContext.Admins.FirstOrDefaultAsync(
             entity => entity.Email.ToLower().Equals(loginRequestEmail.ToLower()));
 

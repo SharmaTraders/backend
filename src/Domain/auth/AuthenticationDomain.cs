@@ -11,7 +11,7 @@ public class AuthenticationDomain(IAuthenticationDao authDao) : IAuthenticationD
         CheckForValidEmail(loginRequest.Email);
         CheckForValidPassword(loginRequest.Password);
 
-        UserDto? userFromDatabase = await authDao.GetOrDefaultUserByEmail(loginRequest.Email);
+        UserDto? userFromDatabase = await authDao.GetUserByEmail(loginRequest.Email);
         if (userFromDatabase is null) {
             throw new ExceptionWithErrorCode(ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
         }
@@ -25,7 +25,7 @@ public class AuthenticationDomain(IAuthenticationDao authDao) : IAuthenticationD
         return userFromDatabase;
     }
 
-    public Task RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
+    public async Task RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
         CheckForValidEmail(registerAdminRequest.Email);
         CheckForValidPassword(registerAdminRequest.Password);
 
@@ -34,7 +34,13 @@ public class AuthenticationDomain(IAuthenticationDao authDao) : IAuthenticationD
         AdminDto adminToRegister = new AdminDto(Guid.NewGuid().ToString(),
             registerAdminRequest.Email,
             hashedPassword);
-        return authDao.RegisterAdmin(adminToRegister);
+
+        UserDto? userFromDatabase = await authDao.GetUserByEmail(registerAdminRequest.Email);
+        if (userFromDatabase is not null) {
+            throw new ExceptionWithErrorCode(ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
+        }
+
+        await authDao.RegisterAdmin(adminToRegister);
     }
 
 

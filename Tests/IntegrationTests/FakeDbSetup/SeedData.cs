@@ -7,7 +7,7 @@ namespace IntegrationTests.FakeDbSetup;
 
 internal static class SeedData {
 
-    public static async Task SeedAdmin(CustomWebApplicationFactory application, AdminDto adminDto) {
+    public static async Task SeedAdmin(WebApp application, AdminDto adminDto) {
         using var scope = application.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
@@ -20,6 +20,7 @@ internal static class SeedData {
         await dbContext.Admins.AddAsync(entity);
         await dbContext.SaveChangesAsync();
     }
+
 
     private static string HashPassword(string password) {
         return BCrypt.Net.BCrypt.HashPassword(password);

@@ -1,11 +1,6 @@
 namespace Dto.tools;
 
-public class ExceptionWithErrorCode : Exception {
+public class ExceptionWithErrorCode(ErrorCode errorCode, string message) : Exception(message) {
 
-    public ErrorCode ErrorCode { get; set; }
-
-    public ExceptionWithErrorCode(ErrorCode errorCode, string message) : base(message) {
-        ErrorCode = errorCode;
-    }
-    
+    public ErrorCode ErrorCode { get; set; } = errorCode;
 }
