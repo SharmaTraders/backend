@@ -39,7 +39,9 @@ public class AuthenticationTests {
         // Arrange a request with a valid admin token
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
-        request.Content = new StringContent(JsonConvert.SerializeObject(UserFactory.GetValidAdmin()), System.Text.Encoding.UTF8,
+
+        RegisterAdminRequestDto requestDto = new RegisterAdminRequestDto("hello@gmail.com", "somePassword12");
+        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
