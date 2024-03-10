@@ -3,6 +3,8 @@ version: '3.4'
 services:
   backend-app:
     image: docker.io/library/backend_server
+    depends_on:
+      - app_db
     container_name: backend-app
     ports:
       - "8080:80"
@@ -10,4 +12,23 @@ services:
       context: ./src
       dockerfile: Dockerfile
     environment:
+      - ConnectionStrings__DefaultConnection=User ID=postgres;Password=postgres;Server=app_db;Port=5432;Database=SharmaTraders;
       - ASPNETCORE_URLS=http://+:80
+
+  
+  app_db:
+    image: postgres:latest
+    container_name: app_db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: SharmaTraders
+    ports:
+        - "5432:5432"
+    restart: always
+    volumes:
+      - app_data:/var/lib/postgresql/data
+
+volumes:
+  app_data:
+    
