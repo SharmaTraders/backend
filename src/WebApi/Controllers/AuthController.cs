@@ -12,11 +12,20 @@ namespace WebApi.Controllers;
 
 [ApiController]
 [Route("[controller]")]
-public class AuthController(IConfiguration configuration, IAuthenticationDomain authDomain) : ControllerBase {
+public class AuthController : ControllerBase {
+
+    private readonly IConfiguration _configuration;
+    private readonly IAuthenticationDomain _authDomain;
+
+    public AuthController(IConfiguration configuration, IAuthenticationDomain authDomain) {
+        _configuration = configuration;
+        _authDomain = authDomain;
+    }
+
     [HttpPost, Route("login/admin")]
     public async Task<ActionResult<LoginResponseDto>> AdminLogin(LoginRequestDto loginRequest) {
         try {
-            UserDto userDto = await authDomain.ValidateAdmin(loginRequest);
+            UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
             string token = GenerateJwt(userDto);
             LoginResponseDto responseDto = new LoginResponseDto(token);
             return Ok(responseDto);
@@ -33,7 +42,7 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
         try {
-            await authDomain.RegisterAdmin(registerAdminRequest);
+            await _authDomain.RegisterAdmin(registerAdminRequest);
             return Ok();
         }
         catch (ExceptionWithErrorCode e) {
@@ -48,14 +57,14 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
     private string GenerateJwt(UserDto userDto) {
         List<Claim> claims = GenerateClaims(userDto);
 
-        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:SecretKey"]!));
+        SymmetricSecurityKey key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:SecretKey"]!));
         SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512);
 
         JwtHeader header = new JwtHeader(signingCredentials);
 
         JwtPayload payload = new JwtPayload(
-            configuration["JWT:Issuer"],
-            configuration["JWT:Audience"],
+            _configuration["JWT:Issuer"],
+            _configuration["JWT:Audience"],
             claims,
             null,
             DateTime.Now.AddHours(2)); // Todo - think about expiration time
@@ -67,7 +76,7 @@ public class AuthController(IConfiguration configuration, IAuthenticationDomain 
 
     private List<Claim> GenerateClaims(UserDto userDto) {
         var claims = new[] {
-            new Claim(JwtRegisteredClaimNames.Sub, configuration["JWT:Subject"]!),
+            new Claim(JwtRegisteredClaimNames.Sub, _configuration["JWT:Subject"]!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
             new Claim(JwtRegisteredClaimNames.Iat, DateTime.UtcNow.ToString()),
             new Claim(ClaimTypes.Name, userDto.Email),

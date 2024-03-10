@@ -6,12 +6,18 @@ using Dto.tools;
 
 namespace Domain.auth;
 
-public class AuthenticationDomain(IAuthenticationDao authDao) : IAuthenticationDomain {
+public class AuthenticationDomain : IAuthenticationDomain {
+
+    private readonly IAuthenticationDao _authDao;
+    public AuthenticationDomain(IAuthenticationDao authDao) {
+        this._authDao = authDao;
+    }
+
     public async Task<UserDto> ValidateAdmin(LoginRequestDto loginRequest) {
         CheckForValidEmail(loginRequest.Email);
         CheckForValidPassword(loginRequest.Password);
 
-        UserDto? userFromDatabase = await authDao.GetUserByEmail(loginRequest.Email);
+        UserDto? userFromDatabase = await _authDao.GetUserByEmail(loginRequest.Email);
         if (userFromDatabase is null) {
             throw new ExceptionWithErrorCode(ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
         }
@@ -35,12 +41,12 @@ public class AuthenticationDomain(IAuthenticationDao authDao) : IAuthenticationD
             registerAdminRequest.Email,
             hashedPassword);
 
-        UserDto? userFromDatabase = await authDao.GetUserByEmail(registerAdminRequest.Email);
+        UserDto? userFromDatabase = await _authDao.GetUserByEmail(registerAdminRequest.Email);
         if (userFromDatabase is not null) {
             throw new ExceptionWithErrorCode(ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
         }
 
-        await authDao.RegisterAdmin(adminToRegister);
+        await _authDao.RegisterAdmin(adminToRegister);
     }
 
 

@@ -9,9 +9,15 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Data.dao;
 
-public class AuthenticationDao(DatabaseContext databaseContext) : IAuthenticationDao {
+public class AuthenticationDao : IAuthenticationDao {
+
+    private readonly DatabaseContext _databaseContext;
+
+    public AuthenticationDao(DatabaseContext databaseContext) {
+        this._databaseContext = databaseContext;
+    }
     public async Task<UserDto?> GetUserByEmail(string loginRequestEmail) {
-        AdminEntity? adminEntity = await databaseContext.Admins.FirstOrDefaultAsync(
+        AdminEntity? adminEntity = await _databaseContext.Admins.FirstOrDefaultAsync(
             entity => entity.Email.ToLower().Equals(loginRequestEmail.ToLower()));
 
         return UserConverter.ToEntity(adminEntity);
@@ -20,8 +26,8 @@ public class AuthenticationDao(DatabaseContext databaseContext) : IAuthenticatio
     public async Task RegisterAdmin(AdminDto adminToRegister) {
         try {
             AdminEntity adminEntity = UserConverter.ToEntity(adminToRegister);
-            await databaseContext.Admins.AddAsync(adminEntity);
-            await databaseContext.SaveChangesAsync();
+            await _databaseContext.Admins.AddAsync(adminEntity);
+            await _databaseContext.SaveChangesAsync();
         }
         catch (Exception e) {
             if (e is UniqueConstraintException) {
