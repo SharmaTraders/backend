@@ -11,7 +11,5 @@ public static class MigrationExtensions {
         if (context.Database.IsRelational()) {
             context.Database.Migrate(); 
         }
-
-        
     }
 }
