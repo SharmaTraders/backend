@@ -20,7 +20,7 @@ public class AuthenticationDao : IAuthenticationDao {
         AdminEntity? adminEntity = await _databaseContext.Admins.FirstOrDefaultAsync(
             entity => entity.Email.ToLower().Equals(loginRequestEmail.ToLower()));
 
-        return UserConverter.ToEntity(adminEntity);
+        return UserConverter.ToDto(adminEntity);
     }
 
     public async Task RegisterAdmin(AdminDto adminToRegister) {

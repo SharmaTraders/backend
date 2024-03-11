@@ -6,7 +6,7 @@ using Dto.tools;
 namespace Data.converters;
 
 public static class UserConverter {
-    public static UserDto? ToEntity(AdminEntity? adminEntity) {
+    public static UserDto? ToDto(AdminEntity? adminEntity) {
         return adminEntity is null
             ? null
             : new AdminDto(adminEntity.Id.ToString(), adminEntity.Email, adminEntity.Password);
