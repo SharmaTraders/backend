@@ -17,7 +17,19 @@ internal static class SeedData {
             Password = HashPassword(adminDto.Password)
         };
 
-        await dbContext.Admins.AddAsync(entity);
+        await dbContext.Admins!.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public static async Task SeedItem(WebApp application, ItemDto itemDto) {
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        ItemEntity entity = new ItemEntity() {
+            Name = itemDto.Name
+        };
+
+        await dbContext.Items!.AddAsync(entity);
         await dbContext.SaveChangesAsync();
     }
 

@@ -3,6 +3,7 @@ using Data;
 using Data.dao;
 using Domain.auth;
 using Domain.dao;
+using Domain.item;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -15,11 +16,14 @@ string? connectionString = builder.Configuration.GetConnectionString("DefaultCon
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 
-// Domains
-builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
 
 // DAOs
 builder.Services.AddScoped<IAuthenticationDao, AuthenticationDao>();
+builder.Services.AddScoped<IItemDao, ItemDao>();
+
+// Domains
+builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
+builder.Services.AddScoped<IItemDomain, ItemDomain>();
 
 builder.Services.AddControllers();
 

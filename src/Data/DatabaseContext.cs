@@ -6,7 +6,8 @@ namespace Data;
 
 public class DatabaseContext : DbContext {
 
-    public DbSet<AdminEntity> Admins { get; set; }
+    public DbSet<AdminEntity>? Admins { get; init; }
+    public DbSet<ItemEntity>? Items { get; init; }
 
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) {
