@@ -16,20 +16,20 @@ public class GlobalExceptionHandler : IExceptionHandler {
         CancellationToken cancellationToken) {
         ProblemDetails problemDetails;
 
-
-        if (exception is not ValidationException exceptionWithErrorCode) {
+        if (exception is  ValidationException validationException) {
+            problemDetails = new ProblemDetails() {
+                Type = validationException.Type,
+                Status = (int) validationException.ErrorCode,
+                Detail = validationException.Message
+            };
+        
+        }
+        else {
             _logger.LogError("Exception occurred: {Exception}", exception.Message);
             problemDetails = new ProblemDetails() {
                 Title = "Internal Server Error",
                 Status = StatusCodes.Status500InternalServerError,
                 Detail = "An unexpected error occurred! Please try again later."
-            };
-        }
-        else {
-            problemDetails = new ProblemDetails() {
-                Type = exceptionWithErrorCode.Type,
-                Status = (int) exceptionWithErrorCode.ErrorCode,
-                Detail = exceptionWithErrorCode.Message
             };
         }
 
