@@ -16,7 +16,7 @@ public class GlobalExceptionHandler : IExceptionHandler {
         CancellationToken cancellationToken) {
         ProblemDetails problemDetails;
 
-        if (exception is  ValidationException validationException) {
+        if (exception is ValidationException validationException) {
             problemDetails = new ProblemDetails() {
                 Type = validationException.Type,
                 Status = (int) validationException.ErrorCode,
