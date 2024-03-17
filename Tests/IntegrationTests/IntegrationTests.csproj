@@ -36,9 +36,5 @@
       <ProjectReference Include="..\..\src\Dto\Dto.csproj" />
       <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="util\" />
-    </ItemGroup>
 
 </Project>

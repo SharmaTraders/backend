@@ -39,7 +39,7 @@ public class ItemDomainTests {
         ItemDto itemDto = new(itemName);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -60,7 +60,7 @@ public class ItemDomainTests {
             .ReturnsAsync(itemDto);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.ItemNameAlreadyExists, exception.Message);

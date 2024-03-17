@@ -3,6 +3,7 @@ using Domain.utils;
 using Dto;
 using IntegrationTests.FakeDbSetup;
 using IntegrationTests.TestFactory;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace IntegrationTests.Authentication;
@@ -63,7 +64,9 @@ public class LoginAdminTests {
         // Assert that the correct error message is returned
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.NotNull(responseContent);
-        Assert.Equal(ErrorMessages.IncorrectPassword, responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.IncorrectPassword, problemDetails.Detail);
     }
 
     [Fact]
@@ -91,6 +94,8 @@ public class LoginAdminTests {
         // Assert that the correct error message is returned
         var responseContent = await response.Content.ReadAsStringAsync();
         Assert.NotNull(responseContent);
-        Assert.Equal(ErrorMessages.EmailDoesntExist, responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.EmailDoesntExist, problemDetails.Detail);
     }
 }

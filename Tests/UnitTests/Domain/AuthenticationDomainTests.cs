@@ -42,7 +42,7 @@ public class AuthenticationDomainTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<ValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -87,7 +87,7 @@ public class AuthenticationDomainTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<ValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -128,7 +128,7 @@ public class AuthenticationDomainTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<ValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.NotFound, exception.ErrorCode);
         Assert.Equal(ErrorMessages.EmailDoesntExist, exception.Message);
@@ -148,7 +148,7 @@ public class AuthenticationDomainTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<ExceptionWithErrorCode>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<ValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
 
         // Assert the exception properties
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
@@ -178,7 +178,7 @@ public class AuthenticationDomainTests {
         var registerAdminRequest = new RegisterAdminRequestDto("invalid", "validPassword123");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
+        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.InvalidEmailFormat, exception.Message);
@@ -192,7 +192,7 @@ public class AuthenticationDomainTests {
         var registerAdminRequest = new RegisterAdminRequestDto("valid@email.com", "short");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
+        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, exception.Message);
@@ -206,7 +206,7 @@ public class AuthenticationDomainTests {
         var registerAdminRequest = new RegisterAdminRequestDto("valid@email.com", "longWithoutNumber");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
+        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, exception.Message);
@@ -227,7 +227,7 @@ public class AuthenticationDomainTests {
             .ReturnsAsync(existingAdmin);
 
         // Act and assert
-        var exception = await Assert.ThrowsAsync<ExceptionWithErrorCode>(() =>
+        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, exception.Message);

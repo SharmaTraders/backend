@@ -3,6 +3,7 @@ using Domain.utils;
 using Dto;
 using IntegrationTests.FakeDbSetup;
 using IntegrationTests.TestFactory;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace IntegrationTests.Item;
@@ -106,10 +107,11 @@ public class CreateItemTests {
         // Assert
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
 
-        var errorContent = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(errorContent);
-        Assert.Equal(ErrorMessages.ItemNameAlreadyExists, errorContent);
-    }
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.NotNull(responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.ItemNameAlreadyExists, problemDetails.Detail);    }
 
 
 

@@ -3,6 +3,7 @@ using Domain.utils;
 using Dto;
 using IntegrationTests.FakeDbSetup;
 using IntegrationTests.TestFactory;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 
 namespace IntegrationTests.Authentication;
@@ -70,9 +71,11 @@ public class RegisterAdminTests {
 
         // Assert  that the register fails with the correct error
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        var errorContent = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(errorContent);
-        Assert.Equal(ErrorMessages.InvalidEmailFormat, errorContent);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.NotNull(responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.InvalidEmailFormat, problemDetails.Detail);
     }
 
     [Fact]
@@ -94,9 +97,11 @@ public class RegisterAdminTests {
 
         // Assert  that the register fails with the correct error
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        var errorContent = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(errorContent);
-        Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, errorContent);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.NotNull(responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, problemDetails.Detail);
     }
 
     [Fact]
@@ -119,10 +124,11 @@ public class RegisterAdminTests {
 
         // Assert  that the register fails with the correct error
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
-        var errorContent = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(errorContent);
-        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, errorContent);
-    }
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.NotNull(responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, problemDetails.Detail);    }
 
     [Fact]
     public async Task Register_AdminWithAdminToken_WhenAdminAlreadyExists_Fails() {
@@ -151,9 +157,11 @@ public class RegisterAdminTests {
 
         // Assert  that the register fails with the correct error
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
-        var errorContent = await response.Content.ReadAsStringAsync();
-        Assert.NotNull(errorContent);
-        Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, errorContent);
+        var responseContent = await response.Content.ReadAsStringAsync();
+        Assert.NotNull(responseContent);
+        ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
+        Assert.NotNull(problemDetails);
+        Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, problemDetails.Detail);
     }
 
 

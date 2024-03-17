@@ -19,18 +19,18 @@ public class ItemDomain : IItemDomain {
 
         ItemDto? itemFromDb = await _itemDao.GetItemByName(itemDto.Name);
         if (itemFromDb is not null) {
-            throw new ExceptionWithErrorCode(ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists); 
+            throw new ValidationException("Item name",ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists); 
         }
         return await _itemDao.CreateItem(itemDto);
     }
 
     private static void ValidateItem(ItemDto itemDto) {
         if (string.IsNullOrEmpty(itemDto.Name)) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
+            throw new ValidationException("Item name",ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
         }
 
         if (itemDto.Name.Length is < 3 or > 20) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
+            throw new ValidationException("Item name",ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
         }
     }
 }

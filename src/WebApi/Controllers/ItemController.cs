@@ -19,16 +19,7 @@ public class ItemController : ControllerBase {
 
     [HttpPost]
     public async Task<ActionResult<ItemDto>> CreateItem(ItemDto itemDto) {
-        try {
-            ItemDto createdItem = await _itemDomain.CreateItem(itemDto);
-            return Ok(createdItem);
-        }
-        catch (ExceptionWithErrorCode e) {
-            return StatusCode((int) e.ErrorCode, e.Message);
-        }
-        catch (Exception e) {
-            return StatusCode(500, e.Message);
-        }
+        ItemDto createdItem = await _itemDomain.CreateItem(itemDto);
+        return Ok(createdItem);
     }
-
 }
