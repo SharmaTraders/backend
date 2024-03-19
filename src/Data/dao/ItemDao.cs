@@ -1,6 +1,7 @@
 ﻿using Data.Entities;
 using Domain.dao;
 using Dto;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Data.dao;
@@ -13,7 +14,7 @@ public class ItemDao : IItemDao {
     }
 
     public async Task<ItemDto?> GetItemByName(string itemDtoName) {
-        ItemEntity? itemEntity = await _databaseContext.Items!.FindAsync(itemDtoName);
+        ItemEntity? itemEntity = await _databaseContext.Items!.FirstOrDefaultAsync(entity => entity.Name.ToLower().Equals(itemDtoName.ToLower()));
         return itemEntity is null ? null : new ItemDto(itemEntity.Name);
     }
 

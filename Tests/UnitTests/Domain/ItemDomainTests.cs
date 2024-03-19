@@ -12,7 +12,6 @@ public class ItemDomainTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
-    
     public async Task CreateItem_WithValidItemName_CallsItemDao(string itemName) {
         // Arrange
         var itemDaoMock = new Mock<IItemDao>();
@@ -30,7 +29,6 @@ public class ItemDomainTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetInValidItemNames), MemberType = typeof(ItemFactory))]
-
     public async Task CreateItem_WithInvalidItemName_ThrowsException(string itemName) {
         // Arrange
         var itemDaoMock = new Mock<IItemDao>();
