@@ -10,12 +10,12 @@ using Microsoft.EntityFrameworkCore;
 namespace Data.dao;
 
 public class AuthenticationDao : IAuthenticationDao {
-
     private readonly DatabaseContext _databaseContext;
 
     public AuthenticationDao(DatabaseContext databaseContext) {
         this._databaseContext = databaseContext;
     }
+
     public async Task<UserDto?> GetUserByEmail(string loginRequestEmail) {
         AdminEntity? adminEntity = await _databaseContext.Admins.FirstOrDefaultAsync(
             entity => entity.Email.ToLower().Equals(loginRequestEmail.ToLower()));
@@ -24,15 +24,8 @@ public class AuthenticationDao : IAuthenticationDao {
     }
 
     public async Task RegisterAdmin(AdminDto adminToRegister) {
-        try {
-            AdminEntity adminEntity = UserConverter.ToEntity(adminToRegister);
-            await _databaseContext.Admins.AddAsync(adminEntity);
-            await _databaseContext.SaveChangesAsync();
-        }
-        catch (Exception e) {
-            if (e is UniqueConstraintException) {
-                throw new ExceptionWithErrorCode(ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
-            }
-        }
+        AdminEntity adminEntity = UserConverter.ToEntity(adminToRegister);
+        await _databaseContext.Admins.AddAsync(adminEntity);
+        await _databaseContext.SaveChangesAsync();
     }
 }

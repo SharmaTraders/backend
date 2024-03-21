@@ -19,13 +19,13 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
         UserDto? userFromDatabase = await _authDao.GetUserByEmail(loginRequest.Email);
         if (userFromDatabase is null) {
-            throw new ExceptionWithErrorCode(ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
+            throw new ValidationException("Email",ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
         }
 
         bool doesPasswordMatch = VerifyPassword(loginRequest.Password, userFromDatabase.Password);
 
         if (!doesPasswordMatch) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.IncorrectPassword);
+            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.IncorrectPassword);
         }
 
         return userFromDatabase;
@@ -43,7 +43,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
         UserDto? userFromDatabase = await _authDao.GetUserByEmail(registerAdminRequest.Email);
         if (userFromDatabase is not null) {
-            throw new ExceptionWithErrorCode(ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
+            throw new ValidationException("Email",ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
         }
 
         await _authDao.RegisterAdmin(adminToRegister);
@@ -61,21 +61,21 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
     private void CheckForValidPassword(string password) {
         if (string.IsNullOrWhiteSpace(password)) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.PasswordRequired);
+            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordRequired);
         }
 
         if (password.Length < 6) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.PasswordBiggerThan5Characters);
+            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordBiggerThan5Characters);
         }
 
         if (!Regex.IsMatch(password, @"[a-zA-Z]") || !Regex.IsMatch(password, @"[0-9]")) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.PasswordMustContainLetterAndNumber);
+            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordMustContainLetterAndNumber);
         }
     }
 
     private void CheckForValidEmail(string email) {
         if (string.IsNullOrEmpty(email)) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.EmailRequired);
+            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailRequired);
         }
 
         string pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
@@ -85,7 +85,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
         Match match = regex.Match(email);
 
         if (!match.Success) {
-            throw new ExceptionWithErrorCode(ErrorCode.BadRequest, ErrorMessages.InvalidEmailFormat);
+            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.InvalidEmailFormat);
         }
     }
 }

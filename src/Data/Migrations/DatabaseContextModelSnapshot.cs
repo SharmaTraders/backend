@@ -43,6 +43,16 @@ namespace Data.Migrations
 
                     b.ToTable("Admins");
                 });
+
+            modelBuilder.Entity("Data.Entities.ItemEntity", b =>
+                {
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.HasKey("Name");
+
+                    b.ToTable("Items");
+                });
 #pragma warning restore 612, 618
         }
     }

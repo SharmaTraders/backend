@@ -15,4 +15,8 @@ public static class ErrorMessages {
     public const string InvalidGuid = "Invalid id ";
 
     public const string AdminWithEmailAlreadyExists = "Admin with this email already exists";
+
+    public const string ItemNameAlreadyExists = "Item with this name already exists";
+    public const string ItemNameIsRequired = "Item must have a name";
+    public const string ItemNameLength = "Item length must be between 3 and 20 (inclusive)";
 }

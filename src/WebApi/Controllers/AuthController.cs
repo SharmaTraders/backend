@@ -13,7 +13,6 @@ namespace WebApi.Controllers;
 [ApiController]
 [Route("[controller]")]
 public class AuthController : ControllerBase {
-
     private readonly IConfiguration _configuration;
     private readonly IAuthenticationDomain _authDomain;
 
@@ -24,33 +23,17 @@ public class AuthController : ControllerBase {
 
     [HttpPost, Route("login/admin")]
     public async Task<ActionResult<LoginResponseDto>> AdminLogin(LoginRequestDto loginRequest) {
-        try {
-            UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
-            string token = GenerateJwt(userDto);
-            LoginResponseDto responseDto = new LoginResponseDto(token);
-            return Ok(responseDto);
-        }
-        catch (ExceptionWithErrorCode e) {
-            return StatusCode((int) e.ErrorCode, e.Message);
-        }
-        catch (Exception e) {
-            return StatusCode(500, e.Message);
-        }
+        UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
+        string token = GenerateJwt(userDto);
+        LoginResponseDto responseDto = new LoginResponseDto(token);
+        return Ok(responseDto);
     }
 
     [HttpPost, Route("register/admin")]
     [Authorize(Roles = "Admin")]
     public async Task<ActionResult> RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
-        try {
-            await _authDomain.RegisterAdmin(registerAdminRequest);
-            return Ok();
-        }
-        catch (ExceptionWithErrorCode e) {
-            return StatusCode((int) e.ErrorCode, e.Message);
-        }
-        catch (Exception e) {
-            return StatusCode(500, e.Message);
-        }
+        await _authDomain.RegisterAdmin(registerAdminRequest);
+        return Ok();
     }
 
 

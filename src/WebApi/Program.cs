@@ -3,11 +3,13 @@ using Data;
 using Data.dao;
 using Domain.auth;
 using Domain.dao;
+using Domain.item;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using WebApi;
+using WebApi.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,11 +17,14 @@ string? connectionString = builder.Configuration.GetConnectionString("DefaultCon
 builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 
-// Domains
-builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
 
 // DAOs
 builder.Services.AddScoped<IAuthenticationDao, AuthenticationDao>();
+builder.Services.AddScoped<IItemDao, ItemDao>();
+
+// Domains
+builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
+builder.Services.AddScoped<IItemDomain, ItemDomain>();
 
 builder.Services.AddControllers();
 
@@ -28,6 +33,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 
 
@@ -76,14 +83,15 @@ if (app.Environment.IsDevelopment()) {
 
 app.UseHttpsRedirection();
 
-app.UseAuthentication();
-
+app.UseAuthentication();             
 app.UseCors(policyBuilder => policyBuilder.AllowAnyMethod()
     .AllowAnyHeader()
     .SetIsOriginAllowed(origin => true)
     .AllowCredentials());
 
 app.UseAuthorization();
+
+app.UseExceptionHandler();
 
 app.MapControllers();
 
