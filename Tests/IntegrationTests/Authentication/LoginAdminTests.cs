@@ -66,7 +66,7 @@ public class LoginAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.IncorrectPassword, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.PasswordIncorrect, problemDetails.Detail);
     }
 
     [Fact]

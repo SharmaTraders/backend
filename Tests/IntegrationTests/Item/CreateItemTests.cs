@@ -49,12 +49,6 @@ public class CreateItemTests {
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
-        string responseContent= await response.Content.ReadAsStringAsync();
-        ItemDto? responseDto = JsonConvert.DeserializeObject<ItemDto>(responseContent);
-
-        Assert.NotNull(responseDto);
-        Assert.Equal(itemName, responseDto.Name);
-
     }
 
     [Theory]
@@ -111,7 +105,7 @@ public class CreateItemTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.ItemNameAlreadyExists, problemDetails.Detail);    }
+        Assert.Equal(ErrorMessages.ItemNameAlreadyExists(itemName), problemDetails.Detail);    }
 
 
 

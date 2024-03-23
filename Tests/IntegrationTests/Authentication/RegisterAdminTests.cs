@@ -75,7 +75,7 @@ public class RegisterAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.InvalidEmailFormat, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.EmailInvalidFormat, problemDetails.Detail);
     }
 
     [Fact]
@@ -161,7 +161,7 @@ public class RegisterAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.EmailAlreadyExists, problemDetails.Detail);
     }
 
 

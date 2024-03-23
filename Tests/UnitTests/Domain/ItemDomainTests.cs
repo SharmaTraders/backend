@@ -2,7 +2,6 @@
 using Domain.item;
 using Domain.utils;
 using Dto;
-using Dto.tools;
 using Moq;
 using UnitTests.Factory;
 
@@ -61,7 +60,7 @@ public class ItemDomainTests {
         var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
-        Assert.Equal(ErrorMessages.ItemNameAlreadyExists, exception.Message);
+        Assert.Equal(ErrorMessages.ItemNameAlreadyExists(itemName), exception.Message);
         // Assert that the dao is called to check if the item already exists.
         itemDaoMock.Verify(mock => mock.GetItemByName(itemName), Times.Once);
         // But the dao is never called to create the item.

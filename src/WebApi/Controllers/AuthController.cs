@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Domain.auth;
 using Dto;
-using Dto.tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;

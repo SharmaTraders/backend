@@ -2,7 +2,6 @@ using Domain.auth;
 using Domain.dao;
 using Domain.utils;
 using Dto;
-using Dto.tools;
 using Moq;
 using UnitTests.Factory;
 
@@ -152,7 +151,7 @@ public class AuthenticationDomainTests {
 
         // Assert the exception properties
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
-        Assert.Equal(ErrorMessages.IncorrectPassword, exception.Message);
+        Assert.Equal(ErrorMessages.PasswordIncorrect, exception.Message);
     }
 
 
@@ -181,7 +180,7 @@ public class AuthenticationDomainTests {
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
-        Assert.Equal(ErrorMessages.InvalidEmailFormat, exception.Message);
+        Assert.Equal(ErrorMessages.EmailInvalidFormat, exception.Message);
     }
 
     [Fact]
@@ -230,7 +229,7 @@ public class AuthenticationDomainTests {
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
-        Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, exception.Message);
+        Assert.Equal(ErrorMessages.EmailAlreadyExists, exception.Message);
 
 
     }

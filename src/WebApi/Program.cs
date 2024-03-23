@@ -2,6 +2,7 @@ using System.Text;
 using Data;
 using Data.dao;
 using Domain.auth;
+using Domain.billingParty;
 using Domain.dao;
 using Domain.item;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -21,10 +22,12 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
 // DAOs
 builder.Services.AddScoped<IAuthenticationDao, AuthenticationDao>();
 builder.Services.AddScoped<IItemDao, ItemDao>();
+builder.Services.AddScoped<IBillingPartyDao, BillingPartyDao>();
 
 // Domains
 builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
 builder.Services.AddScoped<IItemDomain, ItemDomain>();
+builder.Services.AddScoped<IBillingPartyDomain, BillingPartyDomain>();
 
 builder.Services.AddControllers();
 
