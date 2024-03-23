@@ -24,7 +24,16 @@ public class BillingPartyDomain : IBillingPartyDomain {
         await _billingPartyDao.CreateBillingParty(request);
     }
 
-    private async Task ValidateName(string name) {
+    /*
+     * The validate methods are made internal so that they can be tested in unit tests
+     * I think treating them as individual tests made more sense to me ,otherwise there would be a lot of
+     *     duplication in the tests, and we would end up with 6! (six factorial) tests for the CreateBillingParty method
+     *         in order to fulfill all the branches which is infeasible.
+     *
+     * But this need to be noted, that these are private otherwise and must not be called even from the assembly.
+     */
+    
+    internal async Task ValidateName(string name) {
         if (string.IsNullOrEmpty(name)) {
             throw new ValidationException("Name", ErrorCode.BadRequest, ErrorMessages.BillingPartyNameIsRequired);
         }
@@ -41,7 +50,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
     }
 
-    private void ValidateAddress(string address) {
+    internal void ValidateAddress(string address) {
         if (string.IsNullOrEmpty(address)) {
             throw new ValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressIsRequired);
         }
@@ -52,7 +61,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
     }
 
-    private void ValidatePhoneNumber(string? phoneNumber) {
+    internal void ValidatePhoneNumber(string? phoneNumber) {
         // Phone number is optional
         if (string.IsNullOrEmpty(phoneNumber)) {
             return;
@@ -69,7 +78,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
     }
 
-    private async Task ValidateEmail(string? email) {
+    internal async Task ValidateEmail(string? email) {
         // Email  is optional
         if (string.IsNullOrEmpty(email)) {
             return;
@@ -92,7 +101,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
     }
 
-    private void ValidateOpeningBalance(double openingBalance) {
+    internal void ValidateOpeningBalance(double openingBalance) {
         if (openingBalance < 0) {
             throw new ValidationException("OpeningBalance", ErrorCode.BadRequest,
                 ErrorMessages.OpeningBalanceMustBePositive);
@@ -111,7 +120,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
     }
 
-    private async Task ValidateVatNumber(string? vatNumber) {
+    internal async Task ValidateVatNumber(string? vatNumber) {
         // Vat number  is optional
         if (string.IsNullOrEmpty(vatNumber)) {
             return;

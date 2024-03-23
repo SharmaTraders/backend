@@ -6,7 +6,6 @@ using Microsoft.Extensions.DependencyInjection;
 namespace IntegrationTests.FakeDbSetup;
 
 internal static class SeedData {
-
     public static async Task SeedAdmin(WebApp application, AdminDto adminDto) {
         using var scope = application.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
@@ -17,7 +16,7 @@ internal static class SeedData {
             Password = HashPassword(adminDto.Password)
         };
 
-        await dbContext.Admins!.AddAsync(entity);
+        await dbContext.Admins.AddAsync(entity);
         await dbContext.SaveChangesAsync();
     }
 
@@ -29,7 +28,24 @@ internal static class SeedData {
             Name = itemDto.Name
         };
 
-        await dbContext.Items!.AddAsync(entity);
+        await dbContext.Items.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public static async Task SeedBillingParty(WebApp application, CreateBillingPartyRequestDto billingPartyDto) {
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        BillingPartyEntity entity = new BillingPartyEntity() {
+            Name = billingPartyDto.Name,
+            Address = billingPartyDto.Address,
+            Email = billingPartyDto.Email,
+            PhoneNumber = billingPartyDto.PhoneNumber,
+            Balance = billingPartyDto.OpeningBalance,
+            VatNumber = billingPartyDto.VatNumber
+        };
+
+        await dbContext.BillingParties.AddAsync(entity);
         await dbContext.SaveChangesAsync();
     }
 

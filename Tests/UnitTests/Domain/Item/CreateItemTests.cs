@@ -5,9 +5,9 @@ using Dto;
 using Moq;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain;
+namespace UnitTests.Domain.Item;
 
-public class ItemDomainTests {
+public class CreateItemTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
@@ -23,7 +23,6 @@ public class ItemDomainTests {
 
         // Assert that the dao is called.
         itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Once);
-
     }
 
     [Theory]
@@ -45,7 +44,6 @@ public class ItemDomainTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
-
     public async Task CreateItem_WithValidItemNameThatAlreadyExists_ThrowsException(string itemName) {
         // Arrange
         var itemDaoMock = new Mock<IItemDao>();
@@ -67,10 +65,9 @@ public class ItemDomainTests {
         itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Never);
     }
 
-    
+
     [Fact]
     public async Task CreateItem_WithValidItemNames_WithEmployeeToken_Fails() {
         // Todo this test needs to be done after implementing the employee login.
     }
-
 }
