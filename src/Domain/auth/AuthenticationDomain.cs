@@ -9,7 +9,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
     private readonly IAuthenticationDao _authDao;
     public AuthenticationDomain(IAuthenticationDao authDao) {
-        this._authDao = authDao;
+        _authDao = authDao;
     }
 
     public async Task<UserDto> ValidateAdmin(LoginRequestDto loginRequest) {
@@ -36,10 +36,6 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
         string hashedPassword = HashPassword(registerAdminRequest.Password);
         registerAdminRequest = registerAdminRequest with {Password = hashedPassword};
-
-        AdminDto adminToRegister = new AdminDto(Guid.NewGuid().ToString(),
-            registerAdminRequest.Email,
-            hashedPassword);
 
         UserDto? userFromDatabase = await _authDao.GetUserByEmail(registerAdminRequest.Email);
         if (userFromDatabase is not null) {

@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 
 namespace IntegrationTests.BillingParty;
 
+[Collection("Sequential")]
 public class CreateBillingPartyTests {
 
     private readonly WebApp _application = new();

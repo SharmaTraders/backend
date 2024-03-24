@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 
 namespace IntegrationTests.Item;
 
+[Collection("Sequential")]
+
 public class CreateItemTests {
 
     private readonly WebApp _application = new();
