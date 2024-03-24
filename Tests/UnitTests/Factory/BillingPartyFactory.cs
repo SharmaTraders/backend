@@ -96,4 +96,55 @@ public static class BillingPartyFactory {
             new object[] {"a".PadRight(10, 'a')},
         };
     }
+
+    public static IEnumerable<object[]> GetValidBillingPartyOpeningBalance() {
+        return new List<object[]>() {
+            new object[] {0},
+            new object[] {0.55},
+            new object[] {1},
+            new object[] {1000},                   
+            new object[] {null},
+            new object[] {12000.31},
+            new object[] {1500.02},
+            new object[] {1500000.21},
+        };
+    }
+
+    public static IEnumerable<object[]> GetInValidBillingPartyOpeningBalance() {
+        return new List<object[]>() {
+            new object[] {-1},
+            new object[] {-100.21},
+            new object[] {100.213},
+            new object[] {0.456}
+        };
+    }
+
+    public static IEnumerable<object[]> GetValidBillingPartyVatNumber() {
+        return new List<object[]>() {
+            new object[] {null},
+            new object[] {""},
+            new object[] {"5chars"},
+            new object[] {"123AV67"},
+            new object[] {"a".PadRight(20, 'a')}
+
+        };
+    }
+
+    public static IEnumerable<object[]> GetValidBillingPartyVatNumberNotEmpty() {
+        return new List<object[]>() {
+            new object[] {"5chars"},
+            new object[] {"123AV67"},
+            new object[] {"a".PadRight(20, 'a')}
+
+        };
+    }
+
+    public static IEnumerable<object[]> GetInValidBillingPartyVatNumber() {
+        return new List<object[]>() {
+            new object[] {"2c"},
+            new object[] {"a"},
+            new object[] {"a".PadRight(21, 'a')},
+            new object[] {"a".PadRight(100, 'a')},
+        };
+    }
 }
