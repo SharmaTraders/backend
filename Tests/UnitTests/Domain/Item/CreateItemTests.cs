@@ -16,13 +16,13 @@ public class CreateItemTests {
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         // Act
-        await itemDomain.CreateItem(itemDto);
+        await itemDomain.CreateItem(addItemRequest);
 
         // Assert that the dao is called.
-        itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Once);
+        itemDaoMock.Verify(mock => mock.CreateItem(addItemRequest), Times.Once);
     }
 
     [Theory]
@@ -32,10 +32,10 @@ public class CreateItemTests {
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(addItemRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -49,20 +49,20 @@ public class CreateItemTests {
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         itemDaoMock.Setup(mock => mock.GetItemByName(itemName))
-            .ReturnsAsync(itemDto);
+            .ReturnsAsync(addItemRequest);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(addItemRequest));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.ItemNameAlreadyExists(itemName), exception.Message);
         // Assert that the dao is called to check if the item already exists.
         itemDaoMock.Verify(mock => mock.GetItemByName(itemName), Times.Once);
         // But the dao is never called to create the item.
-        itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Never);
+        itemDaoMock.Verify(mock => mock.CreateItem(addItemRequest), Times.Never);
     }
 
 

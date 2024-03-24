@@ -1,6 +1,6 @@
 ﻿namespace Dto;
 
-public record CreateBillingPartyRequestDto(
+public record CreateBillingPartyRequest(
     string Name,
     string Address,
     string? PhoneNumber,

@@ -18,7 +18,7 @@ public class BillingPartyDao : IBillingPartyDao {
             .AnyAsync(party => party.Name.ToLower().Equals(partyName.ToLower()));
     }
 
-    public async Task CreateBillingParty(CreateBillingPartyRequestDto request) {
+    public async Task CreateBillingParty(CreateBillingPartyRequest request) {
         BillingPartyEntity billingPartyEntity = BillingPartyConverter.ToEntity(request);
         await _databaseContext.BillingParties.AddAsync(billingPartyEntity);
         await _databaseContext.SaveChangesAsync();
@@ -33,5 +33,12 @@ public class BillingPartyDao : IBillingPartyDao {
         return  ! await _databaseContext.BillingParties
             .AnyAsync(party =>
                 !string.IsNullOrEmpty(party.VatNumber) && party.VatNumber.ToLower().Equals(vatNumber.ToLower()));
+    }
+
+    public async Task<ICollection<BillingPartyDto>> GetAllBillingParties() {
+        List<BillingPartyEntity> entities = await _databaseContext.BillingParties
+            .AsNoTracking()
+            .ToListAsync();
+        return BillingPartyConverter.ToDtoLists(entities);
     }
 }

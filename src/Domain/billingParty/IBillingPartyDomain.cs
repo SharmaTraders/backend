@@ -3,5 +3,6 @@
 namespace Domain.billingParty;
 
 public interface IBillingPartyDomain {
-    Task CreateBillingParty(CreateBillingPartyRequestDto request);
+    Task CreateBillingParty(CreateBillingPartyRequest request);
+    Task<ICollection<BillingPartyDto>> GetBillingParties();
 }

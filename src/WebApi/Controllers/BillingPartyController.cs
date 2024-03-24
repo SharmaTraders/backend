@@ -16,8 +16,16 @@ public class BillingPartyController : ControllerBase{
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateBillingParty(CreateBillingPartyRequestDto request) {
+    public async Task<ActionResult> CreateBillingParty(CreateBillingPartyRequest request) {
         await _billingPartyDomain.CreateBillingParty(request);
         return Ok();
+    }
+
+    [HttpGet]
+
+    public async Task<ActionResult<GetBillingPartiesResponse>> GetBillingParties() {
+        ICollection<BillingPartyDto> billingParties = await _billingPartyDomain.GetBillingParties();
+        GetBillingPartiesResponse response = new(billingParties);
+        return Ok(response);
     }
 }

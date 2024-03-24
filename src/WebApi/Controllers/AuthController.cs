@@ -21,16 +21,16 @@ public class AuthController : ControllerBase {
     }
 
     [HttpPost, Route("login/admin")]
-    public async Task<ActionResult<LoginResponseDto>> AdminLogin(LoginRequestDto loginRequest) {
+    public async Task<ActionResult<LoginResponse>> AdminLogin(LoginRequest loginRequest) {
         UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
         string token = GenerateJwt(userDto);
-        LoginResponseDto responseDto = new LoginResponseDto(token);
-        return Ok(responseDto);
+        LoginResponse response = new LoginResponse(token);
+        return Ok(response);
     }
 
     [HttpPost, Route("register/admin")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
+    public async Task<ActionResult> RegisterAdmin(RegisterAdminRequest registerAdminRequest) {
         await _authDomain.RegisterAdmin(registerAdminRequest);
         return Ok();
     }

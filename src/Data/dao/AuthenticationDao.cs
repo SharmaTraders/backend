@@ -22,7 +22,7 @@ public class AuthenticationDao : IAuthenticationDao {
         return UserConverter.ToDto(adminEntity);
     }
 
-    public async Task RegisterAdmin(RegisterAdminRequestDto adminToRegister) {
+    public async Task RegisterAdmin(RegisterAdminRequest adminToRegister) {
         AdminEntity adminEntity = UserConverter.ToEntity(adminToRegister);
         await _databaseContext.Admins
             .AddAsync(adminEntity);

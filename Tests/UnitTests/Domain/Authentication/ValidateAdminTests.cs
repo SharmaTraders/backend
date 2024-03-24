@@ -19,7 +19,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(userDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto(email, "password1");
+        var loginRequest = new LoginRequest(email, "password1");
 
         // Act
         var result = await authenticationDomain.ValidateAdmin(loginRequest);
@@ -37,7 +37,7 @@ public class ValidateAdminTests {
         // Arrange
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto(email, "password1");
+        var loginRequest = new LoginRequest(email, "password1");
 
         // Act & Assert
         var exception =
@@ -59,7 +59,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(userDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto(userDto.Email, password);
+        var loginRequest = new LoginRequest(userDto.Email, password);
 
         // Act
         var result = await authenticationDomain.ValidateAdmin(loginRequest);
@@ -82,7 +82,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(userDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto(userDto.Email, password);
+        var loginRequest = new LoginRequest(userDto.Email, password);
 
         // Act & Assert
         var exception =
@@ -104,7 +104,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(userDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto("email@email.com", "password1");
+        var loginRequest = new LoginRequest("email@email.com", "password1");
 
         // Act
         var result = await authenticationDomain.ValidateAdmin(loginRequest);
@@ -123,7 +123,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(null as AdminDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto("email@email.com", "password1");
+        var loginRequest = new LoginRequest("email@email.com", "password1");
 
         // Act & Assert
         var exception =
@@ -143,7 +143,7 @@ public class ValidateAdminTests {
             .ReturnsAsync(adminDto);
 
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var loginRequest = new LoginRequestDto("email@email.com", "incorrectPassword1");
+        var loginRequest = new LoginRequest("email@email.com", "incorrectPassword1");
 
         // Act & Assert
         var exception =

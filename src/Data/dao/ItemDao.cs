@@ -12,18 +12,18 @@ public class ItemDao : IItemDao {
         _databaseContext = databaseContext;
     }
 
-    public async Task<ItemDto?> GetItemByName(string itemDtoName) {
+    public async Task<AddItemRequest?> GetItemByName(string itemDtoName) {
         ItemEntity? itemEntity =
             await _databaseContext.Items
                 .AsNoTracking()
                 .FirstOrDefaultAsync(entity =>
                 entity.Name.ToLower().Equals(itemDtoName.ToLower()));
-        return itemEntity is null ? null : new ItemDto(itemEntity.Name);
+        return itemEntity is null ? null : new AddItemRequest(itemEntity.Name);
     }
 
-    public async Task CreateItem(ItemDto itemDto) {
+    public async Task CreateItem(AddItemRequest addItemRequest) {
         ItemEntity itemEntity = new ItemEntity() {
-            Name = itemDto.Name
+            Name = addItemRequest.Name
         };
         await _databaseContext.Items.AddAsync(itemEntity);
         await _databaseContext.SaveChangesAsync();

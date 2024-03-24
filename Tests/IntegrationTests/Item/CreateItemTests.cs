@@ -40,8 +40,8 @@ public class CreateItemTests {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        ItemDto requestDto = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
+        AddItemRequest requestRequest = new(itemName);
+        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -63,8 +63,8 @@ public class CreateItemTests {
         var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        ItemDto requestDto = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
+        AddItemRequest requestRequest = new(itemName);
+        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -82,17 +82,17 @@ public class CreateItemTests {
     public async Task CreateItem_ValidItemNameThatAlreadyExists_WithAdminToken_Fails(string itemName) {
         // Arrange a logged in admin
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
-        ItemDto itemDto = new ItemDto(itemName);
+        AddItemRequest addItemRequest = new AddItemRequest(itemName);
 
         // Make sure the item already exists in the database
-        await SeedData.SeedItem(_application, itemDto);
+        await SeedData.SeedItem(_application, addItemRequest);
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         // When sent a new item with the same name
-        ItemDto requestDto = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
+        AddItemRequest requestRequest = new(itemName);
+        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();

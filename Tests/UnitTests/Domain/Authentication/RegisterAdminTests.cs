@@ -12,13 +12,13 @@ public class RegisterAdminTests {
         // Arrange
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var registerAdminRequest = new RegisterAdminRequestDto("valid@email.com", "validPassword123");
+        var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "validPassword123");
 
         // Act
         await authenticationDomain.RegisterAdmin(registerAdminRequest);
 
         // Assert
-        authDaoMock.Verify(mock => mock.RegisterAdmin(It.IsAny<RegisterAdminRequestDto>()), Times.Once);
+        authDaoMock.Verify(mock => mock.RegisterAdmin(It.IsAny<RegisterAdminRequest>()), Times.Once);
     }
 
     [Fact]
@@ -26,7 +26,7 @@ public class RegisterAdminTests {
         // Arrange
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var registerAdminRequest = new RegisterAdminRequestDto("invalid", "validPassword123");
+        var registerAdminRequest = new RegisterAdminRequest("invalid", "validPassword123");
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
@@ -40,7 +40,7 @@ public class RegisterAdminTests {
         // Arrange
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var registerAdminRequest = new RegisterAdminRequestDto("valid@email.com", "short");
+        var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "short");
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
@@ -54,7 +54,7 @@ public class RegisterAdminTests {
         // Arrange
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var registerAdminRequest = new RegisterAdminRequestDto("valid@email.com", "longWithoutNumber");
+        var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "longWithoutNumber");
 
         // Act & Assert
         var exception = await Assert.ThrowsAsync<ValidationException>(() =>
@@ -72,7 +72,7 @@ public class RegisterAdminTests {
 
         var authDaoMock = new Mock<IAuthenticationDao>();
         var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
-        var registerAdminRequest = new RegisterAdminRequestDto(existingEmail, "newPasswordNow12");
+        var registerAdminRequest = new RegisterAdminRequest(existingEmail, "newPasswordNow12");
 
         authDaoMock.Setup(mock => mock.GetUserByEmail(existingEmail))
             .ReturnsAsync(existingAdmin);

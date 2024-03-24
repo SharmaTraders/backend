@@ -12,12 +12,12 @@ public static class UserConverter {
     }
 
 
-    public static AdminEntity ToEntity(RegisterAdminRequestDto adminDto) {
+    public static AdminEntity ToEntity(RegisterAdminRequest admin) {
         
         return new AdminEntity() {
             Id = Guid.NewGuid(),
-            Email = adminDto.Email,
-            Password = adminDto.Password
+            Email = admin.Email,
+            Password = admin.Password
         };
     }
 }

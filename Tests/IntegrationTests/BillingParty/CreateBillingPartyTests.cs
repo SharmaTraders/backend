@@ -72,13 +72,13 @@ public class CreateBillingPartyTests {
     public async Task CreateBillingParty_ValidBillingParty_AlreadyExists_Fails() {
         // Arrange a logged in admin
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
-        CreateBillingPartyRequestDto requestDto = BillingPartyFactory.GetValidCreateBillingPartyRequestDto();
+        CreateBillingPartyRequest createRequest = BillingPartyFactory.GetValidCreateBillingPartyRequestDto();
 
-        await SeedData.SeedBillingParty(_application,requestDto);
+        await SeedData.SeedBillingParty(_application,createRequest);
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/BillingParty");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
+        request.Content = new StringContent(JsonConvert.SerializeObject(createRequest), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();

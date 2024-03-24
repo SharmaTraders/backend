@@ -12,7 +12,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
         _authDao = authDao;
     }
 
-    public async Task<UserDto> ValidateAdmin(LoginRequestDto loginRequest) {
+    public async Task<UserDto> ValidateAdmin(LoginRequest loginRequest) {
         CheckForValidEmail(loginRequest.Email);
         CheckForValidPassword(loginRequest.Password);
 
@@ -30,7 +30,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
         return userFromDatabase;
     }
 
-    public async Task RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
+    public async Task RegisterAdmin(RegisterAdminRequest registerAdminRequest) {
         CheckForValidEmail(registerAdminRequest.Email);
         CheckForValidPassword(registerAdminRequest.Password);
 

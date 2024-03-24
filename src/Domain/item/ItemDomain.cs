@@ -12,23 +12,23 @@ public class ItemDomain : IItemDomain {
         _itemDao = itemDao;
     }
 
-    public async Task CreateItem(ItemDto itemDto) {
-        itemDto = new ItemDto(itemDto.Name.Trim());
-        ValidateItem(itemDto);
+    public async Task CreateItem(AddItemRequest addItemRequest) {
+        addItemRequest = new AddItemRequest(addItemRequest.Name.Trim());
+        ValidateItem(addItemRequest);
 
-        ItemDto? itemFromDb = await _itemDao.GetItemByName(itemDto.Name);
+        AddItemRequest? itemFromDb = await _itemDao.GetItemByName(addItemRequest.Name);
         if (itemFromDb is not null) {
-            throw new ValidationException("ItemName",ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(itemDto.Name)); 
+            throw new ValidationException("ItemName",ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(addItemRequest.Name)); 
         } 
-        await _itemDao.CreateItem(itemDto);
+        await _itemDao.CreateItem(addItemRequest);
     }
 
-    private static void ValidateItem(ItemDto itemDto) {
-        if (string.IsNullOrEmpty(itemDto.Name)) {
+    private static void ValidateItem(AddItemRequest addItemRequest) {
+        if (string.IsNullOrEmpty(addItemRequest.Name)) {
             throw new ValidationException("ItemName",ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
         }
 
-        if (itemDto.Name.Length is < 3 or > 20) {
+        if (addItemRequest.Name.Length is < 3 or > 20) {
             throw new ValidationException("ItemName",ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
         }
     }

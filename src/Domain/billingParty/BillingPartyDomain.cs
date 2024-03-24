@@ -13,7 +13,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         _billingPartyDao = billingPartyDao;
     }
 
-    public async Task CreateBillingParty(CreateBillingPartyRequestDto request) {
+    public async Task CreateBillingParty(CreateBillingPartyRequest request) {
         await ValidateName(request.Name);
         await ValidateEmail(request.Email);
         await ValidateVatNumber(request.VatNumber);
@@ -22,6 +22,10 @@ public class BillingPartyDomain : IBillingPartyDomain {
         ValidateOpeningBalance(request.OpeningBalance);
 
         await _billingPartyDao.CreateBillingParty(request);
+    }
+
+    public Task<ICollection<BillingPartyDto>> GetBillingParties() {
+        return _billingPartyDao.GetAllBillingParties();
     }
 
     /*

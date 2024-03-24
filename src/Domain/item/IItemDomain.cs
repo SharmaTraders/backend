@@ -3,5 +3,5 @@
 namespace Domain.item;
 
 public interface IItemDomain {
-    Task CreateItem(ItemDto itemDto);
+    Task CreateItem(AddItemRequest addItemRequest);
 }
