@@ -12,7 +12,7 @@ public static class BillingPartyConverter {
             Address = request.Address,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            Balance = request.OpeningBalance,
+            Balance = request.OpeningBalance ?? 0.0,
             VatNumber = request.VatNumber
         };
     }

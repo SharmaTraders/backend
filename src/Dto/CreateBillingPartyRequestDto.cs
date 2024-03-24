@@ -4,7 +4,7 @@ public record CreateBillingPartyRequestDto(
     string Name,
     string Address,
     string? PhoneNumber,
-    double OpeningBalance,
+    double? OpeningBalance,
     string? Email,
     string? VatNumber) {
 }
