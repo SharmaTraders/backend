@@ -7,5 +7,5 @@ public interface IAuthenticationDao {
      * Returns the user with the given email if it exists, otherwise null
      */
     Task<UserDto?> GetUserByEmail(string loginRequestEmail);
-    Task RegisterAdmin(AdminDto adminToRegister);
+    Task RegisterAdmin(RegisterAdminRequestDto adminToRegister);
 }

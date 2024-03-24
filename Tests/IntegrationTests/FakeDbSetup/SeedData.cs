@@ -1,4 +1,5 @@
 using Data;
+using Data.converters;
 using Data.Entities;
 using Dto;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,14 +37,7 @@ internal static class SeedData {
         using var scope = application.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        BillingPartyEntity entity = new BillingPartyEntity() {
-            Name = billingPartyDto.Name,
-            Address = billingPartyDto.Address,
-            Email = billingPartyDto.Email,
-            PhoneNumber = billingPartyDto.PhoneNumber,
-            Balance = billingPartyDto.OpeningBalance,
-            VatNumber = billingPartyDto.VatNumber
-        };
+        BillingPartyEntity entity = BillingPartyConverter.ToEntity(billingPartyDto);
 
         await dbContext.BillingParties.AddAsync(entity);
         await dbContext.SaveChangesAsync();

@@ -35,6 +35,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
         CheckForValidPassword(registerAdminRequest.Password);
 
         string hashedPassword = HashPassword(registerAdminRequest.Password);
+        registerAdminRequest = registerAdminRequest with {Password = hashedPassword};
 
         AdminDto adminToRegister = new AdminDto(Guid.NewGuid().ToString(),
             registerAdminRequest.Email,
@@ -45,7 +46,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
             throw new ValidationException("Email",ErrorCode.Conflict, ErrorMessages.EmailAlreadyExists);
         }
 
-        await _authDao.RegisterAdmin(adminToRegister);
+        await _authDao.RegisterAdmin(registerAdminRequest);
     }
 
 

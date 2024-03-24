@@ -12,12 +12,10 @@ public static class UserConverter {
     }
 
 
-    public static AdminEntity ToEntity(AdminDto adminDto) {
-        bool canBeParsed = Guid.TryParse(adminDto.Id, out Guid id);
-        if (!canBeParsed) throw new ValidationException("Id",ErrorCode.BadRequest, ErrorMessages.IdInvalid);
-
+    public static AdminEntity ToEntity(RegisterAdminRequestDto adminDto) {
+        
         return new AdminEntity() {
-            Id = id,
+            Id = Guid.NewGuid(),
             Email = adminDto.Email,
             Password = adminDto.Password
         };

@@ -18,7 +18,7 @@ public class RegisterAdminTests {
         await authenticationDomain.RegisterAdmin(registerAdminRequest);
 
         // Assert
-        authDaoMock.Verify(mock => mock.RegisterAdmin(It.IsAny<AdminDto>()), Times.Once);
+        authDaoMock.Verify(mock => mock.RegisterAdmin(It.IsAny<RegisterAdminRequestDto>()), Times.Once);
     }
 
     [Fact]
