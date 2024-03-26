@@ -1,7 +1,6 @@
 using Data.Entities;
 using Domain.utils;
 using Dto;
-using Dto.tools;
 
 namespace Data.converters;
 
@@ -13,14 +12,12 @@ public static class UserConverter {
     }
 
 
-    public static AdminEntity ToEntity(AdminDto adminDto) {
-        bool canBeParsed = Guid.TryParse(adminDto.Id, out Guid id);
-        if (!canBeParsed) throw new ValidationException("Id",ErrorCode.BadRequest, ErrorMessages.InvalidGuid);
-
+    public static AdminEntity ToEntity(RegisterAdminRequest admin) {
+        
         return new AdminEntity() {
-            Id = id,
-            Email = adminDto.Email,
-            Password = adminDto.Password
+            Id = Guid.NewGuid(),
+            Email = admin.Email,
+            Password = admin.Password
         };
     }
 }

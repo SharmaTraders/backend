@@ -44,6 +44,40 @@ namespace Data.Migrations
                     b.ToTable("Admins");
                 });
 
+            modelBuilder.Entity("Data.Entities.BillingPartyEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("VatNumber")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Name")
+                        .IsUnique();
+
+                    b.ToTable("BillingParties");
+                });
+
             modelBuilder.Entity("Data.Entities.ItemEntity", b =>
                 {
                     b.Property<string>("Name")

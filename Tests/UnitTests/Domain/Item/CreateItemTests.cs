@@ -2,13 +2,12 @@
 using Domain.item;
 using Domain.utils;
 using Dto;
-using Dto.tools;
 using Moq;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain;
+namespace UnitTests.Domain.Item;
 
-public class ItemDomainTests {
+public class CreateItemTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
@@ -17,14 +16,13 @@ public class ItemDomainTests {
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         // Act
-        await itemDomain.CreateItem(itemDto);
+        await itemDomain.CreateItem(addItemRequest);
 
         // Assert that the dao is called.
-        itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Once);
-
+        itemDaoMock.Verify(mock => mock.CreateItem(addItemRequest), Times.Once);
     }
 
     [Theory]
@@ -34,10 +32,10 @@ public class ItemDomainTests {
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(addItemRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -46,32 +44,30 @@ public class ItemDomainTests {
 
     [Theory]
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
-
     public async Task CreateItem_WithValidItemNameThatAlreadyExists_ThrowsException(string itemName) {
         // Arrange
         var itemDaoMock = new Mock<IItemDao>();
         var itemDomain = new ItemDomain(itemDaoMock.Object);
 
-        ItemDto itemDto = new(itemName);
+        AddItemRequest addItemRequest = new(itemName);
 
         itemDaoMock.Setup(mock => mock.GetItemByName(itemName))
-            .ReturnsAsync(itemDto);
+            .ReturnsAsync(addItemRequest);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(itemDto));
+        var exception = await Assert.ThrowsAsync<ValidationException>(() => itemDomain.CreateItem(addItemRequest));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
-        Assert.Equal(ErrorMessages.ItemNameAlreadyExists, exception.Message);
+        Assert.Equal(ErrorMessages.ItemNameAlreadyExists(itemName), exception.Message);
         // Assert that the dao is called to check if the item already exists.
         itemDaoMock.Verify(mock => mock.GetItemByName(itemName), Times.Once);
         // But the dao is never called to create the item.
-        itemDaoMock.Verify(mock => mock.CreateItem(itemDto), Times.Never);
+        itemDaoMock.Verify(mock => mock.CreateItem(addItemRequest), Times.Never);
     }
 
-    
+
     [Fact]
     public async Task CreateItem_WithValidItemNames_WithEmployeeToken_Fails() {
         // Todo this test needs to be done after implementing the employee login.
     }
-
 }

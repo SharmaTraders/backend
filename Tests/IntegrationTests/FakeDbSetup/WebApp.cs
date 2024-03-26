@@ -16,7 +16,6 @@ internal class WebApp : WebApplicationFactory<Program> {
             services.AddDbContext<DatabaseContext>(options => { options.UseInMemoryDatabase("InMemoryDbForTesting"); });
 
             var sp = services.BuildServiceProvider();
-
             using var scope = sp.CreateScope();
             var scopedServices = scope.ServiceProvider;
             DatabaseContext dbContext = scopedServices.GetRequiredService<DatabaseContext>();

@@ -35,7 +35,7 @@ internal static class UserFactory {
         await SeedData.SeedAdmin(app, adminUser);
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
-        var loginRequestDto = new LoginRequestDto(adminUser.Email, adminUser.Password);
+        var loginRequestDto = new LoginRequest(adminUser.Email, adminUser.Password);
         request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
             "application/json");
 
@@ -47,7 +47,7 @@ internal static class UserFactory {
 
         // Assert that the jwtToken is returned
         var responseContent = await response.Content.ReadAsStringAsync();
-        var loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(responseContent);
+        var loginResponseDto = JsonConvert.DeserializeObject<LoginResponse>(responseContent);
 
         Assert.NotNull(loginRequestDto);
         Assert.False(string.IsNullOrEmpty(loginResponseDto!.JwtToken));

@@ -4,8 +4,8 @@ namespace IntegrationTests.TestFactory;
 
 internal class ItemFactory {
 
-    internal static ItemDto GetValidItemDto() {
-        return new ItemDto("Gadda");
+    internal static AddItemRequest GetValidItemDto() {
+        return new AddItemRequest("Gadda");
     }
 
     

@@ -1,4 +1,4 @@
-namespace Dto.tools;
+namespace Domain.utils;
 
 public class ValidationException : Exception {
     public string Type { get; init; }
