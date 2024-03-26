@@ -49,7 +49,7 @@ public class AuthController : ControllerBase {
             _configuration["JWT:Audience"],
             claims,
             null,
-            DateTime.Now.AddHours(2)); // Todo - think about expiration time
+            DateTime.Now.AddHours(24)); // Todo - think about expiration time
 
         JwtSecurityToken token = new JwtSecurityToken(header, payload);
         string serializedToken = new JwtSecurityTokenHandler().WriteToken(token);

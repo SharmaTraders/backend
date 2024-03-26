@@ -107,15 +107,17 @@ public static class BillingPartyFactory {
             new object[] {12000.31},
             new object[] {1500.02},
             new object[] {1500000.21},
+            new object[] {-1},
+            new object[] {-100.21},
         };
     }
 
     public static IEnumerable<object[]> GetInValidBillingPartyOpeningBalance() {
         return new List<object[]>() {
-            new object[] {-1},
-            new object[] {-100.21},
             new object[] {100.213},
-            new object[] {0.456}
+            new object[] {0.456} ,
+            new object[] {-0.456}  ,
+            new object[] {-15233.232} ,
         };
     }
 
