@@ -1,4 +1,5 @@
-﻿using Data.Entities;
+﻿using Data.converters;
+using Data.Entities;
 using Domain.dao;
 using Dto;
 using Microsoft.EntityFrameworkCore;
@@ -26,5 +27,11 @@ public class ItemDao : IItemDao {
         await _databaseContext.SaveChangesAsync();
 
         return new ItemDto(addedItem.Entity.Name);
+    }
+
+    public async Task<ICollection<ItemDto>> GetItems()
+    {
+        List<ItemEntity> items =  await _databaseContext.Items.AsNoTracking().ToListAsync();
+        return ItemConverter.ToDtoList(items);
     }
 }

@@ -8,6 +8,15 @@ internal class ItemFactory {
         return new ItemDto("Gadda");
     }
 
+    public static List<ItemDto> GetValidItemsList() {
+        return new List<ItemDto>() {
+            new ItemDto("Gadda"),
+            new ItemDto("Gadda2"),
+            new ItemDto("Gadda3"),
+            new ItemDto("Gadda4"),
+            new ItemDto("Gadda5"),
+        };
+    }
     
     public static IEnumerable<object[]> GetValidItemNames() {
         return new List<object[]>() {

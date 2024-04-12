@@ -24,6 +24,11 @@ public class ItemDomain : IItemDomain {
         return await _itemDao.CreateItem(itemDto);
     }
 
+    public Task<ICollection<ItemDto>> GetItems()
+    {
+        return _itemDao.GetItems();
+    }
+
     private static void ValidateItem(ItemDto itemDto) {
         if (string.IsNullOrEmpty(itemDto.Name)) {
             throw new ValidationException("Item name",ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);

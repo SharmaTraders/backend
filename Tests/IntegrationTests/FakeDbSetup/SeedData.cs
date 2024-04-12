@@ -37,4 +37,15 @@ internal static class SeedData {
     private static string HashPassword(string password) {
         return BCrypt.Net.BCrypt.HashPassword(password);
     }
+
+    public static async Task SeedItems(WebApp webApp, List<ItemDto> itemDtos)
+    {
+        using var scope = webApp.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+        
+        List<ItemEntity> entities = itemDtos.Select(dto => new ItemEntity() {Name = dto.Name}).ToList();
+        
+        await dbContext.Items.AddRangeAsync(entities);
+        await dbContext.SaveChangesAsync(); 
+    }
 }
