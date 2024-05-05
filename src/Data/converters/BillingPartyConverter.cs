@@ -29,7 +29,7 @@ public static class BillingPartyConverter {
         );
     }
 
-    public static ICollection<BillingPartyDto> ToDtoLists(ICollection<BillingPartyEntity> entities) {
+    public static ICollection<BillingPartyDto> ToDtoList(ICollection<BillingPartyEntity> entities) {
         return entities.Select(ToDto).ToList();
     }
 }

@@ -135,7 +135,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
 
         bool isUniqueVatNumber = await _billingPartyDao.IsUniqueVatNumber(vatNumber);
         if (!isUniqueVatNumber) {
-            throw new ValidationException("Email", ErrorCode.Conflict,
+            throw new ValidationException("VatNumber", ErrorCode.Conflict,
                 ErrorMessages.BillingPartyVatNumberAlreadyExists(vatNumber));
         }
     }

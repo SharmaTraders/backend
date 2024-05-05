@@ -39,6 +39,6 @@ public class BillingPartyDao : IBillingPartyDao {
         List<BillingPartyEntity> entities = await _databaseContext.BillingParties
             .AsNoTracking()
             .ToListAsync();
-        return BillingPartyConverter.ToDtoLists(entities);
+        return BillingPartyConverter.ToDtoList(entities);
     }
 }
