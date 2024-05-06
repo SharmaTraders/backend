@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 
 namespace IntegrationTests.Authentication;
 
+[Collection("Sequential")]
+
 public class LoginAdminTests {
     private readonly WebApp _application = new();
 
@@ -20,7 +22,7 @@ public class LoginAdminTests {
 
         // Arrange a request with an existing admin
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
-        var loginRequestDto = new LoginRequestDto(adminUser.Email, adminUser.Password);
+        var loginRequestDto = new LoginRequest(adminUser.Email, adminUser.Password);
         request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
             "application/json");
 
@@ -34,7 +36,7 @@ public class LoginAdminTests {
 
         // Assert that the jwtToken is returned
         var responseContent = await response.Content.ReadAsStringAsync();
-        var loginResponseDto = JsonConvert.DeserializeObject<LoginResponseDto>(responseContent);
+        var loginResponseDto = JsonConvert.DeserializeObject<LoginResponse>(responseContent);
 
         Assert.NotNull(loginRequestDto);
         Assert.False(string.IsNullOrEmpty(loginResponseDto!.JwtToken));
@@ -49,7 +51,7 @@ public class LoginAdminTests {
 
         // Arrange a request with an existing admin
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
-        var loginRequestDto = new LoginRequestDto(adminUser.Email, "someIncorrectPassword1");
+        var loginRequestDto = new LoginRequest(adminUser.Email, "someIncorrectPassword1");
         request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
             "application/json");
 
@@ -66,7 +68,7 @@ public class LoginAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.IncorrectPassword, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.PasswordIncorrect, problemDetails.Detail);
     }
 
     [Fact]
@@ -79,7 +81,7 @@ public class LoginAdminTests {
 
         // Arrange a request with an existing admin
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
-        var loginRequestDto = new LoginRequestDto("incorrect@email.com", "someIncorrectPassword1");
+        var loginRequestDto = new LoginRequest("incorrect@email.com", "someIncorrectPassword1");
         request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
             "application/json");
 

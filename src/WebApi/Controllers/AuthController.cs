@@ -3,7 +3,6 @@ using System.Security.Claims;
 using System.Text;
 using Domain.auth;
 using Dto;
-using Dto.tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -22,16 +21,16 @@ public class AuthController : ControllerBase {
     }
 
     [HttpPost, Route("login/admin")]
-    public async Task<ActionResult<LoginResponseDto>> AdminLogin(LoginRequestDto loginRequest) {
+    public async Task<ActionResult<LoginResponse>> AdminLogin(LoginRequest loginRequest) {
         UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
         string token = GenerateJwt(userDto);
-        LoginResponseDto responseDto = new LoginResponseDto(token);
-        return Ok(responseDto);
+        LoginResponse response = new LoginResponse(token);
+        return Ok(response);
     }
 
     [HttpPost, Route("register/admin")]
     [Authorize(Roles = "Admin")]
-    public async Task<ActionResult> RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
+    public async Task<ActionResult> RegisterAdmin(RegisterAdminRequest registerAdminRequest) {
         await _authDomain.RegisterAdmin(registerAdminRequest);
         return Ok();
     }
@@ -50,7 +49,7 @@ public class AuthController : ControllerBase {
             _configuration["JWT:Audience"],
             claims,
             null,
-            DateTime.Now.AddHours(2)); // Todo - think about expiration time
+            DateTime.Now.AddHours(24)); // Todo - think about expiration time
 
         JwtSecurityToken token = new JwtSecurityToken(header, payload);
         string serializedToken = new JwtSecurityTokenHandler().WriteToken(token);

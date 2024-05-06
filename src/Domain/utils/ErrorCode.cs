@@ -1,4 +1,4 @@
-namespace Dto.tools;
+namespace Domain.utils;
 
 public enum ErrorCode {
     Unknown = 0,

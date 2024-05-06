@@ -2,7 +2,6 @@ using System.Text.RegularExpressions;
 using Domain.dao;
 using Domain.utils;
 using Dto;
-using Dto.tools;
 
 namespace Domain.auth;
 
@@ -10,10 +9,10 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
     private readonly IAuthenticationDao _authDao;
     public AuthenticationDomain(IAuthenticationDao authDao) {
-        this._authDao = authDao;
+        _authDao = authDao;
     }
 
-    public async Task<UserDto> ValidateAdmin(LoginRequestDto loginRequest) {
+    public async Task<UserDto> ValidateAdmin(LoginRequest loginRequest) {
         CheckForValidEmail(loginRequest.Email);
         CheckForValidPassword(loginRequest.Password);
 
@@ -25,28 +24,25 @@ public class AuthenticationDomain : IAuthenticationDomain {
         bool doesPasswordMatch = VerifyPassword(loginRequest.Password, userFromDatabase.Password);
 
         if (!doesPasswordMatch) {
-            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.IncorrectPassword);
+            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordIncorrect);
         }
 
         return userFromDatabase;
     }
 
-    public async Task RegisterAdmin(RegisterAdminRequestDto registerAdminRequest) {
+    public async Task RegisterAdmin(RegisterAdminRequest registerAdminRequest) {
         CheckForValidEmail(registerAdminRequest.Email);
         CheckForValidPassword(registerAdminRequest.Password);
 
         string hashedPassword = HashPassword(registerAdminRequest.Password);
-
-        AdminDto adminToRegister = new AdminDto(Guid.NewGuid().ToString(),
-            registerAdminRequest.Email,
-            hashedPassword);
+        registerAdminRequest = registerAdminRequest with {Password = hashedPassword};
 
         UserDto? userFromDatabase = await _authDao.GetUserByEmail(registerAdminRequest.Email);
         if (userFromDatabase is not null) {
-            throw new ValidationException("Email",ErrorCode.Conflict, ErrorMessages.AdminWithEmailAlreadyExists);
+            throw new ValidationException("Email",ErrorCode.Conflict, ErrorMessages.EmailAlreadyExists);
         }
 
-        await _authDao.RegisterAdmin(adminToRegister);
+        await _authDao.RegisterAdmin(registerAdminRequest);
     }
 
 
@@ -78,14 +74,14 @@ public class AuthenticationDomain : IAuthenticationDomain {
             throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailRequired);
         }
 
-        string pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+        const string pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
 
         Regex regex = new Regex(pattern);
 
         Match match = regex.Match(email);
 
         if (!match.Success) {
-            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.InvalidEmailFormat);
+            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
         }
     }
 }

@@ -7,11 +7,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\Dto\Dto.csproj" />
+        <ProjectReference Include="..\Dto\Dto.csproj"/>
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
+        <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Folder Include="tools\"/>
+    </ItemGroup>
+
+    <!--    This will allow the UnitTests project to access the internal classes/methods of the Domain project.-->
+    <ItemGroup>
+        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
+            <_Parameter1>UnitTests</_Parameter1>
+        </AssemblyAttribute>
     </ItemGroup>
 
 </Project>

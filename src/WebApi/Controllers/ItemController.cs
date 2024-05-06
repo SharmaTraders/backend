@@ -1,7 +1,6 @@
 ﻿using Domain.dao;
 using Domain.item;
 using Dto;
-using Dto.tools;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,8 +17,8 @@ public class ItemController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult<ItemDto>> CreateItem(ItemDto itemDto) {
-        ItemDto createdItem = await _itemDomain.CreateItem(itemDto);
-        return Ok(createdItem);
+    public async Task<ActionResult> CreateItem(AddItemRequest addItemRequest) {
+        await _itemDomain.CreateItem(addItemRequest);
+        return Ok();
     }
 }

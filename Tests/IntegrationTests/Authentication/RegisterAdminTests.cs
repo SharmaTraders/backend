@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 
 namespace IntegrationTests.Authentication;
 
+[Collection("Sequential")]
 public class RegisterAdminTests {
     private readonly WebApp _application = new();
 
@@ -38,8 +39,8 @@ public class RegisterAdminTests {
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        RegisterAdminRequestDto requestDto = new RegisterAdminRequestDto("hello@gmail.com", "somePassword12");
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestDto), System.Text.Encoding.UTF8,
+        RegisterAdminRequest registerRequest = new RegisterAdminRequest("hello@gmail.com", "somePassword12");
+        request.Content = new StringContent(JsonConvert.SerializeObject(registerRequest), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -75,7 +76,7 @@ public class RegisterAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.InvalidEmailFormat, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.EmailInvalidFormat, problemDetails.Detail);
     }
 
     [Fact]
@@ -142,8 +143,8 @@ public class RegisterAdminTests {
         await SeedData.SeedAdmin(_application, existingAdmin);
 
         // When registering with the existing email
-        RegisterAdminRequestDto registerAdminRequest =
-            new RegisterAdminRequestDto(existingEmail, "someOtherPassword12");
+        RegisterAdminRequest registerAdminRequest =
+            new RegisterAdminRequest(existingEmail, "someOtherPassword12");
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
         request.Content = new StringContent(JsonConvert.SerializeObject(registerAdminRequest),
@@ -161,7 +162,7 @@ public class RegisterAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.AdminWithEmailAlreadyExists, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.EmailAlreadyExists, problemDetails.Detail);
     }
 
 
