@@ -11,7 +11,7 @@ public class ValidatePhoneNumberTests {
 
     public void ValidatePhoneNumber_WithValidBillingPartyPhoneNumber_Success(string validPhoneNumber) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act                    
         billingPartyDomain.ValidatePhoneNumber(validPhoneNumber);
@@ -23,10 +23,10 @@ public class ValidatePhoneNumberTests {
 
     public void ValidatePhoneNumber_WithInValidBillingPartyPhoneNumber_Fails(string invalidPhoneNumber) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act and assert                    
-        ValidationException exception = Assert.Throws<ValidationException>(() =>
+        DomainValidationException exception = Assert.Throws<DomainValidationException>(() =>
             billingPartyDomain.ValidatePhoneNumber(invalidPhoneNumber));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
     }

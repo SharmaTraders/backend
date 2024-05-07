@@ -14,10 +14,6 @@
         <PackageReference Include="BCrypt.Net-Next" Version="4.0.3"/>
     </ItemGroup>
 
-    <ItemGroup>
-        <Folder Include="tools\"/>
-    </ItemGroup>
-
     <!--    This will allow the UnitTests project to access the internal classes/methods of the Domain project.-->
     <ItemGroup>
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">

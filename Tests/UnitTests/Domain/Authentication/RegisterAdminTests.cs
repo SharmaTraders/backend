@@ -1,8 +1,12 @@
-﻿using Domain.auth;
-using Domain.dao;
+﻿using Domain;
+using Domain.auth;
+using Domain.Entity;
+using Domain.Repositories;
 using Domain.utils;
 using Dto;
 using Moq;
+using UnitTests.Factory;
+using UnitTests.Fakes;
 
 namespace UnitTests.Domain.Authentication;
 
@@ -10,57 +14,68 @@ public class RegisterAdminTests {
     [Fact]
     public async Task RegisterAdmin_WithValidData_CallsDaoRegisterAdmin() {
         // Arrange
-        var authDaoMock = new Mock<IAuthenticationDao>();
-        var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
+        var adminRepoMock = new Mock<IAdminRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var authenticationDomain = new AuthenticationDomain(adminRepoMock.Object, unitOfWorkMock);
         var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "validPassword123");
 
         // Act
         await authenticationDomain.RegisterAdmin(registerAdminRequest);
 
         // Assert
-        authDaoMock.Verify(mock => mock.RegisterAdmin(It.IsAny<RegisterAdminRequest>()), Times.Once);
+        adminRepoMock.Verify(mock => mock.AddAsync(It.IsAny<AdminEntity>()), Times.Once);
+        Assert.Equal(1, unitOfWorkMock.CallCount);
     }
 
     [Fact]
     public async Task RegisterAdmin_WithInvalidEmail_ThrowsException() {
         // Arrange
-        var authDaoMock = new Mock<IAuthenticationDao>();
-        var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
+        var authRepoMock = new Mock<IAdminRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+
+        var authenticationDomain = new AuthenticationDomain(authRepoMock.Object, unitOfWorkMock);
         var registerAdminRequest = new RegisterAdminRequest("invalid", "validPassword123");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.EmailInvalidFormat, exception.Message);
+        Assert.Equal(0, unitOfWorkMock.CallCount);
     }
 
     [Fact]
     public async Task RegisterAdmin_WithInvalidPassword_Short_ThrowsException() {
         // Arrange
-        var authDaoMock = new Mock<IAuthenticationDao>();
-        var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
+        var authRepoMock = new Mock<IAdminRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var authenticationDomain = new AuthenticationDomain(authRepoMock.Object, unitOfWorkMock);
         var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "short");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, exception.Message);
+        Assert.Equal(0, unitOfWorkMock.CallCount);
+
     }
 
     [Fact]
     public async Task RegisterAdmin_WithInvalidPassword_NoLetterAndNumber_ThrowsException() {
         // Arrange
-        var authDaoMock = new Mock<IAuthenticationDao>();
-        var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
+        var authRepoMock = new Mock<IAdminRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var authenticationDomain = new AuthenticationDomain(authRepoMock.Object, unitOfWorkMock);
         var registerAdminRequest = new RegisterAdminRequest("valid@email.com", "longWithoutNumber");
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, exception.Message);
+        Assert.Equal(0, unitOfWorkMock.CallCount);
+
     }
 
     [Fact]
@@ -68,17 +83,18 @@ public class RegisterAdminTests {
         // Arrange
         const string existingPassword = "somePassword12";
         const string existingEmail = "validEmail@gmail.com";
-        AdminDto existingAdmin = new AdminDto("id", existingEmail, HashPassword(existingPassword));
+        AdminEntity existingAdmin = UserFactory.GetValidAdminEntity();
 
-        var authDaoMock = new Mock<IAuthenticationDao>();
-        var authenticationDomain = new AuthenticationDomain(authDaoMock.Object);
+        var authRepoMock = new Mock<IAdminRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var authenticationDomain = new AuthenticationDomain(authRepoMock.Object, unitOfWorkMock);
         var registerAdminRequest = new RegisterAdminRequest(existingEmail, "newPasswordNow12");
 
-        authDaoMock.Setup(mock => mock.GetUserByEmail(existingEmail))
+        authRepoMock.Setup(mock => mock.GetByEmailAsync(existingEmail))
             .ReturnsAsync(existingAdmin);
 
         // Act and assert
-        var exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             authenticationDomain.RegisterAdmin(registerAdminRequest));
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.EmailAlreadyExists, exception.Message);

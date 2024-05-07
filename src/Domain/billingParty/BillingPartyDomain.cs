@@ -1,32 +1,69 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
-using Domain.dao;
+﻿using System.Text.RegularExpressions;
+using Domain.converters;
+using Domain.Entity;
+using Domain.Repositories;
 using Dto;
 using Domain.utils;
 
 namespace Domain.billingParty;
 
 public class BillingPartyDomain : IBillingPartyDomain {
-    private readonly IBillingPartyDao _billingPartyDao;
+    private readonly IBillingPartyRepository _billingPartyRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    public BillingPartyDomain(IBillingPartyDao billingPartyDao) {
-        _billingPartyDao = billingPartyDao;
+    public BillingPartyDomain(IBillingPartyRepository billingPartyRepository, IUnitOfWork unitOfWork) {
+        _billingPartyRepository = billingPartyRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task CreateBillingParty(CreateBillingPartyRequest request) {
-        await ValidateName(request.Name);
-        await ValidateEmail(request.Email);
-        await ValidateVatNumber(request.VatNumber);
-        ValidateAddress(request.Address);
-        ValidatePhoneNumber(request.PhoneNumber);
-        ValidateOpeningBalance(request.OpeningBalance);
+        await ValidateBillingParty(
+            request.Name, request.Email, request.VatNumber, request.Address, request.PhoneNumber,
+            request.OpeningBalance);
 
-        await _billingPartyDao.CreateBillingParty(request);
+        BillingPartyEntity partyEntity = BillingPartyConverter.ToEntity(request);
+        await _billingPartyRepository.AddAsync(partyEntity);
+        await _unitOfWork.SaveChangesAsync();
     }
 
-    public Task<ICollection<BillingPartyDto>> GetBillingParties() {
-        return _billingPartyDao.GetAllBillingParties();
+    public async Task<ICollection<BillingPartyDto>> GetAllBillingParties() {
+        List<BillingPartyEntity>  billingPartyEntities = await _billingPartyRepository.GetAllAsync();
+        return BillingPartyConverter.ToDtoList(billingPartyEntities);
     }
+
+    public async Task UpdateBillingParty(string id, UpdateBillingPartyRequest request) {
+        await ValidateBillingParty(
+            request.Name, request.Email, request.VatNumber, request.Address, request.PhoneNumber,
+            null);
+
+        bool tryParse = Guid.TryParse(id, out Guid guid);
+        if (!tryParse) {
+            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid);
+        }
+
+        BillingPartyEntity? billingPartyEntity = await _billingPartyRepository.GetByIdAsync(guid);
+        if (billingPartyEntity is null) {
+            throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.BillingPartyNotFound(guid));
+        }
+
+        billingPartyEntity.PhoneNumber = request.PhoneNumber;
+        billingPartyEntity.Email = request.Email;
+        billingPartyEntity.Address = request.Address;
+        billingPartyEntity.Name = request.Name;
+        billingPartyEntity.VatNumber = request.VatNumber;
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    private async Task ValidateBillingParty(
+        string name, string? email, string? vatNumber, string? address, string? phoneNumber, double? openingBalance) {
+        await ValidateName(name);
+        await ValidateEmail(email);
+        await ValidateVatNumber(vatNumber);
+        ValidateAddress(address);
+        ValidatePhoneNumber(phoneNumber);
+        ValidateOpeningBalance(openingBalance);
+    }
+
 
     /*
      * The validate methods are made internal so that they can be tested in unit tests
@@ -39,29 +76,29 @@ public class BillingPartyDomain : IBillingPartyDomain {
 
     internal async Task ValidateName(string name) {
         if (string.IsNullOrEmpty(name)) {
-            throw new ValidationException("Name", ErrorCode.BadRequest, ErrorMessages.BillingPartyNameIsRequired);
+            throw new DomainValidationException("Name", ErrorCode.BadRequest, ErrorMessages.BillingPartyNameIsRequired);
         }
 
         //Length between 3 and 30 characters (inclusive)
         if (name.Length is < 3 or > 30) {
-            throw new ValidationException("Name", ErrorCode.BadRequest, ErrorMessages.BillingPartyNameBetween3And30);
+            throw new DomainValidationException("Name", ErrorCode.BadRequest, ErrorMessages.BillingPartyNameBetween3And30);
         }
 
-        bool uniqueName = await _billingPartyDao.IsUniqueName(name);
+        bool uniqueName = await _billingPartyRepository.IsUniqueNameAsync(name);
         if (!uniqueName) {
-            throw new ValidationException("Name", ErrorCode.Conflict,
+            throw new DomainValidationException("Name", ErrorCode.Conflict,
                 ErrorMessages.BillingPartyNameAlreadyExists(name));
         }
     }
 
-    internal void ValidateAddress(string address) {
+    internal void ValidateAddress(string? address) {
         if (string.IsNullOrEmpty(address)) {
-            throw new ValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressIsRequired);
+            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressIsRequired);
         }
 
         //Length between 3 and 30 characters (inclusive)
         if (address.Length is < 3 or > 60) {
-            throw new ValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressBetween3And60);
+            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressBetween3And60);
         }
     }
 
@@ -72,12 +109,12 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
 
         if (!Regex.IsMatch(phoneNumber, @"^\d+$")) {
-            throw new ValidationException("PhoneNumber", ErrorCode.BadRequest,
+            throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
                 ErrorMessages.PhoneNumberMustBeAllDigits);
         }
 
         if (phoneNumber.Length != 10) {
-            throw new ValidationException("PhoneNumber", ErrorCode.BadRequest,
+            throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
                 ErrorMessages.PhoneNumberMustBe10DigitsLong);
         }
     }
@@ -95,12 +132,12 @@ public class BillingPartyDomain : IBillingPartyDomain {
         Match match = regex.Match(email);
 
         if (!match.Success) {
-            throw new ValidationException("Email", ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
+            throw new DomainValidationException("Email", ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
         }
 
-        bool uniqueEmail = await _billingPartyDao.IsUniqueEmail(email);
+        bool uniqueEmail = await _billingPartyRepository.IsUniqueEmailAsync(email);
         if (!uniqueEmail) {
-            throw new ValidationException("Email", ErrorCode.Conflict,
+            throw new DomainValidationException("Email", ErrorCode.Conflict,
                 ErrorMessages.BillingPartyEmailAlreadyExists(email));
         }
     }
@@ -116,7 +153,7 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
 
         if (!(balanceStr.Length - decimalSeparatorIndex - 1 <= 2)) {
-            throw new ValidationException("OpeningBalance", ErrorCode.BadRequest,
+            throw new DomainValidationException("OpeningBalance", ErrorCode.BadRequest,
                 ErrorMessages.OpeningBalanceMustBeAtMax2DecimalPlaces);
         }
     }
@@ -128,14 +165,14 @@ public class BillingPartyDomain : IBillingPartyDomain {
         }
 
         if (vatNumber.Length is < 5 or > 20) {
-            throw new ValidationException("VatNumber", ErrorCode.BadRequest,
+            throw new DomainValidationException("VatNumber", ErrorCode.BadRequest,
                 ErrorMessages.VatNumberMustBeBetween5To20Characters);
         }
 
 
-        bool isUniqueVatNumber = await _billingPartyDao.IsUniqueVatNumber(vatNumber);
+        bool isUniqueVatNumber = await _billingPartyRepository.IsUniqueVatNumberAsync(vatNumber);
         if (!isUniqueVatNumber) {
-            throw new ValidationException("VatNumber", ErrorCode.Conflict,
+            throw new DomainValidationException("VatNumber", ErrorCode.Conflict,
                 ErrorMessages.BillingPartyVatNumberAlreadyExists(vatNumber));
         }
     }

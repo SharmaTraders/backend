@@ -39,5 +39,9 @@ public static class ErrorMessages {
 
     public const string VatNumberMustBeBetween5To20Characters = "Vat number must be between 5 to 20 characters (inclusive)";
 
+    public static string BillingPartyNotFound(Guid id) {
+        return $"Billing party with id : {id} not found";
+    }
+
 
 }

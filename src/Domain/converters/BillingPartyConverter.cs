@@ -1,10 +1,9 @@
-﻿using Data.Entities;
+﻿using Domain.Entity;
 using Dto;
 
-namespace Data.converters;
+namespace Domain.converters;
 
 public static class BillingPartyConverter {
-
     public static BillingPartyEntity ToEntity(CreateBillingPartyRequest request) {
         return new() {
             Id = Guid.NewGuid(),
@@ -32,4 +31,5 @@ public static class BillingPartyConverter {
     public static ICollection<BillingPartyDto> ToDtoList(ICollection<BillingPartyEntity> entities) {
         return entities.Select(ToDto).ToList();
     }
+    
 }

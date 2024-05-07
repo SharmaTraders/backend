@@ -1,35 +1,53 @@
-﻿using Domain.dao;
+﻿using System.Collections.Immutable;
+using Domain.Entity;
+using Domain.Repositories;
 using Domain.utils;
 using Dto;
 
 namespace Domain.item;
 
 public class ItemDomain : IItemDomain {
+    private readonly IItemRepository _itemRepository;
+    private readonly IUnitOfWork _unitOfWork;
 
-    private readonly IItemDao _itemDao;
-
-    public ItemDomain(IItemDao itemDao) {
-        _itemDao = itemDao;
+    public ItemDomain(IItemRepository itemRepository, IUnitOfWork unitOfWork) {
+        _itemRepository = itemRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task CreateItem(AddItemRequest addItemRequest) {
         addItemRequest = new AddItemRequest(addItemRequest.Name.Trim());
         ValidateItem(addItemRequest);
 
-        AddItemRequest? itemFromDb = await _itemDao.GetItemByName(addItemRequest.Name);
+        ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(addItemRequest.Name);
         if (itemFromDb is not null) {
-            throw new ValidationException("ItemName",ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(addItemRequest.Name)); 
-        } 
-        await _itemDao.CreateItem(addItemRequest);
+            throw new DomainValidationException("ItemName", ErrorCode.Conflict,
+                ErrorMessages.ItemNameAlreadyExists(addItemRequest.Name));
+        }
+
+        ItemEntity itemEntity = new ItemEntity() {
+            Id = Guid.NewGuid(),
+            Name = addItemRequest.Name
+        };
+
+        await _itemRepository.AddAsync(itemEntity);
+        await _unitOfWork.SaveChangesAsync();
+    }
+
+    public async Task<ICollection<ItemDto>> GetAllItems() {
+        List<ItemEntity> entities = await _itemRepository.GetAllAsync();
+        return entities.Select(entity =>
+            new ItemDto(entity.Id.ToString(), entity.Name)
+        ).ToImmutableList();
     }
 
     private static void ValidateItem(AddItemRequest addItemRequest) {
         if (string.IsNullOrEmpty(addItemRequest.Name)) {
-            throw new ValidationException("ItemName",ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
+            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
         }
 
         if (addItemRequest.Name.Length is < 3 or > 20) {
-            throw new ValidationException("ItemName",ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
+            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
         }
     }
 }

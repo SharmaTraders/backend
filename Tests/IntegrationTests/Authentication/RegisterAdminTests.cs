@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using Domain.Entity;
 using Domain.utils;
 using Dto;
 using IntegrationTests.FakeDbSetup;
@@ -61,7 +62,7 @@ public class RegisterAdminTests {
         // Arrange a request with a valid admin token
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
-        request.Content = new StringContent(JsonConvert.SerializeObject(UserFactory.GetInvalidEmailAdmin()),
+        request.Content = new StringContent(JsonConvert.SerializeObject(UserFactory.GetInvalidEmailRequest()),
             System.Text.Encoding.UTF8,
             "application/json");
 
@@ -88,7 +89,7 @@ public class RegisterAdminTests {
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
         request.Content = new StringContent(
-            JsonConvert.SerializeObject(UserFactory.GetInvalidPasswordLessThan5CharsAdmin()), System.Text.Encoding.UTF8,
+            JsonConvert.SerializeObject(UserFactory.GetInvalidPasswordLessThan5CharsRequest()), System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -137,7 +138,7 @@ public class RegisterAdminTests {
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
         const string existingEmail = "sharmatraders@gmail.com";
 
-        AdminDto existingAdmin = new AdminDto(Guid.NewGuid().ToString(), existingEmail, "somePassword12");
+        AdminEntity existingAdmin = UserFactory.GetAdminEntity(existingEmail);
 
         // Arrange an already existing admin in db
         await SeedData.SeedAdmin(_application, existingAdmin);

@@ -9,6 +9,11 @@ public static class BillingPartyFactory {
     }
 
     public static List<CreateBillingPartyRequest> GetCreateBillingPartyRequestsList() {
+        // return [
+        //     GetValidCreateBillingPartyRequestDto(),
+        //     new CreateBillingPartyRequest("Test Name 2", "Test Address 2", "0011223344", 100.0, "test2@test2.com",
+        //         "SOM342AXX")
+        // ];
         return [
             GetValidCreateBillingPartyRequestDto(),
             new CreateBillingPartyRequest("Test Name 2", "Test Address 2", "0011223344", 100.0, "test2@test2.com",

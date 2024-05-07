@@ -1,19 +1,17 @@
-using Data.Entities;
-using Domain.utils;
+﻿using Domain.Entity;
 using Dto;
 
-namespace Data.converters;
+namespace Domain.converters;
 
 public static class UserConverter {
     public static UserDto? ToDto(AdminEntity? adminEntity) {
         return adminEntity is null
             ? null
-            : new AdminDto(adminEntity.Id.ToString(), adminEntity.Email, adminEntity.Password);
+            : new AdminDto(adminEntity.Id.ToString(), adminEntity.Email);
     }
 
 
     public static AdminEntity ToEntity(RegisterAdminRequest admin) {
-        
         return new AdminEntity() {
             Id = Guid.NewGuid(),
             Email = admin.Email,

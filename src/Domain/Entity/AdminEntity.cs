@@ -1,8 +1,8 @@
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Data.Entities;
+namespace Domain.Entity;
 
-public class AdminEntity {
+public class AdminEntity : IEntity<Guid> {
     [Key] public required Guid Id { get; init; }
     
     [Required]

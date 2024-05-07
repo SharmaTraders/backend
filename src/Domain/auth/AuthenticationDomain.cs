@@ -1,5 +1,7 @@
 using System.Text.RegularExpressions;
-using Domain.dao;
+using Domain.converters;
+using Domain.Entity;
+using Domain.Repositories;
 using Domain.utils;
 using Dto;
 
@@ -7,27 +9,29 @@ namespace Domain.auth;
 
 public class AuthenticationDomain : IAuthenticationDomain {
 
-    private readonly IAuthenticationDao _authDao;
-    public AuthenticationDomain(IAuthenticationDao authDao) {
-        _authDao = authDao;
+    private readonly IAdminRepository _adminRepository;
+    private readonly IUnitOfWork _unitOfWork;
+    public AuthenticationDomain(IAdminRepository adminRepository, IUnitOfWork unitOfWork) {
+        _adminRepository = adminRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task<UserDto> ValidateAdmin(LoginRequest loginRequest) {
         CheckForValidEmail(loginRequest.Email);
         CheckForValidPassword(loginRequest.Password);
 
-        UserDto? userFromDatabase = await _authDao.GetUserByEmail(loginRequest.Email);
-        if (userFromDatabase is null) {
-            throw new ValidationException("Email",ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
+        AdminEntity? adminFromDb = await _adminRepository.GetByEmailAsync(loginRequest.Email);
+        if (adminFromDb is null) {
+            throw new DomainValidationException("Email",ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
         }
 
-        bool doesPasswordMatch = VerifyPassword(loginRequest.Password, userFromDatabase.Password);
+        bool doesPasswordMatch = VerifyPassword(loginRequest.Password, adminFromDb.Password);
 
         if (!doesPasswordMatch) {
-            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordIncorrect);
+            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordIncorrect);
         }
 
-        return userFromDatabase;
+        return new AdminDto(adminFromDb.Id.ToString(), adminFromDb.Email);
     }
 
     public async Task RegisterAdmin(RegisterAdminRequest registerAdminRequest) {
@@ -37,12 +41,15 @@ public class AuthenticationDomain : IAuthenticationDomain {
         string hashedPassword = HashPassword(registerAdminRequest.Password);
         registerAdminRequest = registerAdminRequest with {Password = hashedPassword};
 
-        UserDto? userFromDatabase = await _authDao.GetUserByEmail(registerAdminRequest.Email);
-        if (userFromDatabase is not null) {
-            throw new ValidationException("Email",ErrorCode.Conflict, ErrorMessages.EmailAlreadyExists);
+        AdminEntity? adminFromDb = await _adminRepository.GetByEmailAsync(registerAdminRequest.Email);
+        if (adminFromDb is not null) {
+            throw new DomainValidationException("Email",ErrorCode.Conflict, ErrorMessages.EmailAlreadyExists);
         }
 
-        await _authDao.RegisterAdmin(registerAdminRequest);
+        AdminEntity adminEntity = UserConverter.ToEntity(registerAdminRequest);
+
+        await _adminRepository.AddAsync(adminEntity);
+        await _unitOfWork.SaveChangesAsync();
     }
 
 
@@ -57,21 +64,21 @@ public class AuthenticationDomain : IAuthenticationDomain {
 
     private void CheckForValidPassword(string password) {
         if (string.IsNullOrWhiteSpace(password)) {
-            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordRequired);
+            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordRequired);
         }
 
         if (password.Length < 6) {
-            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordBiggerThan5Characters);
+            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordBiggerThan5Characters);
         }
 
         if (!Regex.IsMatch(password, @"[a-zA-Z]") || !Regex.IsMatch(password, @"[0-9]")) {
-            throw new ValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordMustContainLetterAndNumber);
+            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordMustContainLetterAndNumber);
         }
     }
 
     private void CheckForValidEmail(string email) {
         if (string.IsNullOrEmpty(email)) {
-            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailRequired);
+            throw new DomainValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailRequired);
         }
 
         const string pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
@@ -81,7 +88,7 @@ public class AuthenticationDomain : IAuthenticationDomain {
         Match match = regex.Match(email);
 
         if (!match.Success) {
-            throw new ValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
+            throw new DomainValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
         }
     }
 }
