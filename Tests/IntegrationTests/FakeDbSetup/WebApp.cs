@@ -13,14 +13,13 @@ internal class WebApp : WebApplicationFactory<Program> {
         builder.ConfigureTestServices(services => {
             services.RemoveAll(typeof(DbContextOptions<DatabaseContext>));
 
-            services.AddDbContext<DatabaseContext>(options => { options.UseInMemoryDatabase("InMemoryDbForTesting "+ Guid.NewGuid().ToString()); });
+            services.AddDbContext<DatabaseContext>(options =>  options.UseInMemoryDatabase("InMemoryDbForTesting") );
 
             var sp = services.BuildServiceProvider();
             using var scope = sp.CreateScope();
             var scopedServices = scope.ServiceProvider;
             DatabaseContext dbContext = scopedServices.GetRequiredService<DatabaseContext>();
             dbContext.Database.EnsureDeleted();
-            dbContext.Database.EnsureCreated();
         });
     }
 
