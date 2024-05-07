@@ -21,10 +21,15 @@ public class BillingPartyController : ControllerBase{
         return Ok();
     }
 
-    [HttpGet]
+    [HttpPut, Route("{id}")]
+    public async Task<ActionResult> UpdateBillingParty(UpdateBillingPartyRequest request, [FromRoute] string id) {
+        await _billingPartyDomain.UpdateBillingParty(id,request);
+        return Ok();
+    }
 
+    [HttpGet]
     public async Task<ActionResult<GetBillingPartiesResponse>> GetBillingParties() {
-        ICollection<BillingPartyDto> billingParties = await _billingPartyDomain.GetBillingParties();
+        ICollection<BillingPartyDto> billingParties = await _billingPartyDomain.GetAllBillingParties();
         GetBillingPartiesResponse response = new(billingParties);
         return Ok(response);
     }

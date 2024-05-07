@@ -1,4 +1,6 @@
-﻿namespace UnitTests.Factory;
+﻿using Domain.Entity;
+
+namespace UnitTests.Factory;
 
 internal static class UserFactory {
     public static IEnumerable<object[]> GetValidEmails() {
@@ -21,7 +23,7 @@ internal static class UserFactory {
             new object[] {"Hello@gmail"},
             new object[] {"Hello.com"},
         };
-    } 
+    }
 
     public static IEnumerable<object[]> GetValidPasswords() {
         return new List<object[]>() {
@@ -41,6 +43,17 @@ internal static class UserFactory {
             new object[] {"a"},
             new object[] {"123456789"},
         };
-    } 
+    }
 
+    public static AdminEntity GetValidAdminEntity() {
+        return new AdminEntity() {
+            Id = Guid.NewGuid(),
+            Email = "valid@valid.com",
+            Password = HashPassword("somePassword1234")
+        };
+    }
+
+    private static string HashPassword(string password) {
+        return BCrypt.Net.BCrypt.HashPassword(password);
+    }
 }

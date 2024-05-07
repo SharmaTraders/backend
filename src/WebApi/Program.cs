@@ -1,10 +1,11 @@
 using System.Text;
 using Data;
-using Data.dao;
+using Data.Repository;
+using Domain;
 using Domain.auth;
 using Domain.billingParty;
-using Domain.dao;
 using Domain.item;
+using Domain.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -19,15 +20,17 @@ builder.Services.AddDbContext<DatabaseContext>(options =>
     options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
 
 
-// DAOs
-builder.Services.AddScoped<IAuthenticationDao, AuthenticationDao>();
-builder.Services.AddScoped<IItemDao, ItemDao>();
-builder.Services.AddScoped<IBillingPartyDao, BillingPartyDao>();
+// Repos
+builder.Services.AddScoped<IAdminRepository, AdminRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
+builder.Services.AddScoped<IBillingPartyRepository, BillingPartyRepository>();
 
 // Domains
 builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
 builder.Services.AddScoped<IItemDomain, ItemDomain>();
 builder.Services.AddScoped<IBillingPartyDomain, BillingPartyDomain>();
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 builder.Services.AddControllers();
 
@@ -38,9 +41,6 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
-
-
-
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
     options.RequireHttpsMetadata = false;

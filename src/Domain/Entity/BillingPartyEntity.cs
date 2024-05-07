@@ -1,9 +1,9 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Data.Entities;
+namespace Domain.Entity;
 
-public class BillingPartyEntity {
+public class BillingPartyEntity: IEntity<Guid> {
     [Key]
     public Guid Id { get; set; }
 
@@ -21,4 +21,5 @@ public class BillingPartyEntity {
     public double Balance { get; set; }
 
     public string? VatNumber { get; set; }
+    
 }

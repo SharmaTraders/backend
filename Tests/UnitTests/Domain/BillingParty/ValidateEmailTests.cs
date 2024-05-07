@@ -1,8 +1,9 @@
 ﻿using Domain.billingParty;
-using Domain.dao;
+using Domain.Repositories;
 using Domain.utils;
 using Moq;
 using UnitTests.Factory;
+using UnitTests.Fakes;
 
 namespace UnitTests.Domain.BillingParty;
 
@@ -12,10 +13,11 @@ public class ValidateEmailTests {
 
     public async Task ValidateEmail_WithValidBillingPartyEmail_Success(string validEmail) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validEmail is unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueEmail(validEmail)).ReturnsAsync(true);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(validEmail)).ReturnsAsync(true);
 
         // Act                    
         await billingPartyDomain.ValidateEmail(validEmail);
@@ -28,13 +30,15 @@ public class ValidateEmailTests {
 
     public async Task ValidateEmail_WithValidBillingPartyEmail_WhenEmailIsNotUnique_Fails(string validEmail) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validEmail is **NOT** unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueEmail(validEmail)).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(validEmail)).ReturnsAsync(false);
 
         // Act and Assert                   
-        ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             billingPartyDomain.ValidateEmail(validEmail));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
@@ -48,15 +52,17 @@ public class ValidateEmailTests {
 
     public async Task ValidateEmail_WithInValidBillingPartyEmail_Fails(string invalidEmail) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();  
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
 
         // Act and assert                    
-        ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             billingPartyDomain.ValidateEmail(invalidEmail));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
-        billingPartyDaoMock.Verify(mock => mock.IsUniqueEmail(invalidEmail), Times.Never);
+        billingPartyRepoMock.Verify(mock => mock.IsUniqueEmailAsync(invalidEmail), Times.Never);
     }
 
 }

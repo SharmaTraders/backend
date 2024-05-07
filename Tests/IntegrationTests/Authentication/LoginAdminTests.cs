@@ -9,20 +9,19 @@ using Newtonsoft.Json;
 namespace IntegrationTests.Authentication;
 
 [Collection("Sequential")]
-
 public class LoginAdminTests {
     private readonly WebApp _application = new();
 
     [Fact]
     public async Task LoginAdmin_WithValidEmailAndValidPassword_ReturnsJwtTokenAndOkResponse() {
         // Arrange an already existing admin in db
-        var adminUser = UserFactory.GetValidAdmin();
+        var adminUser = UserFactory.GetValidAdminEntity();
         await SeedData.SeedAdmin(_application, adminUser);
 
 
         // Arrange a request with an existing admin
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/login/admin");
-        var loginRequestDto = new LoginRequest(adminUser.Email, adminUser.Password);
+        var loginRequestDto = UserFactory.GetValidLoginRequest();
         request.Content = new StringContent(JsonConvert.SerializeObject(loginRequestDto), System.Text.Encoding.UTF8,
             "application/json");
 
@@ -45,7 +44,7 @@ public class LoginAdminTests {
     [Fact]
     public async Task LoginAdmin_WithValidEmailAnd_InValidPassword_ReturnsBadRequestResponse_WithCorrectErrorMessage() {
         // Arrange an already existing admin in db
-        var adminUser = UserFactory.GetValidAdmin();
+        var adminUser = UserFactory.GetValidAdminEntity();
         await SeedData.SeedAdmin(_application, adminUser);
 
 
@@ -75,7 +74,7 @@ public class LoginAdminTests {
     public async Task
         LoginAdmin_WithInValidEmailAnd_InValidPassword_ReturnsBadRequestResponse_WithCorrectErrorMessage() {
         // Arrange an already existing admin in db
-        var adminUser = UserFactory.GetValidAdmin();
+        var adminUser = UserFactory.GetValidAdminEntity();
         await SeedData.SeedAdmin(_application, adminUser);
 
 

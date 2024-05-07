@@ -9,7 +9,7 @@ public class ValidateAddressTests {
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyAddress), MemberType = typeof(BillingPartyFactory))]
     public void ValidateAddress_WithValidBillingPartyAddress_Success(string validAddress) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act                    
         billingPartyDomain.ValidateAddress(validAddress);
@@ -20,10 +20,10 @@ public class ValidateAddressTests {
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyAddress), MemberType = typeof(BillingPartyFactory))]
     public void ValidateAddress_WithInValidBillingPartyAddress_Fails(string invalidAddress) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act and assert                    
-        ValidationException exception = Assert.Throws<ValidationException>(() =>
+        DomainValidationException exception = Assert.Throws<DomainValidationException>(() =>
             billingPartyDomain.ValidateAddress(invalidAddress));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
     }

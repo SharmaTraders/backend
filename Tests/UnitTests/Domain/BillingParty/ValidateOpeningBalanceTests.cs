@@ -11,7 +11,7 @@ public class ValidateOpeningBalanceTests {
 
     public void ValidateOpeningBalance_WithValidOpeningBalance_Success(double validOpeningBalance) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act
         billingPartyDomain.ValidateOpeningBalance(validOpeningBalance);
@@ -24,10 +24,10 @@ public class ValidateOpeningBalanceTests {
 
     public void ValidateOpeningBalance_WithInValidOpeningBalance_Fails(double invalidOpeningBalance) {
         // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null);
+        var billingPartyDomain = new BillingPartyDomain(null!, null!);
 
         // Act and assert
-        ValidationException exception = Assert.Throws<ValidationException>(() =>
+        DomainValidationException exception = Assert.Throws<DomainValidationException>(() =>
             billingPartyDomain.ValidateOpeningBalance(invalidOpeningBalance));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
     }

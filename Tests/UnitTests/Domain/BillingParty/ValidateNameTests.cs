@@ -1,8 +1,9 @@
 ﻿using Domain.billingParty;
-using Domain.dao;
+using Domain.Repositories;
 using Domain.utils;
 using Moq;
 using UnitTests.Factory;
+using UnitTests.Fakes;
 
 namespace UnitTests.Domain.BillingParty;
 
@@ -12,10 +13,11 @@ public class ValidateNameTests {
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyNames), MemberType = typeof(BillingPartyFactory))]
     public async Task ValidateName_WithValidBillingPartyName_Success(string validName) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validName is unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueName(validName)).ReturnsAsync(true);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueNameAsync(validName)).ReturnsAsync(true);
 
         // Act                    
         await billingPartyDomain.ValidateName(validName);
@@ -27,13 +29,15 @@ public class ValidateNameTests {
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyNames), MemberType = typeof(BillingPartyFactory))]
     public async Task ValidateName_WithValidBillingPartyName_WhenNameIsNotUnique_Fails(string validName) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validName is **NOT** unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueName(validName)).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueNameAsync(validName)).ReturnsAsync(false);
 
         // Act and Assert                   
-        ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             billingPartyDomain.ValidateName(validName));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
@@ -45,14 +49,16 @@ public class ValidateNameTests {
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyNames), MemberType = typeof(BillingPartyFactory))]
     public async Task ValidateName_WithInValidBillingPartyName_Fails(string invalidName) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();   
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
 
         // Act and assert                    
-       ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+       DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
            billingPartyDomain.ValidateName(invalidName));
        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
        // Assert that the dao is never called
-       billingPartyDaoMock.Verify(mock => mock.IsUniqueName(invalidName), Times.Never);
+       billingPartyRepoMock.Verify(mock => mock.IsUniqueNameAsync(invalidName), Times.Never);
     }
 }

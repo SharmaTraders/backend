@@ -1,8 +1,9 @@
 ﻿using Domain.billingParty;
-using Domain.dao;
+using Domain.Repositories;
 using Domain.utils;
 using Moq;
 using UnitTests.Factory;
+using UnitTests.Fakes;
 
 namespace UnitTests.Domain.BillingParty;
 
@@ -13,10 +14,11 @@ public class ValidateVatNumberTests {
 
     public async Task ValidateVatNumber_WithValidBillingPartyVatNumber_Success(string validVatNumber) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validVatNumber is unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueVatNumber(validVatNumber)).ReturnsAsync(true);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(validVatNumber)).ReturnsAsync(true);
 
         // Act                    
         await billingPartyDomain.ValidateVatNumber(validVatNumber);
@@ -29,13 +31,15 @@ public class ValidateVatNumberTests {
 
     public async Task ValidateVatNumber_WithValidBillingPartyVatNumber_WhenVatNumberIsNotUnique_Fails(string validVatNumber) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();   
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validVatNumber is **NOT** unique
-        billingPartyDaoMock.Setup(mock => mock.IsUniqueVatNumber(validVatNumber)).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(validVatNumber)).ReturnsAsync(false);
 
         // Act and Assert                   
-        ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             billingPartyDomain.ValidateVatNumber(validVatNumber));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
@@ -48,15 +52,17 @@ public class ValidateVatNumberTests {
 
     public async Task ValidateVatNumber_WithInValidBillingPartyVatNumber_Fails(string invalidVatNumber) {
         // Arrange
-        var billingPartyDaoMock = new Mock<IBillingPartyDao>();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyDaoMock.Object);
+        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
+        var unitOfWorkMock = new MockUnitOfWork();   
+        
+        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
 
         // Act and assert                    
-        ValidationException exception = await Assert.ThrowsAsync<ValidationException>(() =>
+        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
             billingPartyDomain.ValidateVatNumber(invalidVatNumber));
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
-        billingPartyDaoMock.Verify(mock => mock.IsUniqueVatNumber(invalidVatNumber), Times.Never);
+        billingPartyRepoMock.Verify(mock => mock.IsUniqueVatNumberAsync(invalidVatNumber), Times.Never);
     }
 
 }

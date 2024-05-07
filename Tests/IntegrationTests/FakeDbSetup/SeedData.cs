@@ -1,35 +1,44 @@
 using Data;
-using Data.converters;
-using Data.Entities;
+using Domain.converters;
+using Domain.Entity;
 using Dto;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace IntegrationTests.FakeDbSetup;
 
 internal static class SeedData {
-    public static async Task SeedAdmin(WebApp application, AdminDto adminDto) {
+    public static async Task SeedAdmin(WebApp application, AdminEntity adminEntity) {
         using var scope = application.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
-        AdminEntity entity = new AdminEntity() {
-            Id = Guid.NewGuid(),
-            Email = adminDto.Email,
-            Password = HashPassword(adminDto.Password)
-        };
 
-        await dbContext.Admins.AddAsync(entity);
+        await dbContext.Admins.AddAsync(adminEntity);
         await dbContext.SaveChangesAsync();
     }
 
-    public static async Task SeedItem(WebApp application, AddItemRequest addItemRequest) {
+    public static async Task SeedItem(WebApp application, CreateItemRequest createItemRequest) {
         using var scope = application.Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
 
         ItemEntity entity = new ItemEntity() {
-            Name = addItemRequest.Name
+            Id = Guid.NewGuid(),
+            Name = createItemRequest.Name
         };
 
         await dbContext.Items.AddAsync(entity);
+        await dbContext.SaveChangesAsync();
+    }
+
+    public static async Task SeedItem(WebApp application, List<CreateItemRequest> createItemRequests) {
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        List<ItemEntity> entities = createItemRequests.Select(request => new ItemEntity() {
+            Id = Guid.NewGuid(),
+            Name = request.Name
+        }).ToList();
+
+        await dbContext.Items.AddRangeAsync(entities);
         await dbContext.SaveChangesAsync();
     }
 

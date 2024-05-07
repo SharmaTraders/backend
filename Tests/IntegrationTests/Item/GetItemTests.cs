@@ -4,15 +4,15 @@ using IntegrationTests.FakeDbSetup;
 using IntegrationTests.TestFactory;
 using Newtonsoft.Json;
 
-namespace IntegrationTests.BillingParty;
+namespace IntegrationTests.Item;
 
 [Collection("Sequential")]
-public class GetBillingPartyTests {
+public class GetItemTests {
     private readonly WebApp _application = new();
 
     [Fact]
-    public async Task GetBillingParties_NoToken_Fails() {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
+    public async Task GetItems_NoToken_Fails() {
+        var request = new HttpRequestMessage(HttpMethod.Get, "/Item");
 
         var client = _application.CreateClient();
 
@@ -24,11 +24,11 @@ public class GetBillingPartyTests {
     }
 
     [Fact]
-    public async Task GetBillingParties_NoBillingParty_ReturnsAnEmptyList() {
+    public async Task GetItems_NoItems_ReturnsAnEmptyList() {
         // Arrange a logged in admin
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
+        var request = new HttpRequestMessage(HttpMethod.Get, "/Item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         var client = _application.CreateClient();
@@ -39,22 +39,22 @@ public class GetBillingPartyTests {
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var billingParties = JsonConvert.DeserializeObject<GetBillingPartiesResponse>(responseContent);
-        Assert.NotNull(billingParties);
-        Assert.Empty(billingParties.BillingParties);
+        var items = JsonConvert.DeserializeObject<GetItemsResponse>(responseContent);
+        Assert.NotNull(items);
+        Assert.Empty(items.Items);
     }
 
     [Fact]
-    public async Task GetBillingParty_BillingPartyExistsInDatabase_ReturnsListOfBillingParties() {
+    public async Task GetItem_ItemExistsInDatabase_ReturnsListOfItems() {
         // Arrange a logged in admin
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
+        var request = new HttpRequestMessage(HttpMethod.Get, "/Item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        // When there are billing parties
-        List<CreateBillingPartyRequest> requests = BillingPartyFactory.GetCreateBillingPartyRequestsList();
-        await SeedData.SeedBillingParty(_application, requests);
+        // When there are items
+        List<CreateItemRequest> requests = ItemFactory.GetCreateItemRequestsList();
+        await SeedData.SeedItem(_application, requests);
 
         var client = _application.CreateClient();
 
@@ -64,8 +64,8 @@ public class GetBillingPartyTests {
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var billingParties = JsonConvert.DeserializeObject<GetBillingPartiesResponse>(responseContent);
-        Assert.NotNull(billingParties);
-        Assert.Equal(requests.Count, billingParties.BillingParties.Count);
+        var items = JsonConvert.DeserializeObject<GetItemsResponse>(responseContent);
+        Assert.NotNull(items);
+        Assert.Equal(requests.Count, items.Items.Count);
     }
 }

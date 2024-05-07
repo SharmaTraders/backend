@@ -8,13 +8,14 @@ namespace IntegrationTests.BillingParty;
 
 [Collection("Sequential")]
 public class CreateBillingPartyTests {
-
     private readonly WebApp _application = new();
 
     [Fact]
     public async Task CreateBillingParty_NoToken_Fails() {
         var request = new HttpRequestMessage(HttpMethod.Post, "/BillingParty");
-        request.Content = new StringContent(JsonConvert.SerializeObject(BillingPartyFactory.GetValidCreateBillingPartyRequestDto()), System.Text.Encoding.UTF8,
+        request.Content = new StringContent(
+            JsonConvert.SerializeObject(BillingPartyFactory.GetValidCreateBillingPartyRequestDto()),
+            System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -74,7 +75,7 @@ public class CreateBillingPartyTests {
         string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
         CreateBillingPartyRequest createRequest = BillingPartyFactory.GetValidCreateBillingPartyRequestDto();
 
-        await SeedData.SeedBillingParty(_application,createRequest);
+        await SeedData.SeedBillingParty(_application, createRequest);
 
         var request = new HttpRequestMessage(HttpMethod.Post, "/BillingParty");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
@@ -89,5 +90,4 @@ public class CreateBillingPartyTests {
         // Assert
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
     }
-
 }

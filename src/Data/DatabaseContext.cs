@@ -1,4 +1,4 @@
-using Data.Entities;
+using Domain.Entity;
 using EntityFramework.Exceptions.PostgreSQL;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,14 +8,12 @@ public class DatabaseContext : DbContext {
 
     public required DbSet<AdminEntity> Admins { get; init; }
     public required DbSet<ItemEntity> Items { get; init; }
-
     public required DbSet<BillingPartyEntity> BillingParties { get; init; }
 
 
     public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) {
 
     }
-
 
     protected override void OnModelCreating(ModelBuilder modelBuilder) {
 
@@ -26,6 +24,11 @@ public class DatabaseContext : DbContext {
             .HasIndex(party => party.Name)
             .IsUnique();
 
+        modelBuilder.Entity<ItemEntity>()
+            .HasKey(entity => entity.Id);
+        modelBuilder.Entity<ItemEntity>()
+            .HasIndex(item => item.Name)
+            .IsUnique();
         base.OnModelCreating(modelBuilder);
     }
 
