@@ -22,7 +22,7 @@ namespace Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Data.Entities.AdminEntity", b =>
+            modelBuilder.Entity("Domain.Entity.AdminEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -44,7 +44,7 @@ namespace Data.Migrations
                     b.ToTable("Admins");
                 });
 
-            modelBuilder.Entity("Data.Entities.BillingPartyEntity", b =>
+            modelBuilder.Entity("Domain.Entity.BillingPartyEntity", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -78,12 +78,17 @@ namespace Data.Migrations
                     b.ToTable("BillingParties");
                 });
 
-            modelBuilder.Entity("Data.Entities.ItemEntity", b =>
+            modelBuilder.Entity("Domain.Entity.ItemEntity", b =>
                 {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
-                    b.HasKey("Name");
+                    b.HasKey("Id");
 
                     b.ToTable("Items");
                 });

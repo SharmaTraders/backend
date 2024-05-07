@@ -9,7 +9,6 @@ using Newtonsoft.Json;
 namespace IntegrationTests.Authentication;
 
 [Collection("Sequential")]
-
 public class LoginAdminTests {
     private readonly WebApp _application = new();
 

@@ -16,8 +16,8 @@ public class ItemController : ControllerBase {
     }
 
     [HttpPost]
-    public async Task<ActionResult> CreateItem(AddItemRequest addItemRequest) {
-        await _itemDomain.CreateItem(addItemRequest);
+    public async Task<ActionResult> CreateItem(CreateItemRequest createItemRequest) {
+        await _itemDomain.CreateItem(createItemRequest);
         return Ok();
     }
 

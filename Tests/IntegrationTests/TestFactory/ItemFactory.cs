@@ -3,12 +3,11 @@
 namespace IntegrationTests.TestFactory;
 
 internal class ItemFactory {
-
-    internal static AddItemRequest GetValidItemDto() {
-        return new AddItemRequest("Gadda");
+    internal static CreateItemRequest GetValidItemDto() {
+        return new CreateItemRequest("Gadda");
     }
 
-    
+
     public static IEnumerable<object[]> GetValidItemNames() {
         return new List<object[]>() {
             new object[] {"thr"},
@@ -30,4 +29,10 @@ internal class ItemFactory {
         };
     }
 
+    public static List<CreateItemRequest> GetCreateItemRequestsList() {
+        return [
+            new CreateItemRequest("Gadda"),
+            new CreateItemRequest("Thaal")
+        ];
+    }
 }

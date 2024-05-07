@@ -15,19 +15,19 @@ public class ItemDomain : IItemDomain {
         _unitOfWork = unitOfWork;
     }
 
-    public async Task CreateItem(AddItemRequest addItemRequest) {
-        addItemRequest = new AddItemRequest(addItemRequest.Name.Trim());
-        ValidateItem(addItemRequest);
+    public async Task CreateItem(CreateItemRequest createItemRequest) {
+        createItemRequest = new CreateItemRequest(createItemRequest.Name.Trim());
+        ValidateItem(createItemRequest);
 
-        ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(addItemRequest.Name);
+        ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(createItemRequest.Name);
         if (itemFromDb is not null) {
             throw new DomainValidationException("ItemName", ErrorCode.Conflict,
-                ErrorMessages.ItemNameAlreadyExists(addItemRequest.Name));
+                ErrorMessages.ItemNameAlreadyExists(createItemRequest.Name));
         }
 
         ItemEntity itemEntity = new ItemEntity() {
             Id = Guid.NewGuid(),
-            Name = addItemRequest.Name
+            Name = createItemRequest.Name
         };
 
         await _itemRepository.AddAsync(itemEntity);
@@ -41,12 +41,12 @@ public class ItemDomain : IItemDomain {
         ).ToImmutableList();
     }
 
-    private static void ValidateItem(AddItemRequest addItemRequest) {
-        if (string.IsNullOrEmpty(addItemRequest.Name)) {
+    private static void ValidateItem(CreateItemRequest createItemRequest) {
+        if (string.IsNullOrEmpty(createItemRequest.Name)) {
             throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
         }
 
-        if (addItemRequest.Name.Length is < 3 or > 20) {
+        if (createItemRequest.Name.Length is < 3 or > 20) {
             throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
         }
     }

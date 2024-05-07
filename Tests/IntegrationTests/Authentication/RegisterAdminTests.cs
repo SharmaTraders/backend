@@ -89,7 +89,8 @@ public class RegisterAdminTests {
         var request = new HttpRequestMessage(HttpMethod.Post, "/auth/register/admin");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
         request.Content = new StringContent(
-            JsonConvert.SerializeObject(UserFactory.GetInvalidPasswordLessThan5CharsRequest()), System.Text.Encoding.UTF8,
+            JsonConvert.SerializeObject(UserFactory.GetInvalidPasswordLessThan5CharsRequest()),
+            System.Text.Encoding.UTF8,
             "application/json");
 
         var client = _application.CreateClient();
@@ -130,7 +131,8 @@ public class RegisterAdminTests {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, problemDetails.Detail);    }
+        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, problemDetails.Detail);
+    }
 
     [Fact]
     public async Task Register_AdminWithAdminToken_WhenAdminAlreadyExists_Fails() {

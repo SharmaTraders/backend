@@ -19,10 +19,10 @@ public class CreateItemTests {
         var unitOfWorkMock = new MockUnitOfWork();
         var itemDomain = new ItemDomain(itemRepoMock.Object, unitOfWorkMock);
 
-        AddItemRequest addItemRequest = new(itemName);
+        CreateItemRequest createItemRequest = new(itemName);
 
         // Act
-        await itemDomain.CreateItem(addItemRequest);
+        await itemDomain.CreateItem(createItemRequest);
 
         // Assert that the dao is called.
         itemRepoMock.Verify(mock => mock.AddAsync(It.IsAny<ItemEntity>()), Times.Once);
@@ -37,10 +37,10 @@ public class CreateItemTests {
         
         var itemDomain = new ItemDomain(itemRepoMock.Object, unitOfWorkMock);
 
-        AddItemRequest addItemRequest = new(itemName);
+        CreateItemRequest createItemRequest = new(itemName);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<DomainValidationException>(() => itemDomain.CreateItem(addItemRequest));
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() => itemDomain.CreateItem(createItemRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -65,7 +65,7 @@ public class CreateItemTests {
             .ReturnsAsync(entity);
 
         // Act & Assert
-        var exception = await Assert.ThrowsAsync<DomainValidationException>(() => itemDomain.CreateItem(new AddItemRequest(itemName)));
+        var exception = await Assert.ThrowsAsync<DomainValidationException>(() => itemDomain.CreateItem(new CreateItemRequest(itemName)));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.ItemNameAlreadyExists(itemName), exception.Message);

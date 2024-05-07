@@ -3,6 +3,6 @@
 namespace Domain.item;
 
 public interface IItemDomain {
-    Task CreateItem(AddItemRequest addItemRequest);
+    Task CreateItem(CreateItemRequest createItemRequest);
     Task<ICollection<ItemDto>> GetAllItems();
 }
