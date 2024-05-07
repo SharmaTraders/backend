@@ -24,6 +24,11 @@ public class DatabaseContext : DbContext {
             .HasIndex(party => party.Name)
             .IsUnique();
 
+        modelBuilder.Entity<ItemEntity>()
+            .HasKey(entity => entity.Id);
+        modelBuilder.Entity<ItemEntity>()
+            .HasIndex(item => item.Name)
+            .IsUnique();
         base.OnModelCreating(modelBuilder);
     }
 
