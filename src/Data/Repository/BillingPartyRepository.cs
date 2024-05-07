@@ -38,10 +38,10 @@ public class BillingPartyRepository : IBillingPartyRepository {
     }
 
     public async Task<bool> IsUniqueEmailAsync(string email) {
-        bool doesVatNumberExist = await _context.BillingParties
+        bool doesEmailExist = await _context.BillingParties
             .AnyAsync(party =>
                 !string.IsNullOrEmpty(party.Email) && party.Email.ToLower().Equals(email.ToLower()));
 
-        return !doesVatNumberExist;
+        return !doesEmailExist;
     }
 }
