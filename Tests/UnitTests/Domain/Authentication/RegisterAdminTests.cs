@@ -1,7 +1,7 @@
 ﻿using Domain;
 using Domain.auth;
 using Domain.Entity;
-using Domain.Repositories;
+using Domain.Repository;
 using Domain.utils;
 using Dto;
 using Moq;

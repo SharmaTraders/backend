@@ -1,6 +1,6 @@
 ﻿using Domain.Entity;
 
-namespace Domain.Repositories;
+namespace Domain.Repository;
 
 public interface IRepository<TEntity, in TId> where TEntity : IEntity<TId> {
 

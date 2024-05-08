@@ -1,5 +1,5 @@
 ﻿using Domain.Entity;
-using Domain.Repositories;
+using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repository;
@@ -17,7 +17,7 @@ public class AdminRepository : IAdminRepository {
     }
 
     public async Task<AdminEntity?> GetByIdAsync(Guid id) {
-        return await _context.Admins.FindAsync(id.ToString());
+        return await _context.Admins.FindAsync(id);
     }
 
     public async Task<AdminEntity?> GetByEmailAsync(string email) {

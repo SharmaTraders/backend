@@ -42,13 +42,19 @@ internal static class SeedData {
         await dbContext.SaveChangesAsync();
     }
 
-    public static async Task SeedBillingParty(WebApp application, CreateBillingPartyRequest billingParty) {
-        using var scope = application.Services.CreateScope();
-        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+    public static Task SeedBillingParty(WebApp application, CreateBillingPartyRequest billingParty) {
+      
 
         BillingPartyEntity entity = BillingPartyConverter.ToEntity(billingParty);
 
-        await dbContext.BillingParties.AddAsync(entity);
+        return SeedBillingParty(application, entity);
+    }
+
+    public static async Task SeedBillingParty(WebApp application, BillingPartyEntity billingParty) {
+        using var scope = application.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<DatabaseContext>();
+
+        await dbContext.BillingParties.AddAsync(billingParty);
         await dbContext.SaveChangesAsync();
     }
 
@@ -61,9 +67,5 @@ internal static class SeedData {
 
         await dbContext.BillingParties.AddRangeAsync(entities);
         await dbContext.SaveChangesAsync();
-    }
-
-    private static string HashPassword(string password) {
-        return BCrypt.Net.BCrypt.HashPassword(password);
     }
 }

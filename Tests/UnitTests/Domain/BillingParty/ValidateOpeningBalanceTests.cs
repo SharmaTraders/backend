@@ -1,4 +1,5 @@
 ﻿using Domain.billingParty;
+using Domain.Entity;
 using Domain.utils;
 using UnitTests.Factory;
 
@@ -10,26 +11,26 @@ public class ValidateOpeningBalanceTests {
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyOpeningBalance), MemberType = typeof(BillingPartyFactory))]
 
     public void ValidateOpeningBalance_WithValidOpeningBalance_Success(double validOpeningBalance) {
-        // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!, null!);
-
-        // Act
-        billingPartyDomain.ValidateOpeningBalance(validOpeningBalance);
-
         // No exception is thrown
+        BillingPartyEntity billingPartyEntity = new BillingPartyEntity {
+            Address = "Valid Address",
+            Name = "validName" ,
+            Balance = validOpeningBalance
+        };
+        Assert.Equal(validOpeningBalance, billingPartyEntity.Balance);
     }
 
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyOpeningBalance), MemberType = typeof(BillingPartyFactory))]
 
     public void ValidateOpeningBalance_WithInValidOpeningBalance_Fails(double invalidOpeningBalance) {
-        // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!, null!);
-
-        // Act and assert
-        DomainValidationException exception = Assert.Throws<DomainValidationException>(() =>
-            billingPartyDomain.ValidateOpeningBalance(invalidOpeningBalance));
-        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
+        var exception = Assert.Throws<DomainValidationException>( ()  => new BillingPartyEntity {
+            Address = "valid address",
+            Name = "validName",
+            Balance = invalidOpeningBalance
+        });
+        Assert.NotEmpty(exception.Message);
+        Assert.True(exception.Type.Equals("openingbalance", StringComparison.OrdinalIgnoreCase));
     }
 
 

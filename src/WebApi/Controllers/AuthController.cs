@@ -22,7 +22,7 @@ public class AuthController : ControllerBase {
 
     [HttpPost, Route("login/admin")]
     public async Task<ActionResult<LoginResponse>> AdminLogin(LoginRequest loginRequest) {
-        UserDto userDto = await _authDomain.ValidateAdmin(loginRequest);
+        UserDto userDto = await _authDomain.LoginAdmin(loginRequest);
         string token = GenerateJwt(userDto);
         LoginResponse response = new LoginResponse(token);
         return Ok(response);

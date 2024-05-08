@@ -1,6 +1,6 @@
 ﻿using Domain.auth;
 using Domain.Entity;
-using Domain.Repositories;
+using Domain.Repository;
 using Domain.utils;
 using Dto;
 using Moq;
@@ -9,16 +9,16 @@ using UnitTests.Fakes;
 
 namespace UnitTests.Domain.Authentication;
 
-public class ValidateAdminTests {
+public class LoginAdminTests {
     [Theory]
     [MemberData(nameof(UserFactory.GetValidEmails), MemberType = typeof(UserFactory))]
-    public async Task ValidateAdmin_WithValidEmail_ReturnsUserDto(string email) {
+    public async Task LoginAdmin_WithValidEmail_ReturnsUserDto(string email) {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var userEntity = new AdminEntity() {
             Id = Guid.Empty,
             Email = email,
-            Password = HashPassword("password1")
+            Password = "password1"
         };
 
         authRepoMock.Setup(mock => mock.GetByEmailAsync(It.IsAny<string>()))
@@ -29,7 +29,7 @@ public class ValidateAdminTests {
         var loginRequest = new LoginRequest(email, "password1");
 
         // Act
-        var result = await authenticationDomain.ValidateAdmin(loginRequest);
+        var result = await authenticationDomain.LoginAdmin(loginRequest);
 
         // Assert
         Assert.NotNull(result);
@@ -40,7 +40,7 @@ public class ValidateAdminTests {
 
     [Theory]
     [MemberData(nameof(UserFactory.GetInValidEmails), MemberType = typeof(UserFactory))]
-    public async Task ValidateAdmin_WithInvalidEmail_ThrowsException(string email) {
+    public async Task LoginAdmin_WithInvalidEmail_ThrowsException(string email) {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -50,7 +50,7 @@ public class ValidateAdminTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.LoginAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -59,7 +59,7 @@ public class ValidateAdminTests {
 
     [Theory]
     [MemberData(nameof(UserFactory.GetValidPasswords), MemberType = typeof(UserFactory))]
-    public async Task ValidateAdmin_WithValidPassword_ReturnsUserDto(string password) {
+    public async Task LoginAdmin_WithValidPassword_ReturnsUserDto(string password) {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -67,7 +67,7 @@ public class ValidateAdminTests {
         var userEntity = new AdminEntity() {
             Id = Guid.Empty,
             Email = "someValidEmail@gmail.com",
-            Password = HashPassword(password)
+            Password =password
         };
 
         authRepoMock.Setup(mock => mock.GetByEmailAsync(It.IsAny<string>()))
@@ -77,7 +77,7 @@ public class ValidateAdminTests {
         var loginRequest = new LoginRequest(userEntity.Email, password);
 
         // Act
-        var result = await authenticationDomain.ValidateAdmin(loginRequest);
+        var result = await authenticationDomain.LoginAdmin(loginRequest);
 
         // Assert
         Assert.NotNull(result);
@@ -88,7 +88,7 @@ public class ValidateAdminTests {
 
     [Theory]
     [MemberData(nameof(UserFactory.GetInvalidPasswords), MemberType = typeof(UserFactory))]
-    public async Task ValidateAdmin_WithInvalidPassword_ThrowsException(string password) {
+    public async Task LoginAdmin_WithInvalidPassword_ThrowsException(string password) {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -103,7 +103,7 @@ public class ValidateAdminTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.LoginAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         // Assert that the dao is never called
@@ -112,7 +112,7 @@ public class ValidateAdminTests {
 
 
     [Fact]
-    public async Task ValidateAdmin_WithValidCredentials_ReturnsUserDto() {
+    public async Task LoginAdmin_WithValidCredentials_ReturnsUserDto() {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -120,7 +120,7 @@ public class ValidateAdminTests {
         var userEntity = new AdminEntity() {
             Id = Guid.Empty,
             Email = "someValidEmail@gmail.com",
-            Password = HashPassword("password1")
+            Password = "password1"
         };
 
         authRepoMock.Setup(mock => mock.GetByEmailAsync(It.IsAny<string>()))
@@ -130,7 +130,7 @@ public class ValidateAdminTests {
         var loginRequest = new LoginRequest("email@email.com", "password1");
 
         // Act
-        var result = await authenticationDomain.ValidateAdmin(loginRequest);
+        var result = await authenticationDomain.LoginAdmin(loginRequest);
 
         // Assert
         Assert.NotNull(result);
@@ -139,7 +139,7 @@ public class ValidateAdminTests {
     }
 
     [Fact]
-    public async Task ValidateAdmin_WithNonexistentEmail_ThrowsException() {
+    public async Task LoginAdmin_WithNonexistentEmail_ThrowsException() {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -152,14 +152,14 @@ public class ValidateAdminTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.LoginAdmin(loginRequest));
 
         Assert.Equal(ErrorCode.NotFound, exception.ErrorCode);
         Assert.Equal(ErrorMessages.EmailDoesntExist, exception.Message);
     }
 
     [Fact]
-    public async Task ValidateAdmin_WithIncorrectPassword_ThrowsException() {
+    public async Task LoginAdmin_WithIncorrectPassword_ThrowsException() {
         // Arrange
         var authRepoMock = new Mock<IAdminRepository>();
         var unitOfWorkMock = new MockUnitOfWork();
@@ -174,14 +174,10 @@ public class ValidateAdminTests {
 
         // Act & Assert
         var exception =
-            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.ValidateAdmin(loginRequest));
+            await Assert.ThrowsAsync<DomainValidationException>(() => authenticationDomain.LoginAdmin(loginRequest));
 
         // Assert the exception properties
         Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
         Assert.Equal(ErrorMessages.PasswordIncorrect, exception.Message);
-    }
-
-    private static string HashPassword(string password) {
-        return BCrypt.Net.BCrypt.HashPassword(password);
     }
 }
