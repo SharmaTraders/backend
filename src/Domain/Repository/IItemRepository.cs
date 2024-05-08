@@ -1,6 +1,6 @@
 ﻿using Domain.Entity;
 
-namespace Domain.Repositories;
+namespace Domain.Repository;
 
 public interface IItemRepository : IRepository<ItemEntity, Guid> {
 

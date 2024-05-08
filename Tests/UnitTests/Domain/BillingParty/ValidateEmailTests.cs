@@ -1,6 +1,8 @@
 ﻿using Domain.billingParty;
-using Domain.Repositories;
+using Domain.Entity;
+using Domain.Repository;
 using Domain.utils;
+using Dto;
 using Moq;
 using UnitTests.Factory;
 using UnitTests.Fakes;
@@ -11,18 +13,13 @@ public class ValidateEmailTests {
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyEmails), MemberType = typeof(BillingPartyFactory))]
 
-    public async Task ValidateEmail_WithValidBillingPartyEmail_Success(string validEmail) {
-        // Arrange
-        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
-        var unitOfWorkMock = new MockUnitOfWork();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
-        // When the validEmail is unique
-        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(validEmail)).ReturnsAsync(true);
-
-        // Act                    
-        await billingPartyDomain.ValidateEmail(validEmail);
-
+    public void ValidateEmail_WithValidBillingPartyEmail_Success(string validEmail) {
         // No exception is thrown
+        BillingPartyEntity billingPartyEntity = new BillingPartyEntity {
+            Email = validEmail,
+            Address = "Valid Address",
+            Name = "Test Name"
+        };
     }
 
     [Theory]
@@ -35,11 +32,16 @@ public class ValidateEmailTests {
         
         var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validEmail is **NOT** unique
-        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(validEmail)).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(validEmail, It.IsAny<Guid>())).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueNameAsync(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(true);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(true);
+
+
+        CreateBillingPartyRequest request = new CreateBillingPartyRequest("name", "address", null, 0, validEmail, null);
 
         // Act and Assert                   
         DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
-            billingPartyDomain.ValidateEmail(validEmail));
+            billingPartyDomain.CreateBillingParty(request));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.BillingPartyEmailAlreadyExists(validEmail), exception.Message);
@@ -51,18 +53,14 @@ public class ValidateEmailTests {
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyEmails), MemberType = typeof(BillingPartyFactory))]
 
     public async Task ValidateEmail_WithInValidBillingPartyEmail_Fails(string invalidEmail) {
-        // Arrange
-        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
-        var unitOfWorkMock = new MockUnitOfWork();  
-        
-        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
+        var exception = Assert.Throws<DomainValidationException>( ()  => new BillingPartyEntity {
+            Address = "valid address",
+            Email = invalidEmail,
+            Name = "Test Name"
+        });
+        Assert.NotEmpty(exception.Message);
+        Assert.True(exception.Type.Equals("email", StringComparison.OrdinalIgnoreCase));
 
-        // Act and assert                    
-        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
-            billingPartyDomain.ValidateEmail(invalidEmail));
-        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
-        // Assert that the dao is never called
-        billingPartyRepoMock.Verify(mock => mock.IsUniqueEmailAsync(invalidEmail), Times.Never);
     }
 
 }

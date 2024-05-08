@@ -17,7 +17,7 @@ internal static class UserFactory {
         new AdminEntity() {
             Id = Guid.NewGuid(),
             Email = "admin@admin.com",
-            Password = HashPassword("somePassword1234")
+            Password = "somePassword1234"
         };
 
 
@@ -25,7 +25,7 @@ internal static class UserFactory {
         new AdminEntity() {
             Id = Guid.NewGuid(),
             Email = email,
-            Password = HashPassword("somePassword1234")
+            Password = "somePassword1234"
         };
 
 
@@ -70,7 +70,4 @@ internal static class UserFactory {
         return loginResponseDto.JwtToken;
     }
 
-    private static string HashPassword(string password) {
-        return BCrypt.Net.BCrypt.HashPassword(password);
-    }
 }

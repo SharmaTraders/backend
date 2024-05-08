@@ -5,7 +5,7 @@ using Domain;
 using Domain.auth;
 using Domain.billingParty;
 using Domain.item;
-using Domain.Repositories;
+using Domain.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;

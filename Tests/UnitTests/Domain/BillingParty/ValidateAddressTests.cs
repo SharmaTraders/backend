@@ -1,4 +1,5 @@
 ﻿using Domain.billingParty;
+using Domain.Entity;
 using Domain.utils;
 using UnitTests.Factory;
 
@@ -8,23 +9,24 @@ public class ValidateAddressTests {
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyAddress), MemberType = typeof(BillingPartyFactory))]
     public void ValidateAddress_WithValidBillingPartyAddress_Success(string validAddress) {
-        // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!, null!);
-
-        // Act                    
-        billingPartyDomain.ValidateAddress(validAddress);
         // No exception is thrown
+        BillingPartyEntity billingPartyEntity = new BillingPartyEntity {
+            Address = validAddress,
+            Name = "Test Name"
+        };
+        Assert.Equal(validAddress, billingPartyEntity.Address);
     }
 
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyAddress), MemberType = typeof(BillingPartyFactory))]
     public void ValidateAddress_WithInValidBillingPartyAddress_Fails(string invalidAddress) {
-        // Arrange
-        var billingPartyDomain = new BillingPartyDomain(null!, null!);
+        var exception = Assert.Throws<DomainValidationException>( ()  => new BillingPartyEntity {
+            Address = invalidAddress,
+            Name = "Test Name"
+        });
+        Assert.NotEmpty(exception.Message);
+        Assert.True(exception.Type.Equals("address", StringComparison.OrdinalIgnoreCase));
 
-        // Act and assert                    
-        DomainValidationException exception = Assert.Throws<DomainValidationException>(() =>
-            billingPartyDomain.ValidateAddress(invalidAddress));
-        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
+
     }
 }

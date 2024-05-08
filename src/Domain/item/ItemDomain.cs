@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Domain.Entity;
-using Domain.Repositories;
+using Domain.Repository;
 using Domain.utils;
 using Dto;
 
@@ -16,10 +16,11 @@ public class ItemDomain : IItemDomain {
     }
 
     public async Task CreateItem(CreateItemRequest createItemRequest) {
-        createItemRequest = new CreateItemRequest(createItemRequest.Name.Trim());
-        ValidateItem(createItemRequest);
+        ItemEntity entity = new ItemEntity() {
+            Name = createItemRequest.Name
+        };
 
-        ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(createItemRequest.Name);
+        ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(entity.Name);
         if (itemFromDb is not null) {
             throw new DomainValidationException("ItemName", ErrorCode.Conflict,
                 ErrorMessages.ItemNameAlreadyExists(createItemRequest.Name));
@@ -41,13 +42,4 @@ public class ItemDomain : IItemDomain {
         ).ToImmutableList();
     }
 
-    private static void ValidateItem(CreateItemRequest createItemRequest) {
-        if (string.IsNullOrEmpty(createItemRequest.Name)) {
-            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
-        }
-
-        if (createItemRequest.Name.Length is < 3 or > 20) {
-            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
-        }
-    }
 }
