@@ -1,6 +1,8 @@
 ﻿using Domain.billingParty;
-using Domain.Repositories;
+using Domain.Entity;
+using Domain.Repository;
 using Domain.utils;
+using Dto;
 using Moq;
 using UnitTests.Factory;
 using UnitTests.Fakes;
@@ -12,18 +14,14 @@ public class ValidateVatNumberTests {
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetValidBillingPartyVatNumber), MemberType = typeof(BillingPartyFactory))]
 
-    public async Task ValidateVatNumber_WithValidBillingPartyVatNumber_Success(string validVatNumber) {
-        // Arrange
-        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
-        var unitOfWorkMock = new MockUnitOfWork();
-        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
-        // When the validVatNumber is unique
-        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(validVatNumber)).ReturnsAsync(true);
-
-        // Act                    
-        await billingPartyDomain.ValidateVatNumber(validVatNumber);
-
+    public void ValidateVatNumber_WithValidBillingPartyVatNumber_Success(string validVatNumber) {
         // No exception is thrown
+        BillingPartyEntity billingPartyEntity = new BillingPartyEntity {
+            Address = "Valid Address",
+            Name = "validName" ,
+            VatNumber = validVatNumber
+        };
+        Assert.Equal(validVatNumber, billingPartyEntity.VatNumber);
     }
 
     [Theory]
@@ -36,11 +34,15 @@ public class ValidateVatNumberTests {
         
         var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
         // When the validVatNumber is **NOT** unique
-        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(validVatNumber)).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueVatNumberAsync(validVatNumber, It.IsAny<Guid>())).ReturnsAsync(false);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueNameAsync(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(true);
+        billingPartyRepoMock.Setup(mock => mock.IsUniqueEmailAsync(It.IsAny<string>(), It.IsAny<Guid>())).ReturnsAsync(true);
+
+        CreateBillingPartyRequest request = new CreateBillingPartyRequest("valid name", "valid address", null, 0, null, validVatNumber);
 
         // Act and Assert                   
         DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
-            billingPartyDomain.ValidateVatNumber(validVatNumber));
+            billingPartyDomain.CreateBillingParty(request));
 
         Assert.Equal(ErrorCode.Conflict, exception.ErrorCode);
         Assert.Equal(ErrorMessages.BillingPartyVatNumberAlreadyExists(validVatNumber), exception.Message);
@@ -50,19 +52,14 @@ public class ValidateVatNumberTests {
     [Theory]
     [MemberData(nameof(BillingPartyFactory.GetInValidBillingPartyVatNumber), MemberType = typeof(BillingPartyFactory))]
 
-    public async Task ValidateVatNumber_WithInValidBillingPartyVatNumber_Fails(string invalidVatNumber) {
-        // Arrange
-        var billingPartyRepoMock = new Mock<IBillingPartyRepository>();
-        var unitOfWorkMock = new MockUnitOfWork();   
-        
-        var billingPartyDomain = new BillingPartyDomain(billingPartyRepoMock.Object, unitOfWorkMock);
-
-        // Act and assert                    
-        DomainValidationException exception = await Assert.ThrowsAsync<DomainValidationException>(() =>
-            billingPartyDomain.ValidateVatNumber(invalidVatNumber));
-        Assert.Equal(ErrorCode.BadRequest, exception.ErrorCode);
-        // Assert that the dao is never called
-        billingPartyRepoMock.Verify(mock => mock.IsUniqueVatNumberAsync(invalidVatNumber), Times.Never);
+    public void ValidateVatNumber_WithInValidBillingPartyVatNumber_Fails(string invalidVatNumber) {
+        var exception = Assert.Throws<DomainValidationException>( ()  => new BillingPartyEntity {
+            Address = "valid address",
+            Name = "valid name",
+            VatNumber = invalidVatNumber
+        });
+        Assert.NotEmpty(exception.Message);
+        Assert.True(exception.Type.Equals("vatnumber", StringComparison.OrdinalIgnoreCase));
     }
 
 }

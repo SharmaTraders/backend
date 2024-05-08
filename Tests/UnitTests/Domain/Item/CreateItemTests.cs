@@ -1,6 +1,6 @@
 ﻿using Domain.Entity;
 using Domain.item;
-using Domain.Repositories;
+using Domain.Repository;
 using Domain.utils;
 using Dto;
 using Moq;

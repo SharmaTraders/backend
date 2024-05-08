@@ -20,8 +20,16 @@ public class DatabaseContext : DbContext {
         modelBuilder.Entity<AdminEntity>()
             .HasIndex(admin => admin.Email)
             .IsUnique();
+
+
         modelBuilder.Entity<BillingPartyEntity>()
             .HasIndex(party => party.Name)
+            .IsUnique();
+        modelBuilder.Entity<BillingPartyEntity>()
+            .HasIndex(party => party.VatNumber)
+            .IsUnique();
+        modelBuilder.Entity<BillingPartyEntity>()
+            .HasIndex(party => party.Email)
             .IsUnique();
 
         modelBuilder.Entity<ItemEntity>()

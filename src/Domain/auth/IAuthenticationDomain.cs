@@ -3,6 +3,6 @@ using Dto;
 namespace Domain.auth;
 
 public interface IAuthenticationDomain {
-    Task<UserDto> ValidateAdmin(LoginRequest loginRequest);
+    Task<UserDto> LoginAdmin(LoginRequest loginRequest);
     Task RegisterAdmin(RegisterAdminRequest registerAdminRequest);
 }

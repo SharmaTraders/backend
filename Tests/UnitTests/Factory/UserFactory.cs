@@ -49,11 +49,9 @@ internal static class UserFactory {
         return new AdminEntity() {
             Id = Guid.NewGuid(),
             Email = "valid@valid.com",
-            Password = HashPassword("somePassword1234")
+            Password = "somePassword1234"
         };
     }
 
-    private static string HashPassword(string password) {
-        return BCrypt.Net.BCrypt.HashPassword(password);
-    }
+ 
 }
