@@ -1,6 +1,6 @@
 ﻿using System.Collections.Immutable;
 using Domain.Entity;
-using Domain.Repository;
+using Domain.Repositories;
 using Domain.utils;
 using Dto;
 
@@ -42,4 +42,38 @@ public class ItemDomain : IItemDomain {
         ).ToImmutableList();
     }
 
+    public async Task UpdateItem(string id, UpdateItemRequest updateItemRequest)
+    {
+        bool tryParse = Guid.TryParse(id, out Guid guid);
+        if (!tryParse) {
+            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid);
+        }
+        
+        ValidateItemName(updateItemRequest.Name);
+        
+        ItemEntity? itemEntity = await _itemRepository.GetByIdAsync(guid);
+        if (itemEntity is null) {
+            throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.ItemNotFound(guid));
+        }
+        
+        // Check if the new name is already used by another item
+        ItemEntity? existingItemWithSameName = await _itemRepository.GetByNameAsync(updateItemRequest.Name);
+        if (existingItemWithSameName != null && existingItemWithSameName.Id != guid) {
+            throw new DomainValidationException("ItemName", ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(updateItemRequest.Name));
+        }
+        
+        itemEntity.Name = updateItemRequest.Name;
+        await _unitOfWork.SaveChangesAsync();
+   }
+    
+
+    private static void ValidateItemName(string itemName) {
+        if (string.IsNullOrEmpty(itemName)) {
+            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
+        }
+
+        if (itemName.Length is < 3 or > 20) {
+            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
+        }
+    }
 }
