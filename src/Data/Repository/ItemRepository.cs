@@ -17,7 +17,7 @@ public class ItemRepository : IItemRepository {
     }
 
     public async Task<ItemEntity?> GetByIdAsync(Guid id) {
-        return await _context.Items.FindAsync(id.ToString());
+        return await _context.Items.FindAsync(id);
     }
 
     public async Task<ItemEntity?> GetByNameAsync(string name) {

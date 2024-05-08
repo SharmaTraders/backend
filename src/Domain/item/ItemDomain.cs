@@ -17,7 +17,7 @@ public class ItemDomain : IItemDomain {
 
     public async Task CreateItem(CreateItemRequest createItemRequest) {
         createItemRequest = new CreateItemRequest(createItemRequest.Name.Trim());
-        ValidateItem(createItemRequest);
+        ValidateItemName(createItemRequest.Name);
 
         ItemEntity? itemFromDb = await _itemRepository.GetByNameAsync(createItemRequest.Name);
         if (itemFromDb is not null) {
@@ -41,12 +41,37 @@ public class ItemDomain : IItemDomain {
         ).ToImmutableList();
     }
 
-    private static void ValidateItem(CreateItemRequest createItemRequest) {
-        if (string.IsNullOrEmpty(createItemRequest.Name)) {
+    public async Task UpdateItem(string id, UpdateItemRequest updateItemRequest)
+    {
+        bool tryParse = Guid.TryParse(id, out Guid guid);
+        if (!tryParse) {
+            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid);
+        }
+        
+        ValidateItemName(updateItemRequest.Name);
+        
+        ItemEntity? itemEntity = await _itemRepository.GetByIdAsync(guid);
+        if (itemEntity is null) {
+            throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.ItemNotFound(guid));
+        }
+        
+        // Check if the new name is already used by another item
+        ItemEntity? existingItemWithSameName = await _itemRepository.GetByNameAsync(updateItemRequest.Name);
+        if (existingItemWithSameName != null && existingItemWithSameName.Id != guid) {
+            throw new DomainValidationException("ItemName", ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(updateItemRequest.Name));
+        }
+        
+        itemEntity.Name = updateItemRequest.Name;
+        await _unitOfWork.SaveChangesAsync();
+   }
+    
+
+    private static void ValidateItemName(string itemName) {
+        if (string.IsNullOrEmpty(itemName)) {
             throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
         }
 
-        if (createItemRequest.Name.Length is < 3 or > 20) {
+        if (itemName.Length is < 3 or > 20) {
             throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
         }
     }
