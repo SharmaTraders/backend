@@ -22,16 +22,17 @@ public class BillingPartyRepository : IBillingPartyRepository {
 
 
     public async Task<bool> IsUniqueNameAsync(string name, [Optional] Guid idToExclude) {
-        bool doesNameExist = await _context.BillingParties.AnyAsync(bp => bp.Name.ToLower().Equals(name.ToLower())
-                                                                          && bp.Id != idToExclude);
+        bool doesNameExist = await _context.BillingParties.AnyAsync(
+            bp => bp.Id != idToExclude && bp.Name.ToLower().Equals(name.ToLower())
+        );
         return !doesNameExist;
     }
 
     public async Task<bool> IsUniqueVatNumberAsync(string vatNumber, [Optional] Guid idToExclude) {
         bool doesVatNumberExist = await _context.BillingParties
             .AnyAsync(party =>
-                !string.IsNullOrEmpty(party.VatNumber) && party.VatNumber.ToLower().Equals(vatNumber.ToLower())
-                && party.Id != idToExclude);
+                !string.IsNullOrEmpty(party.VatNumber) && party.Id != idToExclude && party.VatNumber.ToLower().Equals(vatNumber.ToLower())
+                );
 
         return !doesVatNumberExist;
     }
@@ -43,8 +44,8 @@ public class BillingPartyRepository : IBillingPartyRepository {
     public async Task<bool> IsUniqueEmailAsync(string email, [Optional] Guid idToExclude) {
         bool doesEmailExist = await _context.BillingParties
             .AnyAsync(party =>
-                !string.IsNullOrEmpty(party.Email) && party.Email.ToLower().Equals(email.ToLower()) &&
-                party.Id != idToExclude);
+                !string.IsNullOrEmpty(party.Email) && party.Id != idToExclude &&party.Email.ToLower().Equals(email.ToLower())
+                );
         return !doesEmailExist;
     }
 }
