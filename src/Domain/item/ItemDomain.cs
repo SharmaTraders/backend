@@ -1,6 +1,7 @@
 ﻿using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using Domain.Entity;
-using Domain.Repositories;
+using Domain.Repository;
 using Domain.utils;
 using Dto;
 
@@ -49,31 +50,22 @@ public class ItemDomain : IItemDomain {
             throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid);
         }
         
-        ValidateItemName(updateItemRequest.Name);
-        
         ItemEntity? itemEntity = await _itemRepository.GetByIdAsync(guid);
         if (itemEntity is null) {
             throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.ItemNotFound(guid));
         }
         
-        // Check if the new name is already used by another item
-        ItemEntity? existingItemWithSameName = await _itemRepository.GetByNameAsync(updateItemRequest.Name);
-        if (existingItemWithSameName != null && existingItemWithSameName.Id != guid) {
-            throw new DomainValidationException("ItemName", ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(updateItemRequest.Name));
-        }
+        await CheckForUniqueName(updateItemRequest.Name, guid);
         
         itemEntity.Name = updateItemRequest.Name;
         await _unitOfWork.SaveChangesAsync();
    }
     
-
-    private static void ValidateItemName(string itemName) {
-        if (string.IsNullOrEmpty(itemName)) {
-            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameIsRequired);
-        }
-
-        if (itemName.Length is < 3 or > 20) {
-            throw new DomainValidationException("ItemName", ErrorCode.BadRequest, ErrorMessages.ItemNameLength);
+    
+    private async Task CheckForUniqueName(string name, [Optional] Guid idToExclude) {
+        bool isUniqueName = await _itemRepository.IsUniqueNameAsync(name, idToExclude);
+        if (!isUniqueName) {
+            throw new DomainValidationException("ItemName", ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(name));
         }
     }
 }
