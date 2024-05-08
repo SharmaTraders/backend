@@ -44,4 +44,8 @@ public static class ErrorMessages {
     }
 
 
+    public static string ItemNotFound(Guid id)
+    {
+        return $"Item with id : {id} not found";
+    }
 }
