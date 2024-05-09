@@ -1,6 +1,6 @@
 ﻿using Domain.Entity;
-using Domain.item;
 using Domain.Repository;
+using DomainEntry.item;
 using Dto;
 using Moq;
 using UnitTests.Factory;

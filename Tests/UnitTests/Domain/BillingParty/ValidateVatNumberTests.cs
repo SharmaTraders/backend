@@ -1,6 +1,6 @@
-﻿using Domain.billingParty;
-using Domain.Entity;
+﻿using Domain.Entity;
 using Domain.Repository;
+using DomainEntry.billingParty;
 using Dto;
 using Moq;
 using UnitTests.Factory;

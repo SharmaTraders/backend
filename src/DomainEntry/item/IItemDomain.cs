@@ -1,6 +1,6 @@
 ﻿using Dto;
 
-namespace Domain.item;
+namespace DomainEntry.item;
 
 public interface IItemDomain {
     Task CreateItem(CreateItemRequest createItemRequest);

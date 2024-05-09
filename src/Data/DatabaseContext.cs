@@ -15,31 +15,6 @@ public class DatabaseContext : DbContext {
 
     }
 
-    protected override void OnModelCreating(ModelBuilder modelBuilder) {
-
-        modelBuilder.Entity<AdminEntity>()
-            .HasIndex(admin => admin.Email)
-            .IsUnique();
-
-
-        modelBuilder.Entity<BillingPartyEntity>()
-            .HasIndex(party => party.Name)
-            .IsUnique();
-        modelBuilder.Entity<BillingPartyEntity>()
-            .HasIndex(party => party.VatNumber)
-            .IsUnique();
-        modelBuilder.Entity<BillingPartyEntity>()
-            .HasIndex(party => party.Email)
-            .IsUnique();
-
-        modelBuilder.Entity<ItemEntity>()
-            .HasKey(entity => entity.Id);
-        modelBuilder.Entity<ItemEntity>()
-            .HasIndex(item => item.Name)
-            .IsUnique();
-        base.OnModelCreating(modelBuilder);
-    }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder) {
         optionsBuilder.UseExceptionProcessor();
         base.OnConfiguring(optionsBuilder);

@@ -1,6 +1,4 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Domain.Entity;
 
@@ -12,10 +10,8 @@ public class BillingPartyEntity: IEntity<Guid> {
     private double _balance;
     private string? _vatNumber;
 
-    [Key]
     public Guid Id { get; set; }
 
-    [Required]
     public required string Name {
         get => _name;
 
@@ -25,7 +21,6 @@ public class BillingPartyEntity: IEntity<Guid> {
         }
     }
 
-    [Required]
     public required string Address {
         get => _address;
         set {

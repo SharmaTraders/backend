@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
-using Domain.converters;
+using Domain;
 using Domain.Entity;
 using Domain.Repository;
+using DomainEntry.converters;
 using Dto;
 
-namespace Domain.billingParty;
+namespace DomainEntry.billingParty;
 
 public class BillingPartyDomain : IBillingPartyDomain {
     private readonly IBillingPartyRepository _billingPartyRepository;

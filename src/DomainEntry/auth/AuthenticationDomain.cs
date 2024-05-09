@@ -1,9 +1,10 @@
-using Domain.converters;
+using Domain;
 using Domain.Entity;
 using Domain.Repository;
+using DomainEntry.converters;
 using Dto;
 
-namespace Domain.auth;
+namespace DomainEntry.auth;
 
 public class AuthenticationDomain : IAuthenticationDomain {
 

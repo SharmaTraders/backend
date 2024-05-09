@@ -1,7 +1,7 @@
-﻿using Domain;
-using Domain.auth;
+﻿
 using Domain.Entity;
 using Domain.Repository;
+using DomainEntry.auth;
 using Dto;
 using Moq;
 using UnitTests.Factory;

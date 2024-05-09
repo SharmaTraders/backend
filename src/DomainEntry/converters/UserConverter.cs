@@ -1,7 +1,7 @@
 ﻿using Domain.Entity;
 using Dto;
 
-namespace Domain.converters;
+namespace DomainEntry.converters;
 
 public static class UserConverter {
     public static UserDto? ToDto(AdminEntity? adminEntity) {

@@ -1,6 +1,6 @@
 using Data;
-using Domain.converters;
 using Domain.Entity;
+using DomainEntry.converters;
 using Dto;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
 namespace Domain.Entity;
 
@@ -7,10 +6,9 @@ public class AdminEntity : IEntity<Guid> {
 
     private string _email;
     private string _password;
-    [Key] public Guid Id { get; init; }
+     public Guid Id { get; init; }
     
-    [Required]
-    [EmailAddress]
+ 
     public required string Email {
         get => _email;
         init {
@@ -19,7 +17,6 @@ public class AdminEntity : IEntity<Guid> {
         }
     }
 
-    [Required]
     public required string Password {
         get => _password;
         init {

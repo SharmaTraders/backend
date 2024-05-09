@@ -1,6 +1,6 @@
 using Dto;
 
-namespace Domain.auth;
+namespace DomainEntry.auth;
 
 public interface IAuthenticationDomain {
     Task<UserDto> LoginAdmin(LoginRequest loginRequest);

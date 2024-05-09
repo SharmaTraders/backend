@@ -1,13 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
-
+﻿
 namespace Domain.Entity;
 
 public class ItemEntity : IEntity<Guid> {
 
     private string _name;
-    [Key] public  Guid Id { get; set; }
+    public  Guid Id { get; set; }
     
-    [Required]
     public required string Name {
         get => _name;
         set {

@@ -1,4 +1,4 @@
-﻿using Domain.billingParty;
+﻿using DomainEntry.billingParty;
 using Dto;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

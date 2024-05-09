@@ -1,10 +1,11 @@
 ﻿using System.Collections.Immutable;
 using System.Runtime.InteropServices;
+using Domain;
 using Domain.Entity;
 using Domain.Repository;
 using Dto;
 
-namespace Domain.item;
+namespace DomainEntry.item;
 
 public class ItemDomain : IItemDomain {
     private readonly IItemRepository _itemRepository;

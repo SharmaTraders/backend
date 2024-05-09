@@ -1,6 +1,6 @@
 ﻿using Dto;
 
-namespace Domain.billingParty;
+namespace DomainEntry.billingParty;
 
 public interface IBillingPartyDomain {
     Task CreateBillingParty(CreateBillingPartyRequest request);
