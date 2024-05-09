@@ -1,4 +1,5 @@
-﻿using Domain.Entity;
+﻿using System.Runtime.InteropServices;
+using Domain.Entity;
 using Domain.Repository;
 using Microsoft.EntityFrameworkCore;
 
@@ -26,5 +27,12 @@ public class ItemRepository : IItemRepository {
 
     public Task<List<ItemEntity>> GetAllAsync() {
         return _context.Items.AsNoTracking().ToListAsync();
+    }
+
+    public async Task<bool> IsUniqueNameAsync(string name,[Optional] Guid idToExclude)
+    {
+        bool doesNameExist = await _context.Items.AnyAsync(item => item.Name.ToLower().Equals(name.ToLower())
+                                                                  && item.Id != idToExclude);
+        return !doesNameExist;
     }
 }

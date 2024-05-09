@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Runtime.InteropServices;
 using Domain.Entity;
 using Domain.Repository;
 using Domain.utils;
@@ -42,4 +43,29 @@ public class ItemDomain : IItemDomain {
         ).ToImmutableList();
     }
 
+    public async Task UpdateItem(string id, UpdateItemRequest updateItemRequest)
+    {
+        bool tryParse = Guid.TryParse(id, out Guid guid);
+        if (!tryParse) {
+            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid);
+        }
+        
+        ItemEntity? itemEntity = await _itemRepository.GetByIdAsync(guid);
+        if (itemEntity is null) {
+            throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.ItemNotFound(guid));
+        }
+        
+        await CheckForUniqueName(updateItemRequest.Name, guid);
+        
+        itemEntity.Name = updateItemRequest.Name;
+        await _unitOfWork.SaveChangesAsync();
+   }
+    
+    
+    private async Task CheckForUniqueName(string name, [Optional] Guid idToExclude) {
+        bool isUniqueName = await _itemRepository.IsUniqueNameAsync(name, idToExclude);
+        if (!isUniqueName) {
+            throw new DomainValidationException("ItemName", ErrorCode.Conflict, ErrorMessages.ItemNameAlreadyExists(name));
+        }
+    }
 }

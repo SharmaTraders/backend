@@ -26,4 +26,10 @@ public class ItemController : ControllerBase {
         ICollection<ItemDto> items = await _itemDomain.GetAllItems();
         return Ok(new GetItemsResponse(items));
     }
+    
+    [HttpPut, Route("{id}")]
+    public async Task<ActionResult> UpdateItem(UpdateItemRequest updateItemRequest, [FromRoute] string id) {
+        await _itemDomain.UpdateItem(id, updateItemRequest);
+        return Ok();
+    }
 }
