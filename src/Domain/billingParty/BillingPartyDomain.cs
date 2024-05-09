@@ -65,6 +65,10 @@ public class BillingPartyDomain : IBillingPartyDomain {
     }
 
     private async Task CheckForUniqueVatNumber(string requestVatNumber, [Optional] Guid idToExclude) {
+        if (string.IsNullOrEmpty(requestVatNumber))
+        {
+            return;
+        }
         bool isUniqueVatNumber = await _billingPartyRepository.IsUniqueVatNumberAsync(requestVatNumber, idToExclude);
         if (!isUniqueVatNumber) {
             throw new DomainValidationException("VatNumber", ErrorCode.Conflict,
@@ -73,6 +77,10 @@ public class BillingPartyDomain : IBillingPartyDomain {
     }
 
     private async Task CheckForUniqueName(string requestName, [Optional] Guid idToExclude) {
+        if (string.IsNullOrEmpty(requestName))
+        {
+            return;
+        }
         bool isUniqueName = await _billingPartyRepository.IsUniqueNameAsync(requestName, idToExclude);
         if (!isUniqueName) {
             throw new DomainValidationException("Name", ErrorCode.Conflict,
