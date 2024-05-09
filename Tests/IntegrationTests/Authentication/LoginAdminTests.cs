@@ -1,5 +1,4 @@
 ﻿using System.Net;
-using Domain.utils;
 using Dto;
 using IntegrationTests.FakeDbSetup;
 using IntegrationTests.TestFactory;

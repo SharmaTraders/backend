@@ -1,6 +1,6 @@
-﻿using Domain.utils;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using Tools;
 
 namespace WebApi.MiddleWares;
 

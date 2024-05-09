@@ -1,4 +1,4 @@
-namespace Domain.utils;
+namespace Tools;
 
 public static class ErrorMessages {
 

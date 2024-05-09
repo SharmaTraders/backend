@@ -8,6 +8,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\Dto\Dto.csproj"/>
+        <ProjectReference Include="..\Tools\Tools.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -19,6 +20,9 @@
         <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
             <_Parameter1>UnitTests</_Parameter1>
         </AssemblyAttribute>
+    </ItemGroup>
+    <ItemGroup>
+      <Folder Include="utils\" />
     </ItemGroup>
 
 </Project>

@@ -1,7 +1,6 @@
 ﻿using Domain.auth;
 using Domain.Entity;
 using Domain.Repository;
-using Domain.utils;
 using Dto;
 using Moq;
 using UnitTests.Factory;

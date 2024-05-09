@@ -1,4 +1,4 @@
-namespace Domain.utils;
+namespace Tools;
 
 public class DomainValidationException : Exception {
     public string Type { get; init; }

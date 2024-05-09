@@ -1,6 +1,4 @@
-﻿using Domain.billingParty;
-using Domain.Entity;
-using Domain.utils;
+﻿using Domain.Entity;
 using UnitTests.Factory;
 
 namespace UnitTests.Domain.BillingParty;
