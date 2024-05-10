@@ -1,4 +1,5 @@
 ﻿using System.Text.RegularExpressions;
+using Domain.common;
 
 namespace Domain.Entity;
 
@@ -64,5 +65,9 @@ public class AdminEntity : IEntity<Guid> {
 
     private static string HashPassword(string password) {
         return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public override string ToString() {
+        return $"Id: {Id}, Email: {Email}";
     }
 }

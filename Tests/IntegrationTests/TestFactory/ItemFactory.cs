@@ -1,10 +1,13 @@
-﻿using Dto;
+﻿
+using WebApi.Endpoints.command.item;
 
 namespace IntegrationTests.TestFactory;
 
 internal class ItemFactory {
-    internal static CreateItemRequest GetValidItemDto() {
-        return new CreateItemRequest("Gadda");
+    internal static CreateItemRequest GetValidCreateItemRequest() {
+        return new CreateItemRequest() {
+            RequestBody = new CreateItemRequest.Body("Gadda", 10, 100)
+        };
     }
 
 
@@ -31,8 +34,10 @@ internal class ItemFactory {
 
     public static List<CreateItemRequest> GetCreateItemRequestsList() {
         return [
-            new CreateItemRequest("Gadda"),
-            new CreateItemRequest("Thaal")
+            GetValidCreateItemRequest(),
+            new CreateItemRequest() {
+                RequestBody = new CreateItemRequest.Body("Thaal", 100, 60)
+            }
         ];
     }
 }

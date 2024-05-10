@@ -26,9 +26,8 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\Data\Data.csproj" />
+      <ProjectReference Include="..\..\src\Persistence\Persistence.csproj" />
       <ProjectReference Include="..\..\src\Domain\Domain.csproj" />
-      <ProjectReference Include="..\..\src\Dto\Dto.csproj" />
       <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
     </ItemGroup>
 

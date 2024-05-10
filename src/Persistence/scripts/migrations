@@ -1,0 +1,2 @@
++* Create migraitons: dotnet ef --startup-project ../WebApi/ migrations add {migrationName} --context WriteDatabaseContext
++* Update database: dotnet ef --startup-project ../WebApi/ database update

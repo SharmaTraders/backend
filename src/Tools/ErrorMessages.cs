@@ -15,7 +15,7 @@ public static class ErrorMessages {
     public const string PasswordIncorrect = "Incorrect password";
 
 
-    public const string IdInvalid = "Invalid id ";
+    public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
 
     public static string ItemNameAlreadyExists(string itemName) => $"Item name : {itemName} already exists";
     public const string ItemNameIsRequired = "Item must have a name";
@@ -38,6 +38,11 @@ public static class ErrorMessages {
     public const string OpeningBalanceMustBeAtMax2DecimalPlaces = "Opening balance must be at most 2 decimal places";
 
     public const string VatNumberMustBeBetween5To20Characters = "Vat number must be between 5 to 20 characters (inclusive)";
+    public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
+
+    public const string StockAmountCannotBeNegative = "Stock amount cannot be negative";
+    public const string StockReduceCannotBeMoreThanCurrentStock = "Cannot reduce stock more than current stock";
+    public const string ValuePerKiloCannotBeNegative = "Value per kilo cannot be negative";
 
     public static string BillingPartyNotFound(Guid id) {
         return $"Billing party with id : {id} not found";
