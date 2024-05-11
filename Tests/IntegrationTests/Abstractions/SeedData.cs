@@ -53,7 +53,7 @@ internal static class SeedData {
             Id = Guid.NewGuid(),
             Name = request.RequestBody.Name,
             CurrentStockAmount = request.RequestBody.StockWeight ?? 0,
-            CurrentEstimatedStockValuePerKilo = request.RequestBody.EstimatedValuePerKilo ?? 0
+            CurrentEstimatedStockValuePerKilo = request.RequestBody.EstimatedPricePerKilo ?? 0
         };
     }
 

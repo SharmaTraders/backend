@@ -19,7 +19,7 @@ public class CreateItem : CommandEndPointBase
     [Authorize(Roles = "Admin")]
 
     public override async Task<ActionResult<CreateItemResponse>> HandleAsync(CreateItemRequest request) {
-        var commandRequest = new CreateItemCommand.Request(request.RequestBody.Name, request.RequestBody.StockWeight, request.RequestBody.EstimatedValuePerKilo);
+        var commandRequest = new CreateItemCommand.Request(request.RequestBody.Name, request.RequestBody.StockWeight, request.RequestBody.EstimatedPricePerKilo);
         var result =await _mediator.Send(commandRequest);
         return Ok(new CreateItemResponse() {
             Id = result.Id
@@ -31,7 +31,7 @@ public class CreateItem : CommandEndPointBase
 public class CreateItemRequest {
 
     [FromBody] public Body RequestBody { get; set; }= null!;
-    public record Body(string Name, double? StockWeight, double? EstimatedValuePerKilo);
+    public record Body(string Name, double? StockWeight, double? EstimatedPricePerKilo);
 }
 
 public class CreateItemResponse {
