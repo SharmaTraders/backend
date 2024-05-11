@@ -53,4 +53,21 @@ internal static class ItemFactory {
             new object[] {-10.54},
         };
     }
+
+
+    public static IEnumerable<object[]> GetValidStockWeight() {
+        return new List<object[]>() {
+            new object[] {1},
+            new object[] {100},
+            new object[] {50.25},
+        };
+    } 
+    public static IEnumerable<object[]> GetInvalidStockWeight() {
+        return new List<object[]>() {
+            new object[] {-1},
+            new object[] {-100},
+            new object[] {-10.54},
+            new object[] {0},
+        };
+    }
 }

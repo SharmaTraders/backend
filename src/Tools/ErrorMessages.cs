@@ -13,6 +13,7 @@ public static class ErrorMessages {
     public const string PasswordMustContainLetterAndNumber =
         "Password must contain at least one letter and one number";
     public const string PasswordIncorrect = "Incorrect password";
+    public const string StockValuePerKiloCannotBeNegative = "Stock value per kilo cannot be negative";
 
 
     public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
@@ -43,6 +44,9 @@ public static class ErrorMessages {
     public const string StockAmountCannotBeNegative = "Stock amount cannot be negative";
     public const string StockReduceCannotBeMoreThanCurrentStock = "Cannot reduce stock more than current stock";
     public const string ValuePerKiloCannotBeNegative = "Value per kilo cannot be negative";
+
+    public const string StockWeightCannotBeNegative = "Stock weight cannot be negative, If you want to reduce stock use reduce stock endpoint";
+    public const string StockAmountCannotBeZero = "Please provide a weight to add/reduce stock";
 
     public static string BillingPartyNotFound(Guid id) {
         return $"Billing party with id : {id} not found";
