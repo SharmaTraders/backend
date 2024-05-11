@@ -45,8 +45,9 @@ builder.Services.AddScoped<IUniqueItemNameChecker, UniqueItemNameChecker>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-
+// Register Queries
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(QueryContractsAssembly.Assembly, QueryAssembly.Assembly));
+// Register Commands
 builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(CommandContractsAssembly.Assembly, ApplicationAssembly.Assembly));
 
 builder.Services.AddControllers();

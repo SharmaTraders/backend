@@ -16,9 +16,11 @@ public class GetAllItemsHandler : IRequestHandler<GetAllItems.Query, GetAllItems
         var items = await _context.Items
             .Select(i => new GetAllItems.ItemDto(
                 i.Id.ToString(),
-                i.Name
+                i.Name ,
+                i.CurrentStockAmount,
+                i.CurrentEstimatedStockValuePerKilo
             ))
-            .ToListAsync();
+            .ToListAsync(cancellationToken);
 
         return new GetAllItems.Answer(items);    }
 }
