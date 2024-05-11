@@ -49,7 +49,7 @@ public class UpdateBillingPartyHandler: IRequestHandler<UpdateBillingPartyComman
         if (!string.IsNullOrEmpty(partyEntity.Name)) {
             bool isUnique = await _billingPartyNameChecker.IsUniqueAsync(partyEntity.Name, guid);
             if (!isUnique) {
-                throw new DomainValidationException("Email", ErrorCode.Conflict,
+                throw new DomainValidationException("Name", ErrorCode.Conflict,
                     ErrorMessages.BillingPartyNameAlreadyExists(partyEntity.Name));
             }
         }
@@ -65,7 +65,7 @@ public class UpdateBillingPartyHandler: IRequestHandler<UpdateBillingPartyComman
         if (!string.IsNullOrEmpty(partyEntity.VatNumber)) {
             bool isUnique = await _billingPartyBillingPartyVatNumberChecker.IsUniqueAsync(partyEntity.VatNumber, guid);
             if (!isUnique) {
-                throw new DomainValidationException("Email", ErrorCode.Conflict,
+                throw new DomainValidationException("VatNumber", ErrorCode.Conflict,
                     ErrorMessages.BillingPartyVatNumberAlreadyExists(partyEntity.VatNumber));
             }
         }
