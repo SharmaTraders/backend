@@ -21,7 +21,7 @@ public class RegisterAdminHandler : IRequestHandler<RegisterAdminCommand.Request
     public async Task Handle(RegisterAdminCommand.Request request, CancellationToken cancellationToken) {
         AdminEntity? adminFromDb = await _adminRepository.GetByEmailAsync(request.Email);
         if (adminFromDb is not null) {
-            throw new DomainValidationException("Email",ErrorCode.Conflict, ErrorMessages.EmailAlreadyExists);
+            throw new DomainValidationException("Email",ErrorCode.Conflict, ErrorMessages.AdminEmailAlreadyExists);
         }
 
         AdminEntity adminEntity = new AdminEntity() {

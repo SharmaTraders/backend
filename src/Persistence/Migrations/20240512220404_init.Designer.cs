@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(WriteDatabaseContext))]
-    [Migration("20240510133944_init")]
+    [Migration("20240512220404_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -131,6 +131,9 @@ namespace Data.Migrations
 
                             b1.Property<Guid>("ItemEntityId")
                                 .HasColumnType("uuid");
+
+                            b1.Property<string>("Remarks")
+                                .HasColumnType("text");
 
                             b1.Property<double>("Weight")
                                 .HasColumnType("double precision");

@@ -17,7 +17,7 @@ public class ReduceStockTests : BaseIntegrationTest{
         Guid itemId = Guid.NewGuid();
         var request = new HttpRequestMessage(HttpMethod.Patch, $"api/item/{itemId.ToString()}/reduce-stock");
         ReduceStockRequest reduceStockRequest = new ReduceStockRequest() {
-            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01")
+            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01", "Remarks")
         };
 
         request.Content = new StringContent(
@@ -40,7 +40,7 @@ public class ReduceStockTests : BaseIntegrationTest{
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         ReduceStockRequest reduceStockRequest = new ReduceStockRequest() {
-            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01")
+            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01", "Remarks")
         };
 
         request.Content = new StringContent(
@@ -72,7 +72,7 @@ public class ReduceStockTests : BaseIntegrationTest{
 
         // When we try to reduce stock by 5, but the stock is 0
         ReduceStockRequest reduceStockRequest = new ReduceStockRequest() {
-            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01")
+            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01", "Remarks")
         };
 
         request.Content = new StringContent(
@@ -112,7 +112,7 @@ public class ReduceStockTests : BaseIntegrationTest{
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         ReduceStockRequest reduceStockRequest = new ReduceStockRequest() {
-            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01")
+            RequestBody = new ReduceStockRequest.Body(5, "2021-01-01", null)
         };
 
         request.Content = new StringContent(

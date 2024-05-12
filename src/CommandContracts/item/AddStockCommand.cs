@@ -7,7 +7,8 @@ public static class AddStockCommand {
         string ItemId,
         double Weight,
         double ExpectedValuePerKilo,
-        string Date) : IRequest;
+        string Date,
+        string? Remarks) : IRequest;
 
 
     

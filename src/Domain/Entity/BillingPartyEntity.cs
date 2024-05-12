@@ -112,12 +112,12 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (!Regex.IsMatch(value, @"^\d+$")) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
-                ErrorMessages.PhoneNumberMustBeAllDigits);
+                ErrorMessages.BillingPartyPhoneNumberMustBeAllDigits);
         }
 
         if (value.Length != 10) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
-                ErrorMessages.PhoneNumberMustBe10DigitsLong);
+                ErrorMessages.BillingPartyPhoneNumberMustBe10DigitsLong);
         }
     }
 
@@ -133,7 +133,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (!(balanceStr.Length - decimalSeparatorIndex - 1 <= 2)) {
             throw new DomainValidationException("OpeningBalance", ErrorCode.BadRequest,
-                ErrorMessages.OpeningBalanceMustBeAtMax2DecimalPlaces);
+                ErrorMessages.BillingPartyOpeningBalanceMustBeAtMax2DecimalPlaces);
         }
     }
 
@@ -145,7 +145,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (value.Length is < 5 or > 20) {
             throw new DomainValidationException("VatNumber", ErrorCode.BadRequest,
-                ErrorMessages.VatNumberMustBeBetween5To20Characters);
+                ErrorMessages.BillingPartyVatNumberMustBeBetween5To20Characters);
         }
     }
     

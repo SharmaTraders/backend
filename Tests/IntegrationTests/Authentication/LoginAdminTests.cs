@@ -70,7 +70,7 @@ public class LoginAdminTests : BaseIntegrationTest {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.PasswordIncorrect, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.AdminPasswordIncorrect, problemDetails.Detail);
     }
 
     [Fact]
@@ -101,6 +101,6 @@ public class LoginAdminTests : BaseIntegrationTest {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.EmailDoesntExist, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.AdminEmailDoesntExist, problemDetails.Detail);
     }
 }

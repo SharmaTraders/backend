@@ -15,7 +15,7 @@ public class AddStockTests : BaseIntegrationTest {
         Guid itemId = Guid.NewGuid();
         var request = new HttpRequestMessage(HttpMethod.Patch, $"api/item/{itemId.ToString()}/add-stock");
         AddStockRequest addStockRequest = new AddStockRequest() {
-            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01")
+            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01", "Remarks")
         };
 
         request.Content = new StringContent(
@@ -38,7 +38,7 @@ public class AddStockTests : BaseIntegrationTest {
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         AddStockRequest addStockRequest = new AddStockRequest() {
-            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01")
+            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01", "Remarks")
         };
 
         request.Content = new StringContent(
@@ -71,7 +71,7 @@ public class AddStockTests : BaseIntegrationTest {
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         AddStockRequest addStockRequest = new AddStockRequest() {
-            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01")
+            RequestBody = new AddStockRequest.Body(5, 5, "2021-01-01", null)
         };
 
         request.Content = new StringContent(

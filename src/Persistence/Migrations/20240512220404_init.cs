@@ -63,6 +63,7 @@ namespace Data.Migrations
                     Date = table.Column<DateOnly>(type: "date", nullable: false),
                     Weight = table.Column<double>(type: "double precision", nullable: false),
                     ExpectedValuePerKilo = table.Column<double>(type: "double precision", nullable: false),
+                    Remarks = table.Column<string>(type: "text", nullable: true),
                     EntryCategory = table.Column<string>(type: "text", nullable: false),
                     ItemEntityId = table.Column<Guid>(type: "uuid", nullable: false)
                 },

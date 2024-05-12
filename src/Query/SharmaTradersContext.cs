@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿
 using Microsoft.EntityFrameworkCore;
 
 namespace Query;
@@ -22,7 +21,6 @@ public partial class SharmaTradersContext : DbContext
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<Stock> Stocks { get; set; }
-
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

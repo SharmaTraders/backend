@@ -36,6 +36,7 @@ public class ReduceStockHandler : IRequestHandler<ReduceStockCommand.Request> {
             Date = date,
             EntryCategory = StockEntryCategory.AddStockEntry,
             Weight = request.Weight,
+            Remarks = request.Remarks
         };
         entity.ReduceStock(stock);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

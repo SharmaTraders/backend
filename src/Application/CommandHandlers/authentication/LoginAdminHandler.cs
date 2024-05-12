@@ -22,13 +22,13 @@ public class LoginAdminHandler : IRequestHandler<LoginAdminCommand.Request, Logi
 
         AdminEntity? adminFromDb = await _adminRepository.GetByEmailAsync(adminEntity.Email);
         if (adminFromDb is null) {
-            throw new DomainValidationException("Email", ErrorCode.NotFound, ErrorMessages.EmailDoesntExist);
+            throw new DomainValidationException("Email", ErrorCode.NotFound, ErrorMessages.AdminEmailDoesntExist);
         }
 
         bool doesPasswordMatch = adminFromDb.DoesPasswordMatch(request.Password);
 
         if (!doesPasswordMatch) {
-            throw new DomainValidationException("Password", ErrorCode.BadRequest, ErrorMessages.PasswordIncorrect);
+            throw new DomainValidationException("Password", ErrorCode.BadRequest, ErrorMessages.AdminPasswordIncorrect);
         }
 
         return new LoginAdminCommand.Response(adminFromDb.Email, "Admin");

@@ -3,6 +3,7 @@
 public class Stock {
     private double _weight;
     private double _expectedValuePerKilo;
+    private string? _remarks;
 
     public Guid Id { get; set; }
     public required DateOnly Date { get; set; }
@@ -20,6 +21,13 @@ public class Stock {
             ValidateValuePerKilo(value);
             _expectedValuePerKilo = value;
         } }
+
+    public string? Remarks { get => _remarks;
+        set {
+            ValidateRemarks(value);
+            _remarks = value;
+        } } 
+
     public required StockEntryCategory EntryCategory { get; set; }
 
     private static void ValidateWeight(double value) {
@@ -37,6 +45,17 @@ public class Stock {
         if (value < 0) {
             throw new DomainValidationException("expectedValuePerKilo", ErrorCode.BadRequest,
                 ErrorMessages.StockValuePerKiloCannotBeNegative);
+        }
+    }
+
+    private static void ValidateRemarks(string? value) {
+        if (string.IsNullOrEmpty(value)) {
+            return;
+        }
+
+        if (value.Length > 500) {
+            throw new DomainValidationException("remarks", ErrorCode.BadRequest, ErrorMessages.StockRemarksTooLong);
+            
         }
     }
 }

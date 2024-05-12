@@ -129,6 +129,9 @@ namespace Data.Migrations
                             b1.Property<Guid>("ItemEntityId")
                                 .HasColumnType("uuid");
 
+                            b1.Property<string>("Remarks")
+                                .HasColumnType("text");
+
                             b1.Property<double>("Weight")
                                 .HasColumnType("double precision");
 

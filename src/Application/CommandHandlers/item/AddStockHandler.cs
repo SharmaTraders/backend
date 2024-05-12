@@ -38,6 +38,7 @@ public class AddStockHandler : IRequestHandler<AddStockCommand.Request> {
             EntryCategory = StockEntryCategory.AddStockEntry,
             Weight = request.Weight,
             ExpectedValuePerKilo = request.ExpectedValuePerKilo,
+            Remarks = request.Remarks
         };
         entity.AddStock(stock);
         await _unitOfWork.SaveChangesAsync(cancellationToken);

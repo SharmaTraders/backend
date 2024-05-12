@@ -120,7 +120,7 @@ public class RegisterAdminTests : BaseIntegrationTest {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.PasswordBiggerThan5Characters, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.AdminPasswordBiggerThan5Characters, problemDetails.Detail);
     }
 
     [Fact]
@@ -148,7 +148,7 @@ public class RegisterAdminTests : BaseIntegrationTest {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.PasswordMustContainLetterAndNumber, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.AdminPasswordMustContainLetterAndNumber, problemDetails.Detail);
     }
 
     [Fact]
@@ -181,7 +181,7 @@ public class RegisterAdminTests : BaseIntegrationTest {
         Assert.NotNull(responseContent);
         ProblemDetails? problemDetails = JsonConvert.DeserializeObject<ProblemDetails>(responseContent);
         Assert.NotNull(problemDetails);
-        Assert.Equal(ErrorMessages.EmailAlreadyExists, problemDetails.Detail);
+        Assert.Equal(ErrorMessages.AdminEmailAlreadyExists, problemDetails.Detail);
     }
 
 

@@ -78,7 +78,7 @@ public class ItemEntity : IEntity<Guid> {
     private static void ValidateValuePerKilo(double value) {
         if (value < 0) {
             throw new DomainValidationException("ValuePerKilo", ErrorCode.BadRequest,
-                ErrorMessages.ValuePerKiloCannotBeNegative);
+                ErrorMessages.StockValuePerKiloCannotBeNegative);
         }
     }
 }

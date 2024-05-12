@@ -6,5 +6,6 @@ public static class ReduceStockCommand {
     public record Request(
         string ItemId,
         double Weight,
-        string Date) : IRequest;
+        string Date,
+        string? Remarks) : IRequest;
 }
