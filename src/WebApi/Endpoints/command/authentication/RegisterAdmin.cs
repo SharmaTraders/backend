@@ -15,7 +15,7 @@ public class RegisterAdmin : CommandEndPointBase.WithRequest<RegisterAdminReques
 
 
     [HttpPost, Route("auth/register/admin")]
-    [Authorize(Roles = "Admin")]
+    // [Authorize(Roles = "Admin")]
     public override async Task<ActionResult> HandleAsync(RegisterAdminRequest request) {
         var commandRequest = new RegisterAdminCommand.Request(request.RequestBody.Email, request.RequestBody.Password);
         await _mediator.Send(commandRequest);
