@@ -1,23 +1,23 @@
 ﻿using System.Net;
-using Dto;
-using IntegrationTests.FakeDbSetup;
+using IntegrationTests.Abstractions;
 using IntegrationTests.TestFactory;
 using Newtonsoft.Json;
+using QueryContracts.billingParty;
+using WebApi.Endpoints.command.billingParty;
 
 namespace IntegrationTests.BillingParty;
 
-[Collection("Sequential")]
-public class GetBillingPartyTests {
-    private readonly WebApp _application = new();
+public class GetBillingPartyTests : BaseIntegrationTest{
+
+    public GetBillingPartyTests(IntegrationTestsWebAppFactory application) : base(application) {
+    }
 
     [Fact]
     public async Task GetBillingParties_NoToken_Fails() {
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
-
-        var client = _application.CreateClient();
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/billingParty");
 
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -26,46 +26,42 @@ public class GetBillingPartyTests {
     [Fact]
     public async Task GetBillingParties_NoBillingParty_ReturnsAnEmptyList() {
         // Arrange a logged in admin
-        string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
+        string validAdminToken = await SetupLoggedInAdmin();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/billingParty");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        var client = _application.CreateClient();
-
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var billingParties = JsonConvert.DeserializeObject<GetBillingPartiesResponse>(responseContent);
+        var billingParties = JsonConvert.DeserializeObject<GetAllBillingParties.Answer>(responseContent);
         Assert.NotNull(billingParties);
-        Assert.Empty(billingParties.BillingParties);
+        Assert.Empty(billingParties.Parties);
     }
 
     [Fact]
     public async Task GetBillingParty_BillingPartyExistsInDatabase_ReturnsListOfBillingParties() {
         // Arrange a logged in admin
-        string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
+        string validAdminToken = await SetupLoggedInAdmin();
 
-        var request = new HttpRequestMessage(HttpMethod.Get, "/BillingParty");
+        var request = new HttpRequestMessage(HttpMethod.Get, "api/billingParty");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         // When there are billing parties
         List<CreateBillingPartyRequest> requests = BillingPartyFactory.GetCreateBillingPartyRequestsList();
-        await SeedData.SeedBillingParty(_application, requests);
-
-        var client = _application.CreateClient();
+        await SeedData.SeedBillingParty(WriteDbContext, requests);
 
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
         var responseContent = await response.Content.ReadAsStringAsync();
-        var billingParties = JsonConvert.DeserializeObject<GetBillingPartiesResponse>(responseContent);
+        var billingParties = JsonConvert.DeserializeObject<GetAllBillingParties.Answer>(responseContent);
         Assert.NotNull(billingParties);
-        Assert.Equal(requests.Count, billingParties.BillingParties.Count);
+        Assert.Equal(requests.Count, billingParties.Parties.Count);
     }
 }

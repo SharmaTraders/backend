@@ -1,7 +1,5 @@
-﻿using System.ComponentModel;
-using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-using Domain.utils;
+﻿using System.Text.RegularExpressions;
+using Domain.common;
 
 namespace Domain.Entity;
 
@@ -13,10 +11,8 @@ public class BillingPartyEntity: IEntity<Guid> {
     private double _balance;
     private string? _vatNumber;
 
-    [Key]
     public Guid Id { get; set; }
 
-    [Required]
     public required string Name {
         get => _name;
 
@@ -26,7 +22,6 @@ public class BillingPartyEntity: IEntity<Guid> {
         }
     }
 
-    [Required]
     public required string Address {
         get => _address;
         set {
@@ -117,12 +112,12 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (!Regex.IsMatch(value, @"^\d+$")) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
-                ErrorMessages.PhoneNumberMustBeAllDigits);
+                ErrorMessages.BillingPartyPhoneNumberMustBeAllDigits);
         }
 
         if (value.Length != 10) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
-                ErrorMessages.PhoneNumberMustBe10DigitsLong);
+                ErrorMessages.BillingPartyPhoneNumberMustBe10DigitsLong);
         }
     }
 
@@ -138,7 +133,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (!(balanceStr.Length - decimalSeparatorIndex - 1 <= 2)) {
             throw new DomainValidationException("OpeningBalance", ErrorCode.BadRequest,
-                ErrorMessages.OpeningBalanceMustBeAtMax2DecimalPlaces);
+                ErrorMessages.BillingPartyOpeningBalanceMustBeAtMax2DecimalPlaces);
         }
     }
 
@@ -150,7 +145,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (value.Length is < 5 or > 20) {
             throw new DomainValidationException("VatNumber", ErrorCode.BadRequest,
-                ErrorMessages.VatNumberMustBeBetween5To20Characters);
+                ErrorMessages.BillingPartyVatNumberMustBeBetween5To20Characters);
         }
     }
     

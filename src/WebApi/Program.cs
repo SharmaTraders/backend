@@ -1,23 +1,34 @@
 using System.Text;
+using Application;
+using Application.services.billingParty;
+using Application.services.item;
+using CommandContracts;
 using Data;
 using Data.Repository;
-using Domain;
-using Domain.auth;
-using Domain.billingParty;
-using Domain.item;
+using Domain.common;
 using Domain.Repository;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Query;
+using Query.Services.billingParty;
+using Query.Services.item;
+using QueryContracts;
 using WebApi;
 using WebApi.MiddleWares;
 
 var builder = WebApplication.CreateBuilder(args);
 
 string? connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<DatabaseContext>(options =>
+builder.Services.AddDbContext<WriteDatabaseContext>(options =>
     options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure()));
+
+builder.Services.AddDbContext<SharmaTradersContext>(options => {
+    options.UseNpgsql(connectionString!, optionsBuilder => optionsBuilder.EnableRetryOnFailure());
+    options.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
+
+});
 
 
 // Repos
@@ -25,19 +36,28 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IBillingPartyRepository, BillingPartyRepository>();
 
-// Domains
-builder.Services.AddScoped<IAuthenticationDomain, AuthenticationDomain>();
-builder.Services.AddScoped<IItemDomain, ItemDomain>();
-builder.Services.AddScoped<IBillingPartyDomain, BillingPartyDomain>();
+
+// Services
+builder.Services.AddScoped<IUniqueBillingPartyNameChecker, UniqueBillingPartyNameChecker>();
+builder.Services.AddScoped<IUniqueBillingPartyEmailChecker, UniqueBillingPartyEmailChecker>();
+builder.Services.AddScoped<IUniqueBillingPartyVatNumberChecker, UniqueBillingPartyVatNumberChecker>();
+builder.Services.AddScoped<IUniqueItemNameChecker, UniqueItemNameChecker>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// Register Queries
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(QueryContractsAssembly.Assembly, QueryAssembly.Assembly));
+// Register Commands
+builder.Services.AddMediatR(c => c.RegisterServicesFromAssemblies(CommandContractsAssembly.Assembly, ApplicationAssembly.Assembly));
 
 builder.Services.AddControllers();
 
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options => {
+    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
+});
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();

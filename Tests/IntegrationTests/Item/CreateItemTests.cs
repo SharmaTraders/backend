@@ -1,28 +1,26 @@
 ﻿using System.Net;
-using Domain.utils;
-using Dto;
-using IntegrationTests.FakeDbSetup;
+using IntegrationTests.Abstractions;
 using IntegrationTests.TestFactory;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using WebApi.Endpoints.command.item;
 
 namespace IntegrationTests.Item;
 
-[Collection("Sequential")]
-public class CreateItemTests {
-    private readonly WebApp _application = new();
+public class CreateItemTests : BaseIntegrationTest {
+
+    public CreateItemTests(IntegrationTestsWebAppFactory application) : base(application) {
+    }
 
     [Fact]
     public async Task CreateItem_NoToken_Fails() {
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
-        request.Content = new StringContent(JsonConvert.SerializeObject(ItemFactory.GetValidItemDto()),
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/item");
+        request.Content = new StringContent(JsonConvert.SerializeObject(ItemFactory.GetValidCreateItemRequest().RequestBody),
             System.Text.Encoding.UTF8,
             "application/json");
 
-        var client = _application.CreateClient();
-
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert that it is unauthorized
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
@@ -32,19 +30,19 @@ public class CreateItemTests {
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
     public async Task CreateItem_ValidItemName_WithAdminToken_Succeeds(string itemName) {
         // Arrange a logged in admin
-        string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
+        string validAdminToken = await SetupLoggedInAdmin();
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        CreateItemRequest requestRequest = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
+        CreateItemRequest createItemRequest = new CreateItemRequest() {
+            RequestBody = new CreateItemRequest.Body(itemName, 5,5)
+        };
+        request.Content = new StringContent(JsonConvert.SerializeObject(createItemRequest.RequestBody), System.Text.Encoding.UTF8,
             "application/json");
 
-        var client = _application.CreateClient();
-
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
@@ -54,19 +52,19 @@ public class CreateItemTests {
     [MemberData(nameof(ItemFactory.GetInValidItemNames), MemberType = typeof(ItemFactory))]
     public async Task CreateItem_InValidItemName_WithAdminToken_Fails(string itemName) {
         // Arrange a logged in admin
-        string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
+        string validAdminToken = await SetupLoggedInAdmin();
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
-        CreateItemRequest requestRequest = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
+        CreateItemRequest createItemRequest = new CreateItemRequest() {
+            RequestBody = new CreateItemRequest.Body(itemName, 5,5)
+        };
+        request.Content = new StringContent(JsonConvert.SerializeObject(createItemRequest.RequestBody), System.Text.Encoding.UTF8,
             "application/json");
 
-        var client = _application.CreateClient();
-
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
@@ -76,24 +74,26 @@ public class CreateItemTests {
     [MemberData(nameof(ItemFactory.GetValidItemNames), MemberType = typeof(ItemFactory))]
     public async Task CreateItem_ValidItemNameThatAlreadyExists_WithAdminToken_Fails(string itemName) {
         // Arrange a logged in admin
-        string validAdminToken = await UserFactory.SetupLoggedInAdmin(_application);
-        CreateItemRequest createItemRequest = new CreateItemRequest(itemName);
+        string validAdminToken = await SetupLoggedInAdmin();
+        CreateItemRequest createItemRequest = new CreateItemRequest() {
+            RequestBody = new CreateItemRequest.Body(itemName, 5,5)
+        };
 
         // Make sure the item already exists in the database
-        await SeedData.SeedItem(_application, createItemRequest);
+        await SeedData.SeedItem(WriteDbContext, createItemRequest);
 
-        var request = new HttpRequestMessage(HttpMethod.Post, "/Item");
+        var request = new HttpRequestMessage(HttpMethod.Post, "api/item");
         request.Headers.Add("Authorization", "Bearer " + validAdminToken);
 
         // When sent a new item with the same name
-        CreateItemRequest requestRequest = new(itemName);
-        request.Content = new StringContent(JsonConvert.SerializeObject(requestRequest), System.Text.Encoding.UTF8,
+        CreateItemRequest create = new CreateItemRequest() {
+            RequestBody = new CreateItemRequest.Body(itemName, 5,5)
+        };
+        request.Content = new StringContent(JsonConvert.SerializeObject(create.RequestBody), System.Text.Encoding.UTF8,
             "application/json");
 
-        var client = _application.CreateClient();
-
         // Act
-        var response = await client.SendAsync(request);
+        HttpResponseMessage response = await Client.SendAsync(request);
 
         // Assert
         Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);

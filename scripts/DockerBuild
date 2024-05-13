@@ -1,1 +1,0 @@
-﻿docker build ./src -t backend_server

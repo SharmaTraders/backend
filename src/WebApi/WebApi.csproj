@@ -9,6 +9,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="MediatR" Version="12.2.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.16" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="8.0.1"/>
         <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.2">
@@ -26,9 +27,11 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\Data\Data.csproj"/>
-        <ProjectReference Include="..\Domain\Domain.csproj"/>
-        <ProjectReference Include="..\Dto\Dto.csproj"/>
+        <ProjectReference Include="..\Application\Application.csproj" />
+        <ProjectReference Include="..\CommandContracts\CommandContracts.csproj" />
+        <ProjectReference Include="..\Persistence\Persistence.csproj" />
+        <ProjectReference Include="..\QueryContracts\QueryContracts.csproj" />
+        <ProjectReference Include="..\Query\Query.csproj" />
     </ItemGroup>
 
 </Project>

@@ -1,17 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Text.RegularExpressions;
-using Domain.utils;
+﻿using System.Text.RegularExpressions;
+using Domain.common;
 
 namespace Domain.Entity;
 
 public class AdminEntity : IEntity<Guid> {
-
     private string _email;
     private string _password;
-    [Key] public Guid Id { get; init; }
-    
-    [Required]
-    [EmailAddress]
+    public Guid Id { get; init; }
+
+
     public required string Email {
         get => _email;
         init {
@@ -20,7 +17,6 @@ public class AdminEntity : IEntity<Guid> {
         }
     }
 
-    [Required]
     public required string Password {
         get => _password;
         init {
@@ -36,7 +32,7 @@ public class AdminEntity : IEntity<Guid> {
 
     private static void ValidateEmail(string value) {
         if (string.IsNullOrEmpty(value)) {
-            throw new DomainValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailRequired);
+            throw new DomainValidationException("Email", ErrorCode.BadRequest, ErrorMessages.EmailRequired);
         }
 
         const string pattern = @"^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
@@ -46,27 +42,31 @@ public class AdminEntity : IEntity<Guid> {
         Match match = regex.Match(value);
 
         if (!match.Success) {
-            throw new DomainValidationException("Email",ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
+            throw new DomainValidationException("Email", ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
         }
-
     }
 
     private static void ValidatePassword(string value) {
         if (string.IsNullOrWhiteSpace(value)) {
-            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordRequired);
+            throw new DomainValidationException("Password", ErrorCode.BadRequest, ErrorMessages.AdminPasswordRequired);
         }
 
         if (value.Length < 6) {
-            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordBiggerThan5Characters);
+            throw new DomainValidationException("Password", ErrorCode.BadRequest,
+                ErrorMessages.AdminPasswordBiggerThan5Characters);
         }
 
         if (!Regex.IsMatch(value, @"[a-zA-Z]") || !Regex.IsMatch(value, @"[0-9]")) {
-            throw new DomainValidationException("Password",ErrorCode.BadRequest, ErrorMessages.PasswordMustContainLetterAndNumber);
+            throw new DomainValidationException("Password", ErrorCode.BadRequest,
+                ErrorMessages.AdminPasswordMustContainLetterAndNumber);
         }
-
     }
 
     private static string HashPassword(string password) {
         return BCrypt.Net.BCrypt.HashPassword(password);
+    }
+
+    public override string ToString() {
+        return $"Id: {Id}, Email: {Email}";
     }
 }
