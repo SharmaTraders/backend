@@ -9,6 +9,7 @@ public class WriteDatabaseContext : DbContext {
     public required DbSet<AdminEntity> Admins { get; init; }
     public required DbSet<ItemEntity> Items { get; init; }
     public required DbSet<BillingPartyEntity> BillingParties { get; init; }
+    public required DbSet<PurchaseEntity> Purchases { get; init; }
 
 
     public WriteDatabaseContext(DbContextOptions<WriteDatabaseContext> options) : base(options) {
