@@ -18,11 +18,16 @@ public class PurchaseLineItem
         get => _quantity;
         set
         {
-            if (value < 0)
+            if (value <= 0)
             {
                 throw new DomainValidationException("Quantity", ErrorCode.BadRequest, ErrorMessages.PurchaseLineItemQuantityPositive);
             }
-
+            double roundedValue = Math.Round(value, 2);
+            if (Math.Abs(roundedValue - value) > 0.0001)
+            {
+                throw new DomainValidationException("Quantity", ErrorCode.BadRequest,
+                    ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+            }
             _quantity = value;
         }
     }
@@ -36,12 +41,17 @@ public class PurchaseLineItem
         get => _price;
         set
         {
-            if (value < 0)
+            if (value <= 0)
             {
                 throw new DomainValidationException("Price", ErrorCode.BadRequest,
                     ErrorMessages.PurchaseEntityInvoiceNumberPositive);
             }
-
+            double roundedValue = Math.Round(value, 2);
+            if (Math.Abs(roundedValue - value) > 0.0001)
+            {
+                throw new DomainValidationException("Price", ErrorCode.BadRequest,
+                    ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+            }
             _price = value;
         }
     }
@@ -54,10 +64,18 @@ public class PurchaseLineItem
         get => _report;
         set
         {
+            if (!value.HasValue) return;
             if (value < 0)
             {
                 throw new DomainValidationException("Report", ErrorCode.BadRequest,
                     ErrorMessages.PurchaseLineItemReportPositive);
+            }
+
+            double roundedValue = Math.Round(value.Value, 2);
+            if (Math.Abs(roundedValue - value.Value) > 0.0001)
+            {
+                throw new DomainValidationException("Report", ErrorCode.BadRequest,
+                    ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
             }
             _report = value;
         }

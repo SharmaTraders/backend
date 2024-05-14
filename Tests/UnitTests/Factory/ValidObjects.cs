@@ -9,16 +9,21 @@ public class ValidObjects
         return new PurchaseLineItem()
         {
             Id = Guid.NewGuid(),
-            ItemEntity = new ItemEntity()
-            {
-                Id = Guid.NewGuid(),
-                Name = "Test Name",
-                CurrentEstimatedStockValuePerKilo = 50,
-                CurrentStockAmount = 0
-            },
+            ItemEntity = GetValidItem(),
             Price = 10,
             Quantity = 1,
             Report = 0.00
+        };
+    }
+
+    public static ItemEntity GetValidItem()
+    {
+        return new ItemEntity()
+        {
+            Id = Guid.NewGuid(),
+            Name = "Test Name",
+            CurrentEstimatedStockValuePerKilo = 50,
+            CurrentStockAmount = 0
         };
     }
 

@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace WebApi.Endpoints.command.purchase;
@@ -15,6 +16,7 @@ public class AddPurchase : CommandEndPointBase
     }
 
     [HttpPost, Route("purchase")]
+    [Authorize(Roles = "Admin")]
     public override async Task<ActionResult<CommandContracts.purchase.AddPurchase.Response>> HandleAsync(AddPurchaseRequest request)
     {
         var commandRequest = new CommandContracts.purchase.AddPurchase.Request(

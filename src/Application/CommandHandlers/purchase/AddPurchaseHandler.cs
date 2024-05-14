@@ -46,7 +46,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
         }
 
         List<PurchaseLineItem> lineItems = new();
-
+        double totalAmount = 0.00;
         foreach (var purchase in request.PurchaseLines)
         {
             bool tryParseItemId = Guid.TryParse(purchase.ItemId, out Guid itemId);
@@ -70,7 +70,19 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
                 Quantity = purchase.Quantity,
                 Report = purchase.Report
             };
+            totalAmount += (lineItem.Quantity * lineItem.Price);
+            totalAmount -= lineItem.Report ?? 0;
             lineItems.Add(lineItem);
+            
+            Stock stock = new Stock()
+            {
+                Date = date,
+                EntryCategory = StockEntryCategory.Purchase,
+                Weight = purchase.Quantity,
+                ExpectedValuePerKilo = purchase.UnitPrice,
+                Remarks = "Added from purchase entry."
+            };
+            item.AddStock(stock);
         }
 
         PurchaseEntity purchaseEntity = new PurchaseEntity()
@@ -85,6 +97,18 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
             TransportFee = request.TransportFee,
             Purchases = lineItems
         };
+        totalAmount += purchaseEntity.TransportFee ?? 0;
+        totalAmount += purchaseEntity.VatAmount ?? 0;
+        double amount = 0.0;
+        if (purchaseEntity.PaidAmount.HasValue)
+        {
+            amount =purchaseEntity.PaidAmount.Value - totalAmount;
+        }else
+        {
+            amount = -1* totalAmount;
+        }
+        
+        billingParty.UpdateBalance(amount);
         await _purchaseRepository.AddAsync(purchaseEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return new AddPurchase.Response(purchaseEntity.Id.ToString());

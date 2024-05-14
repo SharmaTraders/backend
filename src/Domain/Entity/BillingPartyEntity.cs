@@ -63,6 +63,10 @@ public class BillingPartyEntity: IEntity<Guid> {
         }
     }
 
+    public void UpdateBalance(double amount) {
+        ValidateBalance(amount);
+        _balance += amount;
+    }
 
     private static void ValidateName(string value) {
         if (string.IsNullOrEmpty(value)) {
@@ -123,15 +127,9 @@ public class BillingPartyEntity: IEntity<Guid> {
 
     private static void ValidateBalance(double? value) {
         if (value is null) return;
-
-        // Makes sure that upto two digits after decimal is acceptable
-        string balanceStr = value.ToString()!;
-        int decimalSeparatorIndex = balanceStr.IndexOf('.');
-        if (decimalSeparatorIndex < 0) {
-            return;
-        }
-
-        if (!(balanceStr.Length - decimalSeparatorIndex - 1 <= 2)) {
+        
+        double roundedValue = Math.Round(value.Value, 2);
+        if (Math.Abs(roundedValue - value.Value) > 0.0001) {
             throw new DomainValidationException("OpeningBalance", ErrorCode.BadRequest,
                 ErrorMessages.BillingPartyOpeningBalanceMustBeAtMax2DecimalPlaces);
         }

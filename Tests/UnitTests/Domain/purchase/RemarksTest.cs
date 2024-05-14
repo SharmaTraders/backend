@@ -3,11 +3,11 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class InvoiceNumberTest
+public class RemarksTest
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidInvoiceNumbers), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithValidInvoiceNumber_CanBeCreated(int validNumber)
+    [MemberData(nameof(PurchaseFactory.GetValidRemarks), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithValidRemarks_CanBeCreated(string validRemarks)
     {
         // Arrange
         var purchaseEntity = new PurchaseEntity
@@ -19,17 +19,17 @@ public class InvoiceNumberTest
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
             TransportFee = 0,
             VatAmount = 0,
-            InvoiceNumber = validNumber,
-            Remarks = "Test Remarks"
+            InvoiceNumber = 0,
+            Remarks = validRemarks
         };
         
         // Act No exception is thrown
-        Assert.Equal(validNumber, purchaseEntity.InvoiceNumber);
+        Assert.Equal(validRemarks, purchaseEntity.Remarks);
     }
-    
+
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidInvoiceNumbers), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithInValidInvoiceNumber_CannotBeCreated(int invalidNumber)
+    [MemberData(nameof(PurchaseFactory.GetInvalidRemarks), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithInvalidRemarks_CanNotBeCreated(string inValidRemarks)
     {
         // Arrange
         var exception = Assert.Throws<DomainValidationException>( ()  => new PurchaseEntity
@@ -41,12 +41,13 @@ public class InvoiceNumberTest
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
             TransportFee = 0,
             VatAmount = 0,
-            InvoiceNumber = invalidNumber,
-            Remarks = "Test Remarks"
+            InvoiceNumber = 0,
+            Remarks = inValidRemarks
         });
         
         // Assert
         Assert.NotEmpty(exception.Message);
-        Assert.True(exception.Type.Equals("InvoiceNumber", StringComparison.OrdinalIgnoreCase));
+        Assert.True(exception.Type.Equals("Remarks", StringComparison.OrdinalIgnoreCase));
     }
+    
 }
