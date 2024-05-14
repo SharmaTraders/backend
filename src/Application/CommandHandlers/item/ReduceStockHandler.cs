@@ -34,7 +34,7 @@ public class ReduceStockHandler : IRequestHandler<ReduceStockCommand.Request> {
 
         Stock stock = new Stock() {
             Date = date,
-            EntryCategory = StockEntryCategory.AddStockEntry,
+            EntryCategory = StockEntryCategory.ReduceStockEntry,
             Weight = request.Weight,
             Remarks = request.Remarks
         };
