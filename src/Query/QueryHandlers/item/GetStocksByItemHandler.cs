@@ -24,7 +24,6 @@ public class GetStocksByItemHandler : IRequestHandler<GetStocksByItem.Query, Get
             .Where(stock => stock.ItemEntityId == itemId);
 
         int totalItems = await queryable.CountAsync(cancellationToken);
-        int totalPages = (int) Math.Ceiling((double) totalItems / request.PageSize);
 
         List<GetStocksByItem.StockDto> stocks =await queryable
             .OrderByDescending(stock => stock.Date)
@@ -33,7 +32,7 @@ public class GetStocksByItemHandler : IRequestHandler<GetStocksByItem.Query, Get
             .Select(stock => new GetStocksByItem.StockDto(stock.Id.ToString(), stock.Weight, stock.Date.ToString(), stock.EntryCategory, stock.Remarks))
             .ToListAsync(cancellationToken);
 
-        return new GetStocksByItem.Answer(stocks, totalPages, request.PageNumber, request.PageSize);
+        return new GetStocksByItem.Answer(stocks, totalItems, request.PageNumber, request.PageSize);
 
     }                                                                                             
 }

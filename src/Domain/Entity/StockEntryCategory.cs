@@ -8,7 +8,7 @@ public class StockEntryCategory : Enumeration{
     public static readonly StockEntryCategory Purchase= new StockEntryCategory(1, "Purchase");
     public static readonly StockEntryCategory Sale= new StockEntryCategory(2, "Sale");
     public static readonly StockEntryCategory AddStockEntry= new StockEntryCategory(3, "Add Stock");
-    public static readonly StockEntryCategory RemoveStockEntry= new StockEntryCategory(4, "Remove Stock");
+    public static readonly StockEntryCategory ReduceStockEntry= new StockEntryCategory(4, "Reduce Stock");
 
 
     private StockEntryCategory(){}
