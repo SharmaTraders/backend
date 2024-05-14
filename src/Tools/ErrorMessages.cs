@@ -84,6 +84,8 @@ public static class ErrorMessages
     public const string PurchaseEntityDateCannotBeFutureDate = "Future date cannot be assigned.";
     public const string PurchaseEntityDateFormatInvalid = "Invalid date format. Expected format is YYYY-MM-DD.";
     public const string PurchaseEntityInvalidPurchaseLineItem = "Invalid purchase line item.";
+    public const string PurchaseEntityNumberRoundedToTwoDecimalPlaces = "Value cannot have more than two decimal places.";
+    public const string PurchaseEntityInvoiceNumberInteger = "Invoice number must be a whole integer without any fractional parts.";
 
 
     public static string BillingPartyNotFound(Guid id)
