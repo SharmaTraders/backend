@@ -3,7 +3,7 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class PurchaseBillingItemTest
+public class PurchaseBillingItemTests
 {
     [Theory]
     [MemberData(nameof(PurchaseFactory.GetValidPurchaseLineItems), MemberType = typeof(PurchaseFactory))]

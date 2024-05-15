@@ -3,11 +3,11 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class PaidAmountTest
+public class RemarksTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidPositiveNumbers), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithValidPaidAmount_CanBeCreated(double validNumber)
+    [MemberData(nameof(PurchaseFactory.GetValidRemarks), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithValidRemarks_CanBeCreated(string validRemarks)
     {
         // Arrange
         var purchaseEntity = new PurchaseEntity
@@ -15,21 +15,21 @@ public class PaidAmountTest
             Id = Guid.NewGuid(),
             BillingParty = ValidObjects.GetValidBillingParty(),
             Date = DateOnly.FromDateTime(DateTime.Now),
-            PaidAmount = validNumber,
+            PaidAmount = 0,
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
             TransportFee = 0,
             VatAmount = 0,
             InvoiceNumber = 0,
-            Remarks = "Test Remarks"
+            Remarks = validRemarks
         };
         
         // Act No exception is thrown
-        Assert.Equal(validNumber, purchaseEntity.PaidAmount);
+        Assert.Equal(validRemarks, purchaseEntity.Remarks);
     }
-    
+
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidNumbers), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithInValidPaidAmount_CannotBeCreated(double invalidNumber)
+    [MemberData(nameof(PurchaseFactory.GetInvalidRemarks), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithInvalidRemarks_CanNotBeCreated(string inValidRemarks)
     {
         // Arrange
         var exception = Assert.Throws<DomainValidationException>( ()  => new PurchaseEntity
@@ -37,16 +37,17 @@ public class PaidAmountTest
             Id = Guid.NewGuid(),
             BillingParty = ValidObjects.GetValidBillingParty(),
             Date = DateOnly.FromDateTime(DateTime.Now),
-            PaidAmount = invalidNumber,
+            PaidAmount = 0,
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
             TransportFee = 0,
             VatAmount = 0,
             InvoiceNumber = 0,
-            Remarks = "Test Remarks"
+            Remarks = inValidRemarks
         });
         
         // Assert
         Assert.NotEmpty(exception.Message);
-        Assert.True(exception.Type.Equals("PaidAmount", StringComparison.OrdinalIgnoreCase));
+        Assert.True(exception.Type.Equals("Remarks", StringComparison.OrdinalIgnoreCase));
     }
+    
 }

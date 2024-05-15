@@ -2,7 +2,7 @@
 
 namespace UnitTests;
 
-public class ValidObjects
+public static class ValidObjects
 {
     public static PurchaseLineItem GetValidPurchaseLineItem()
     {

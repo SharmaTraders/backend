@@ -108,7 +108,8 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
             amount = -1* totalAmount;
         }
         
-        billingParty.UpdateBalance(amount);
+        double roundedAmount = Math.Round(amount, 2);
+        billingParty.UpdateBalance(roundedAmount);
         await _purchaseRepository.AddAsync(purchaseEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return new AddPurchase.Response(purchaseEntity.Id.ToString());

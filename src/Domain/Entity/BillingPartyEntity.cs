@@ -64,7 +64,7 @@ public class BillingPartyEntity: IEntity<Guid> {
     }
 
     public void UpdateBalance(double amount) {
-        ValidateBalance(amount);
+        ValidateBalanceForUpdate(amount);
         _balance += amount;
     }
 
@@ -132,6 +132,14 @@ public class BillingPartyEntity: IEntity<Guid> {
         if (Math.Abs(roundedValue - value.Value) > 0.0001) {
             throw new DomainValidationException("OpeningBalance", ErrorCode.BadRequest,
                 ErrorMessages.BillingPartyOpeningBalanceMustBeAtMax2DecimalPlaces);
+        }
+    }
+    private void ValidateBalanceForUpdate(double value)
+    {
+       double roundedValue = Math.Round(value, 2);
+        if (Math.Abs(roundedValue - value) > 0.0001) {
+            throw new DomainValidationException("Amount", ErrorCode.BadRequest,
+                ErrorMessages.BillingPartyUpdateAmountMustBeAtMax2DecimalPlaces);
         }
     }
 

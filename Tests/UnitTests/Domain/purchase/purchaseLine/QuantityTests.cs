@@ -3,42 +3,42 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class PriceTest
+public class QuantityTests
 {
     [Theory]
     [MemberData(nameof(PurchaseFactory.GetValidPositiveNumbers), MemberType = typeof(PurchaseFactory))]
-    public void PurchaseLineItem_WithValidPrice_CanBeCreated(double validNumber)
+public void PurchaseLineItem_WithValidQuantity_CanBeCreated(double validNumber)
     {
         // Arrange
         var purchaseLineItem = new PurchaseLineItem
         {
             Id = Guid.NewGuid(),
             ItemEntity = ValidObjects.GetValidItem(),
-            Quantity = 10,
-            Price = validNumber,
+            Quantity = validNumber,
+            Price = 20.5,
             Report = 5.77
         };
         
         // Act No exception is thrown
-        Assert.Equal(validNumber, purchaseLineItem.Price);
+        Assert.Equal(validNumber, purchaseLineItem.Quantity);
     }
-    
+
     [Theory]
     [MemberData(nameof(PurchaseFactory.GetInValidNumbersInclZero), MemberType = typeof(PurchaseFactory))]
-    public void PurchaseLineItem_WithInValidPrice_CannotBeCreated(double invalidNumber)
+    public void PurchaseLineItem_WithInValidQuantity_CannotBeCreated(double invalidNumber)
     {
         // Arrange
         var exception = Assert.Throws<DomainValidationException>( ()  => new PurchaseLineItem
         {
             Id = Guid.NewGuid(),
             ItemEntity = ValidObjects.GetValidItem(),
-            Quantity = 10,
-            Price = invalidNumber,
+            Quantity = invalidNumber,
+            Price = 20.5,
             Report = 5.77
         });
         
         // Assert
         Assert.NotEmpty(exception.Message);
-        Assert.True(exception.Type.Equals("Price", StringComparison.OrdinalIgnoreCase));
+        Assert.True(exception.Type.Equals("Quantity", StringComparison.OrdinalIgnoreCase));
     }
 }

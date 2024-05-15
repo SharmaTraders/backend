@@ -8,6 +8,7 @@ public static class ErrorMessages
 
     public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
+    public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
 
 
     // Admin
@@ -22,6 +23,11 @@ public static class ErrorMessages
     public const string AdminPasswordIncorrect = "Incorrect password";
 
     // Item
+    public static string ItemNotFound(Guid id)
+    {
+        return $"Item with id : {id} not found";
+    }
+
     public static string ItemNameAlreadyExists(string itemName) => $"Item name : {itemName} already exists";
     public const string ItemNameIsRequired = "Item must have a name";
     public const string ItemNameLength = "Item length must be between 3 and 20 (inclusive)";
@@ -38,6 +44,11 @@ public static class ErrorMessages
 
 
     // Billing parties
+    public static string BillingPartyNotFound(Guid id)
+    {
+        return $"Billing party with id : {id} not found";
+    }
+
     public static string BillingPartyNameAlreadyExists(string billingPartyName) =>
         $"Billing party name : {billingPartyName} already exists";
 
@@ -66,36 +77,25 @@ public static class ErrorMessages
     public const string BillingPartyVatNumberMustBeBetween5To20Characters =
         "Vat number must be between 5 to 20 characters (inclusive)";
 
-    // Purchase
-    public const string PurchaseLineItemQuantityPositive = "Quantity must be positive or zero.";
-    public const string PurchaseLineItemPricePositive = "Price must be positive or zero.";
-    public const string PurchaseLineItemPriceRequired = "Price is required.";
-    public const string PurchaseLineItemEntityRequired = "Item is required.";
-    public const string PurchaseLineItemQuantityRequired = "Quantity is required.";
-    public const string PurchaseLineItemReportPositive = "Report must be positive or zero.";
-    public const string PurchaseEntityBillingPartyRequired = "Billing party is required.";
-    public const string PurchaseEntityPurchaseLinesRequired = "At least one purchase line item is required.";
-    public const string PurchaseEntityVatAmountPositive = "VAT amount must be a positive value.";
-    public const string PurchaseEntityTransportFeePositive = "Transport fee must be a positive value.";
-    public const string PurchaseEntityPaidAmountPositive = "Paid amount must be a positive value.";
+    public const string BillingPartyUpdateAmountMustBeAtMax2DecimalPlaces =
+        "Billing party update amount must be at most 2 decimal places";
+    
+// PurchaseLineItem
+    public const string PurchaseLineItemQuantityPositive = "The quantity must be a positive number.";
+    public const string PurchaseLineItemPricePositive = "The price must be a positive number.";
+    public const string PurchaseLineItemPriceRequired = "The price of the item is required.";
+    public const string PurchaseLineItemEntityRequired = "The item is required and cannot be null.";
+    public const string PurchaseLineItemQuantityRequired = "The quantity of the item is required.";
+    public const string PurchaseLineItemReportPositive = "The report value must be a positive number.";
+
+    // PurchaseEntity
+    public const string PurchaseEntityBillingPartyRequired = "The billing party information is required.";
+    public const string PurchaseEntityPurchaseLinesRequired = "At least one item must be included.";
+    public const string PurchaseEntityVatAmountPositive = "The VAT amount must be a positive number.";
+    public const string PurchaseEntityTransportFeePositive = "The transport fee must be a positive number.";
+    public const string PurchaseEntityPaidAmountPositive = "The paid amount must be a positive number.";
     public const string PurchaseEntityRemarksTooLong = "Remarks cannot exceed 500 characters.";
-    public const string PurchaseEntityInvoiceNumberPositive = "Invoice number must be a positive value.";
-    public const string PurchaseEntityDateRequired = "Date is required.";
-    public const string PurchaseEntityDateCannotBeFutureDate = "Future date cannot be assigned.";
-    public const string PurchaseEntityDateFormatInvalid = "Invalid date format. Expected format is YYYY-MM-DD.";
-    public const string PurchaseEntityInvalidPurchaseLineItem = "Invalid purchase line item.";
-    public const string PurchaseEntityNumberRoundedToTwoDecimalPlaces = "Value cannot have more than two decimal places.";
-    public const string PurchaseEntityInvoiceNumberInteger = "Invoice number must be a whole integer without any fractional parts.";
-
-
-    public static string BillingPartyNotFound(Guid id)
-    {
-        return $"Billing party with id : {id} not found";
-    }
-
-
-    public static string ItemNotFound(Guid id)
-    {
-        return $"Item with id : {id} not found";
-    }
+    public const string PurchaseEntityInvoiceNumberPositive = "The invoice number must be a positive integer.";
+    public const string PurchaseEntityDateRequired = "The purchase date is required.";
+    public const string PurchaseEntityNumberRoundedToTwoDecimalPlaces = "The value must be rounded to two decimal places or fewer.";
 }

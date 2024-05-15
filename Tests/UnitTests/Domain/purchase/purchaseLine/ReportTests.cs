@@ -3,42 +3,42 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class QuantityTest
+public class ReportTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidPositiveNumbers), MemberType = typeof(PurchaseFactory))]
-public void PurchaseLineItem_WithValidQuantity_CanBeCreated(double validNumber)
+    [MemberData(nameof(PurchaseFactory.GetValidNumberInclZero), MemberType = typeof(PurchaseFactory))]
+    public void PurchaseLineItem_WithValidReport_CanBeCreated(double validNumber)
     {
         // Arrange
         var purchaseLineItem = new PurchaseLineItem
         {
             Id = Guid.NewGuid(),
             ItemEntity = ValidObjects.GetValidItem(),
-            Quantity = validNumber,
+            Quantity = 10,
             Price = 20.5,
-            Report = 5.77
+            Report = validNumber
         };
         
         // Act No exception is thrown
-        Assert.Equal(validNumber, purchaseLineItem.Quantity);
+        Assert.Equal(validNumber, purchaseLineItem.Report);
     }
-
+    
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidNumbersInclZero), MemberType = typeof(PurchaseFactory))]
-    public void PurchaseLineItem_WithInValidQuantity_CannotBeCreated(double invalidNumber)
+    [MemberData(nameof(PurchaseFactory.GetInValidNumbers), MemberType = typeof(PurchaseFactory))]
+    public void PurchaseLineItem_WithInValidReport_CannotBeCreated(double invalidNumber)
     {
         // Arrange
         var exception = Assert.Throws<DomainValidationException>( ()  => new PurchaseLineItem
         {
             Id = Guid.NewGuid(),
             ItemEntity = ValidObjects.GetValidItem(),
-            Quantity = invalidNumber,
+            Quantity = 10,
             Price = 20.5,
-            Report = 5.77
+            Report = invalidNumber
         });
         
         // Assert
         Assert.NotEmpty(exception.Message);
-        Assert.True(exception.Type.Equals("Quantity", StringComparison.OrdinalIgnoreCase));
+        Assert.True(exception.Type.Equals("Report", StringComparison.OrdinalIgnoreCase));
     }
 }

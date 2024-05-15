@@ -3,7 +3,7 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class VatTest
+public class VatTests
 {
     [Theory]
     [MemberData(nameof(PurchaseFactory.GetValidNumberInclZero), MemberType = typeof(PurchaseFactory))]

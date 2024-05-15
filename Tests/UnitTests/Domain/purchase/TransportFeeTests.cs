@@ -3,11 +3,11 @@ using UnitTests.Factory;
 
 namespace UnitTests.Domain.purchase;
 
-public class RemarksTest
+public class TransportFeeTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidRemarks), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithValidRemarks_CanBeCreated(string validRemarks)
+    [MemberData(nameof(PurchaseFactory.GetValidNumberInclZero), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithValidTransportFee_CanBeCreated(double validNumber)
     {
         // Arrange
         var purchaseEntity = new PurchaseEntity
@@ -17,19 +17,19 @@ public class RemarksTest
             Date = DateOnly.FromDateTime(DateTime.Now),
             PaidAmount = 0,
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
-            TransportFee = 0,
+            TransportFee = validNumber,
             VatAmount = 0,
             InvoiceNumber = 0,
-            Remarks = validRemarks
+            Remarks = "Test Remarks"
         };
         
         // Act No exception is thrown
-        Assert.Equal(validRemarks, purchaseEntity.Remarks);
+        Assert.Equal(validNumber, purchaseEntity.TransportFee);
     }
-
+    
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInvalidRemarks), MemberType = typeof(PurchaseFactory))]
-    public void Purchase_WithInvalidRemarks_CanNotBeCreated(string inValidRemarks)
+    [MemberData(nameof(PurchaseFactory.GetInValidNumbers), MemberType = typeof(PurchaseFactory))]
+    public void Purchase_WithInValidTransportFee_CannotBeCreated(double invalidNumber)
     {
         // Arrange
         var exception = Assert.Throws<DomainValidationException>( ()  => new PurchaseEntity
@@ -39,15 +39,14 @@ public class RemarksTest
             Date = DateOnly.FromDateTime(DateTime.Now),
             PaidAmount = 0,
             Purchases = new List<PurchaseLineItem>(){ValidObjects.GetValidPurchaseLineItem()},
-            TransportFee = 0,
+            TransportFee = invalidNumber,
             VatAmount = 0,
             InvoiceNumber = 0,
-            Remarks = inValidRemarks
+            Remarks = "Test Remarks"
         });
         
         // Assert
         Assert.NotEmpty(exception.Message);
-        Assert.True(exception.Type.Equals("Remarks", StringComparison.OrdinalIgnoreCase));
+        Assert.True(exception.Type.Equals("TransportFee", StringComparison.OrdinalIgnoreCase));
     }
-    
 }
