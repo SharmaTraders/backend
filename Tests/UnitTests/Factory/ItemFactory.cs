@@ -87,4 +87,22 @@ internal static class ItemFactory {
             new object[] {"a".PadRight(1000, 'a')}
         };
     }
+
+    public static IEnumerable<object[]> GetValidDate() {
+        return new List<object[]>() {
+            new object[] {new DateOnly()},
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddDays(-1))},
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddDays(-10))},
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddYears(-10))},
+        };
+    }
+
+    public static IEnumerable<object[]> GetInvalidDate() {
+        return new List<object[]>() {
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddDays(1))},
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddDays(10))},
+            new object[] {DateOnly.FromDateTime(DateTime.Now.AddYears(10))},
+        };
+    }
+
 }
