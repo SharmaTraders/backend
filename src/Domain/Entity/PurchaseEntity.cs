@@ -1,23 +1,18 @@
-﻿using System.ComponentModel.DataAnnotations;
-using Domain.common;
+﻿using Domain.common;
+using Domain.Entity.ValueObjects;
 
 namespace Domain.Entity;
 
-public class PurchaseEntity : IEntity<Guid>
-{
+public class PurchaseEntity : IEntity<Guid> {
     public Guid Id { get; set; }
 
-    [Required(ErrorMessage = ErrorMessages.PurchaseEntityBillingPartyRequired)]
     public required BillingPartyEntity BillingParty { get; set; }
 
     private ICollection<PurchaseLineItem> _purchases;
 
-    [Required(ErrorMessage = ErrorMessages.PurchaseEntityPurchaseLinesRequired)]
-    public required ICollection<PurchaseLineItem> Purchases
-    {
+    public required ICollection<PurchaseLineItem> Purchases {
         get => _purchases;
-        set
-        {
+        set {
             ValidatePurchases(value);
             _purchases = value;
         }
@@ -25,126 +20,99 @@ public class PurchaseEntity : IEntity<Guid>
 
     private double? _vatAmount;
 
-    [Range(0, double.MaxValue, ErrorMessage = ErrorMessages.PurchaseEntityVatAmountPositive)]
-    public double? VatAmount
-    {
+    public double? VatAmount {
         get => _vatAmount;
-        set
-        {
-            ValidateTwoDecimalPlaces(value, "VatAmount", ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+        set {
+            ValidateTwoDecimalPlaces(value, "VatAmount", ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
             _vatAmount = value;
         }
     }
 
     private double? _transportFee;
 
-    [Range(0, double.MaxValue, ErrorMessage = ErrorMessages.PurchaseEntityTransportFeePositive)]
-    public double? TransportFee
-    {
+    public double? TransportFee {
         get => _transportFee;
-        set
-        {
-            ValidateTwoDecimalPlaces(value, "TransportFee", ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+        set {
+            ValidateTwoDecimalPlaces(value, "TransportFee",
+                ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
             _transportFee = value;
         }
     }
 
     private double? _paidAmount;
 
-    [Range(0, double.MaxValue, ErrorMessage = ErrorMessages.PurchaseEntityPaidAmountPositive)]
-    public double? PaidAmount
-    {
+    public double? PaidAmount {
         get => _paidAmount;
-        set
-        {
-            ValidateTwoDecimalPlaces(value, "PaidAmount", ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+        set {
+            ValidateTwoDecimalPlaces(value, "PaidAmount", ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
             _paidAmount = value;
         }
     }
 
-    private string? _remarks;
 
-    [MaxLength(500, ErrorMessage = ErrorMessages.PurchaseEntityRemarksTooLong)]
-    public string? Remarks
-    {
-        get => _remarks;
-        set
-        {
-            ValidateRemarks(value);
-            _remarks = value;
-        }
+    private Remarks? _remarks;
+
+    public string? Remarks {
+        get => _remarks?.Value;
+        set =>
+            _remarks = value != null ? new Remarks(value) : null;
     }
 
     private int? _invoiceNumber;
 
-    [Range(0, int.MaxValue, ErrorMessage = ErrorMessages.PurchaseEntityInvoiceNumberPositive)]
-    public int? InvoiceNumber
-    {
+    public int? InvoiceNumber {
         get => _invoiceNumber;
-        set
-        {
+        set {
             ValidateInvoiceNumber(value);
             _invoiceNumber = value;
         }
     }
 
-    private DateOnly _date;
+    private NonFutureDate _date;
 
-    [Required(ErrorMessage = ErrorMessages.PurchaseEntityDateRequired)]
-    public required DateOnly Date
-    {
-        get => _date;
-        set
-        {
-            ValidateDate(value);
-            _date = value;
+    public required DateOnly Date {
+        get => _date.Value;
+        set =>
+            _date = new NonFutureDate(value);
+    }
+
+    // If needed can be made public later
+    private double GetTotalAmount() {
+        double totalAmount = Purchases.Sum(purchase => purchase.GetTotalAmount());
+        totalAmount += TransportFee ?? 0;
+        totalAmount += VatAmount ?? 0;
+        return Math.Round(totalAmount, 2);
+    }
+
+    public double GetExtraAmount() {
+        return (PaidAmount ?? 0) - GetTotalAmount();
+    }
+
+    // Validation methods
+
+    private void ValidateInvoiceNumber(int? value) {
+        if (value is not null && value < 0) {
+            throw new DomainValidationException("InvoiceNumber", ErrorCode.BadRequest,
+                ErrorMessages.PurchaseEntityInvoiceNumberPositive);
         }
     }
 
-    private void ValidateDate(DateOnly value)
-    {
-        if (value > DateOnly.FromDateTime(DateTime.Now))
-        {
-            throw new DomainValidationException("Date", ErrorCode.BadRequest, ErrorMessages.DateCannotBeFutureDate);
+    private void ValidatePurchases(ICollection<PurchaseLineItem> value) {
+        if (value is null || value.Count == 0) {
+            throw new DomainValidationException("Purchases", ErrorCode.BadRequest,
+                ErrorMessages.PurchaseEntityPurchaseLinesRequired);
         }
     }
 
-    private void ValidateInvoiceNumber(int? value)
-    {
-        if (value is not null && value < 0)
-        {
-            throw new DomainValidationException("InvoiceNumber", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityInvoiceNumberPositive);
-        }
-    }
-
-    private void ValidateRemarks(string? value)
-    {
-        if (value is not null && value.Length > 500)
-        {
-            throw new DomainValidationException("Remarks", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityRemarksTooLong);
-        }
-    }
-
-    private void ValidatePurchases(ICollection<PurchaseLineItem> value)
-    {
-        if (value is null || value.Count == 0)
-        {
-            throw new DomainValidationException("Purchases", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityPurchaseLinesRequired);
-        }
-    }
-
-    private void ValidateTwoDecimalPlaces(double? value, string propertyName, string errorMessage)
-    {
+    private void ValidateTwoDecimalPlaces(double? value, string propertyName, string errorMessage) {
         if (!value.HasValue) return;
 
-        if (value < 0)
-        {
+        if (value < 0) {
             throw new DomainValidationException(propertyName, ErrorCode.BadRequest, errorMessage);
         }
 
         double roundedValue = Math.Round(value.Value, 2);
-        if (Math.Abs(roundedValue - value.Value) > 0.0001)
-        {
+        if (Math.Abs(roundedValue - value.Value) > 0.0001) {
             throw new DomainValidationException(propertyName, ErrorCode.BadRequest, errorMessage);
         }
     }

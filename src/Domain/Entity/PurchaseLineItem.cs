@@ -47,7 +47,7 @@ public class PurchaseLineItem
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
         {
-            throw new DomainValidationException("Quantity", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+            throw new DomainValidationException("Quantity", ErrorCode.BadRequest, ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
         }
         return value;
     }
@@ -61,7 +61,7 @@ public class PurchaseLineItem
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
         {
-            throw new DomainValidationException("Price", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+            throw new DomainValidationException("Price", ErrorCode.BadRequest, ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
         }
         return value;
     }
@@ -76,8 +76,13 @@ public class PurchaseLineItem
         double roundedValue = Math.Round(value.Value, 2);
         if (Math.Abs(roundedValue - value.Value) > 0.0001)
         {
-            throw new DomainValidationException("Report", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityNumberRoundedToTwoDecimalPlaces);
+            throw new DomainValidationException("Report", ErrorCode.BadRequest, ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
         }
         return value;
+    }
+
+    public double GetTotalAmount()
+    {
+        return (Quantity * Price - (Report ?? 0));
     }
 }
