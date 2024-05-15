@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Query;
@@ -20,7 +21,12 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Item> Items { get; set; }
 
+    public virtual DbSet<Purchase> Purchases { get; set; }
+
+    public virtual DbSet<PurchaseLineItem> PurchaseLineItems { get; set; }
+
     public virtual DbSet<Stock> Stocks { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -48,6 +54,30 @@ public partial class SharmaTradersContext : DbContext
             entity.HasIndex(e => e.Name, "IX_Items_Name").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Purchase>(entity =>
+        {
+            entity.HasIndex(e => e.BillingPartyId, "IX_Purchases_BillingPartyId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.BillingParty).WithMany(p => p.Purchases).HasForeignKey(d => d.BillingPartyId);
+        });
+
+        modelBuilder.Entity<PurchaseLineItem>(entity =>
+        {
+            entity.ToTable("PurchaseLineItem");
+
+            entity.HasIndex(e => e.ItemEntityId, "IX_PurchaseLineItem_ItemEntityId");
+
+            entity.HasIndex(e => e.PurchaseEntityId, "IX_PurchaseLineItem_PurchaseEntityId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.ItemEntity).WithMany(p => p.PurchaseLineItems).HasForeignKey(d => d.ItemEntityId);
+
+            entity.HasOne(d => d.PurchaseEntity).WithMany(p => p.PurchaseLineItems).HasForeignKey(d => d.PurchaseEntityId);
         });
 
         modelBuilder.Entity<Stock>(entity =>

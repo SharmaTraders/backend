@@ -35,6 +35,7 @@ builder.Services.AddDbContext<SharmaTradersContext>(options => {
 builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IBillingPartyRepository, BillingPartyRepository>();
+builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 
 
 // Services
@@ -55,9 +56,7 @@ builder.Services.AddControllers();
 // Add services to the container.
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
-});
+
 
 builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddProblemDetails();
@@ -83,6 +82,7 @@ builder.Services.AddSwaggerGen(c => {
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey
     });
+    c.CustomSchemaIds(type => type.FullName?.Replace("+", "."));
     c.AddSecurityRequirement(new() {
         {
             new() {

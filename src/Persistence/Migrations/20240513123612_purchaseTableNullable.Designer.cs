@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(WriteDatabaseContext))]
-    [Migration("20240512220404_init")]
-    partial class init
+    [Migration("20240513123612_purchaseTableNullable")]
+    partial class purchaseTableNullable
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -111,6 +111,40 @@ namespace Data.Migrations
                     b.ToTable("Items");
                 });
 
+            modelBuilder.Entity("Domain.Entity.PurchaseEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("BillingPartyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<int?>("InvoiceNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<double>("PaidAmount")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("text");
+
+                    b.Property<double?>("TransportFee")
+                        .HasColumnType("double precision");
+
+                    b.Property<double?>("VatAmount")
+                        .HasColumnType("double precision");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillingPartyId");
+
+                    b.ToTable("Purchases");
+                });
+
             modelBuilder.Entity("Domain.Entity.ItemEntity", b =>
                 {
                     b.OwnsMany("Domain.Entity.Stock", "StockHistory", b1 =>
@@ -149,6 +183,60 @@ namespace Data.Migrations
                         });
 
                     b.Navigation("StockHistory");
+                });
+
+            modelBuilder.Entity("Domain.Entity.PurchaseEntity", b =>
+                {
+                    b.HasOne("Domain.Entity.BillingPartyEntity", "BillingParty")
+                        .WithMany()
+                        .HasForeignKey("BillingPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.OwnsMany("Domain.Entity.PurchaseLineItem", "Purchases", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("ItemEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("Price")
+                                .HasColumnType("double precision");
+
+                            b1.Property<Guid>("PurchaseEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<double>("Quantity")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("Report")
+                                .HasColumnType("double precision");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("ItemEntityId");
+
+                            b1.HasIndex("PurchaseEntityId");
+
+                            b1.ToTable("PurchaseLineItem");
+
+                            b1.HasOne("Domain.Entity.ItemEntity", "ItemEntity")
+                                .WithMany()
+                                .HasForeignKey("ItemEntityId")
+                                .OnDelete(DeleteBehavior.Cascade)
+                                .IsRequired();
+
+                            b1.WithOwner()
+                                .HasForeignKey("PurchaseEntityId");
+
+                            b1.Navigation("ItemEntity");
+                        });
+
+                    b.Navigation("BillingParty");
+
+                    b.Navigation("Purchases");
                 });
 #pragma warning restore 612, 618
         }

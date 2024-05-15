@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class purchaseTableNullable : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,6 +56,30 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Purchases",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    BillingPartyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    VatAmount = table.Column<double>(type: "double precision", nullable: true),
+                    TransportFee = table.Column<double>(type: "double precision", nullable: true),
+                    PaidAmount = table.Column<double>(type: "double precision", nullable: false),
+                    Remarks = table.Column<string>(type: "text", nullable: true),
+                    InvoiceNumber = table.Column<int>(type: "integer", nullable: true),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Purchases", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Purchases_BillingParties_BillingPartyId",
+                        column: x => x.BillingPartyId,
+                        principalTable: "BillingParties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Stock",
                 columns: table => new
                 {
@@ -74,6 +98,34 @@ namespace Data.Migrations
                         name: "FK_Stock_Items_ItemEntityId",
                         column: x => x.ItemEntityId,
                         principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PurchaseLineItem",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    ItemEntityId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Quantity = table.Column<double>(type: "double precision", nullable: false),
+                    Price = table.Column<double>(type: "double precision", nullable: false),
+                    Report = table.Column<double>(type: "double precision", nullable: false),
+                    PurchaseEntityId = table.Column<Guid>(type: "uuid", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PurchaseLineItem", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PurchaseLineItem_Items_ItemEntityId",
+                        column: x => x.ItemEntityId,
+                        principalTable: "Items",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PurchaseLineItem_Purchases_PurchaseEntityId",
+                        column: x => x.PurchaseEntityId,
+                        principalTable: "Purchases",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -109,6 +161,21 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_PurchaseLineItem_ItemEntityId",
+                table: "PurchaseLineItem",
+                column: "ItemEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PurchaseLineItem_PurchaseEntityId",
+                table: "PurchaseLineItem",
+                column: "PurchaseEntityId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Purchases_BillingPartyId",
+                table: "Purchases",
+                column: "BillingPartyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Stock_ItemEntityId",
                 table: "Stock",
                 column: "ItemEntityId");
@@ -121,13 +188,19 @@ namespace Data.Migrations
                 name: "Admins");
 
             migrationBuilder.DropTable(
-                name: "BillingParties");
+                name: "PurchaseLineItem");
 
             migrationBuilder.DropTable(
                 name: "Stock");
 
             migrationBuilder.DropTable(
+                name: "Purchases");
+
+            migrationBuilder.DropTable(
                 name: "Items");
+
+            migrationBuilder.DropTable(
+                name: "BillingParties");
         }
     }
 }
