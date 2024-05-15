@@ -4,9 +4,14 @@ public class Stock {
     private double _weight;
     private double _expectedValuePerKilo;
     private string? _remarks;
+    private DateOnly _date;
 
     public Guid Id { get; set; }
-    public required DateOnly Date { get; set; }
+    public required DateOnly Date { get => _date;
+        set {
+            ValidateDate(value);
+            _date = value;
+        }}
 
     public required double Weight {
         get => _weight;
@@ -56,6 +61,12 @@ public class Stock {
         if (value.Length > 500) {
             throw new DomainValidationException("remarks", ErrorCode.BadRequest, ErrorMessages.StockRemarksTooLong);
             
+        }
+    }
+
+    private static void ValidateDate(DateOnly value) {
+        if (value > DateOnly.FromDateTime(DateTime.Now)) {
+            throw new DomainValidationException("date", ErrorCode.BadRequest, ErrorMessages.DateCannotBeFutureDate);
         }
     }
 }
