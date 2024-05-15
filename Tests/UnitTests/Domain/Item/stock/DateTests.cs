@@ -21,7 +21,6 @@ public class DateTests {
     [Theory]
     [MemberData(nameof(ItemFactory.GetInvalidDate), MemberType = typeof(ItemFactory))]
     public void Stock_WithInValidDate_CannotBeCreated(DateOnly invalidDate) {
-        // No exception is thrown
         var exception = Assert.Throws<DomainValidationException>(() => new Stock {
             Date = invalidDate,
             Weight = 10,
