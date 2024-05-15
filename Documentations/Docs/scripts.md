@@ -21,6 +21,6 @@ cd ..\..\src\Persistence\
 ```bash
 cd ..\..\src\Query\
 dotnet ef dbcontext scaffold "Server=localhost;Database=SharmaTraders;Port=5432;User ID=postgres;Password=postgres;" Npgsql.EntityFrameworkCore.PostgreSQL --force
-
+```
 
 
