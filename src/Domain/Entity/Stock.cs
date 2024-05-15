@@ -1,17 +1,18 @@
-﻿namespace Domain.Entity;
+﻿using Domain.Entity.ValueObjects;
+
+namespace Domain.Entity;
 
 public class Stock {
     private double _weight;
     private double _expectedValuePerKilo;
-    private string? _remarks;
-    private DateOnly _date;
+    private NonFutureDate _date;
 
     public Guid Id { get; set; }
-    public required DateOnly Date { get => _date;
-        set {
-            ValidateDate(value);
-            _date = value;
-        }}
+
+    public required DateOnly Date {
+        get => _date.Value;
+        set => _date = new NonFutureDate(value);
+    }
 
     public required double Weight {
         get => _weight;
@@ -21,17 +22,22 @@ public class Stock {
         }
     }
 
-    public double ExpectedValuePerKilo { get => _expectedValuePerKilo;
+    public double ExpectedValuePerKilo {
+        get => _expectedValuePerKilo;
         set {
             ValidateValuePerKilo(value);
             _expectedValuePerKilo = value;
-        } }
+        }
+    }
 
-    public string? Remarks { get => _remarks;
-        set {
-            ValidateRemarks(value);
-            _remarks = value;
-        } } 
+
+    private Remarks? _remarks;
+
+    public string? Remarks {
+        get => _remarks?.Value;
+        set =>
+            _remarks = value != null ? new Remarks(value) : null;
+    }
 
     public required StockEntryCategory EntryCategory { get; set; }
 
@@ -50,23 +56,6 @@ public class Stock {
         if (value < 0) {
             throw new DomainValidationException("expectedValuePerKilo", ErrorCode.BadRequest,
                 ErrorMessages.StockValuePerKiloCannotBeNegative);
-        }
-    }
-
-    private static void ValidateRemarks(string? value) {
-        if (string.IsNullOrEmpty(value)) {
-            return;
-        }
-
-        if (value.Length > 500) {
-            throw new DomainValidationException("remarks", ErrorCode.BadRequest, ErrorMessages.StockRemarksTooLong);
-            
-        }
-    }
-
-    private static void ValidateDate(DateOnly value) {
-        if (value > DateOnly.FromDateTime(DateTime.Now)) {
-            throw new DomainValidationException("date", ErrorCode.BadRequest, ErrorMessages.DateCannotBeFutureDate);
         }
     }
 }

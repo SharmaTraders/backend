@@ -16,9 +16,7 @@
 
     <!--    This will allow the UnitTests project to access the internal classes/methods of the Domain project.-->
     <ItemGroup>
-        <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-            <_Parameter1>UnitTests</_Parameter1>
-        </AssemblyAttribute>
+        <InternalsVisibleTo Include="UnitTests" />
     </ItemGroup>
 
 </Project>
