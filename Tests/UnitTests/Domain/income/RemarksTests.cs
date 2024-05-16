@@ -8,7 +8,6 @@ public class RemarksTests {
     [MemberData(nameof(RemarksFactory.GetValidRemarks), MemberType = typeof(RemarksFactory))]
     public void Income_WithValidRemarks_CanBeCreated(string validRemarks) {
         // No exception is thrown
-        // No exception is thrown
         IncomeEntity entity = new IncomeEntity() {
             Amount = 100,
             BillingParty = null!,

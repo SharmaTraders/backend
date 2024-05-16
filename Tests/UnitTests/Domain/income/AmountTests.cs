@@ -7,8 +7,7 @@ public  class AmountTests {
 
     [Theory]
     [MemberData(nameof(IncomeFactory.GetValidAmounts), MemberType = typeof(IncomeFactory))]
-    public void Income_WithValidRemarks_CanBeCreated(double validAmount) {
-        // No exception is thrown
+    public void Income_WithValidAmount_CanBeCreated(double validAmount) {
         // No exception is thrown
         IncomeEntity entity = new IncomeEntity() {
             Amount = validAmount,
@@ -21,7 +20,7 @@ public  class AmountTests {
 
     [Theory]
     [MemberData(nameof(IncomeFactory.GetInvalidAmounts), MemberType = typeof(IncomeFactory))]
-    public void Income_WithInValidRemarks_CannotBeCreated(double invalidAmount) {
+    public void Income_WithInValidAmount_CannotBeCreated(double invalidAmount) {
         // No exception is thrown
         var exception = Assert.Throws<DomainValidationException>( () => new IncomeEntity() {
             Amount = invalidAmount,

@@ -32,7 +32,7 @@ public class AddPurchase : CommandEndPointBase
             request.RequestBody.Remarks,
             request.RequestBody.VatAmount,
             request.RequestBody.TransportFee,
-            request.RequestBody.PaidAmount,
+            request.RequestBody.PaidAmount ?? 0,
             request.RequestBody.InvoiceNumber
         );
          var response = await _mediator.Send(commandRequest);
@@ -50,8 +50,7 @@ public class AddPurchaseRequest
         string? Remarks,
         double? VatAmount,
         double? TransportFee,
-        [Required]
-        double PaidAmount,
+        double? PaidAmount,
         int? InvoiceNumber
         );
     
@@ -63,6 +62,5 @@ public class AddPurchaseRequest
         [Required]
         double UnitPrice,
 
-        [Required]
-        double Report);
+        double? Report);
 }

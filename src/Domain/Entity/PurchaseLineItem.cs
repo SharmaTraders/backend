@@ -56,7 +56,7 @@ public class PurchaseLineItem
     {
         if (value <= 0)
         {
-            throw new DomainValidationException("Price", ErrorCode.BadRequest, ErrorMessages.PurchaseEntityInvoiceNumberPositive);
+            throw new DomainValidationException("Price", ErrorCode.BadRequest, ErrorMessages.PurchaseLineItemPricePositive);
         }
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
