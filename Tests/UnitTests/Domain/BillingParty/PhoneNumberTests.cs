@@ -14,7 +14,7 @@ public class PhoneNumberTests {
             Name = "validName" ,
             PhoneNumber = validPhoneNumber
         };
-        Assert.Equal(validPhoneNumber, billingPartyEntity.PhoneNumber);
+        Assert.Equal(string.IsNullOrEmpty(validPhoneNumber) ? null : validPhoneNumber, billingPartyEntity.PhoneNumber);
     }
 
     [Theory]

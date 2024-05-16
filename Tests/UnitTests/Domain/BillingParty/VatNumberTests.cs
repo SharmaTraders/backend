@@ -14,7 +14,7 @@ public class VatNumberTests {
             Name = "validName" ,
             VatNumber = validVatNumber
         };
-        Assert.Equal(validVatNumber, billingPartyEntity.VatNumber);
+        Assert.Equal(string.IsNullOrEmpty(validVatNumber) ? null : validVatNumber, billingPartyEntity.VatNumber);
     }
 
     [Theory]
