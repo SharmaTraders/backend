@@ -34,7 +34,7 @@ public class BillingPartyEntity: IEntity<Guid> {
         get => _email;
         set {
             ValidateEmail(value);
-            _email = value;
+            _email = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
@@ -42,7 +42,7 @@ public class BillingPartyEntity: IEntity<Guid> {
         get => _phoneNumber;
         set {
             ValidatePhoneNumber(value);
-            _phoneNumber = value;
+            _phoneNumber = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
@@ -59,7 +59,7 @@ public class BillingPartyEntity: IEntity<Guid> {
         get => _vatNumber;
         set {
             ValidateVatNumber(value);
-            _vatNumber = value;
+            _vatNumber = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
