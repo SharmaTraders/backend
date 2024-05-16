@@ -5,10 +5,12 @@ public static class ErrorMessages
     // Common
     public const string EmailInvalidFormat = "Invalid email format";
     public const string EmailRequired = "Email is required";
-
+    public const string RemarksTooLong = "Remarks must be at most 500 characters long";
     public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
     public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
+    public const string ValueMustBe2DecimalPlacesAtMax = "The value must be rounded to two decimal places or fewer.";
+
 
 
     // Admin
@@ -40,7 +42,6 @@ public static class ErrorMessages
         "Stock weight cannot be negative, If you want to reduce stock use reduce stock endpoint";
 
     public const string StockAmountCannotBeZero = "Please provide a weight to add/reduce stock";
-    public const string StockRemarksTooLong = "Remarks must be at most 500 characters long";
 
 
     // Billing parties
@@ -97,5 +98,7 @@ public static class ErrorMessages
     public const string PurchaseEntityRemarksTooLong = "Remarks cannot exceed 500 characters.";
     public const string PurchaseEntityInvoiceNumberPositive = "The invoice number must be a positive integer.";
     public const string PurchaseEntityDateRequired = "The purchase date is required.";
-    public const string PurchaseEntityNumberRoundedToTwoDecimalPlaces = "The value must be rounded to two decimal places or fewer.";
+
+    // IncomeEntity
+    public const string IncomeAmountMustBePositive = "The income amount must be a positive number.";
 }

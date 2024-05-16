@@ -1,5 +1,6 @@
 ﻿using CommandContracts.purchase;
 using Domain.common;
+using Domain.DomainServices;
 using Domain.Entity;
 using Domain.Repository;
 using MediatR;
@@ -7,24 +8,77 @@ using Tools;
 
 namespace Application.CommandHandlers.purchase;
 
-public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurchase.Response>
-{
+public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurchase.Response> {
+    
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IBillingPartyRepository _billingPartyRepository;
     private readonly IItemRepository _itemRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AddPurchaseHandler(IPurchaseRepository purchaseRepository, IUnitOfWork unitOfWork,
-        IBillingPartyRepository billingPartyRepository, IItemRepository itemRepository)
-    {
+    public AddPurchaseHandler(IPurchaseRepository purchaseRepository, IBillingPartyRepository billingPartyRepository, IItemRepository itemRepository, IUnitOfWork unitOfWork) {
         _purchaseRepository = purchaseRepository;
-        _unitOfWork = unitOfWork;
         _billingPartyRepository = billingPartyRepository;
         _itemRepository = itemRepository;
+        _unitOfWork = unitOfWork;
     }
 
-    public async Task<AddPurchase.Response> Handle(AddPurchase.Request request, CancellationToken cancellationToken)
-    {
+    public async Task<AddPurchase.Response> Handle(AddPurchase.Request request, CancellationToken cancellationToken) {
+        var (date, billingParty) = await CheckForValidDataExistence(request);
+
+        List<PurchaseLineItem> lineItems = new List<PurchaseLineItem>();
+        foreach (AddPurchase.PurchaseLines line in request.PurchaseLines) {
+            ItemEntity item = await IfExists(line.ItemId);
+            PurchaseLineItem lineItem = new PurchaseLineItem()
+            {
+                ItemEntity = item,
+                Price = line.UnitPrice,
+                Quantity = line.Quantity,
+                Report = line.Report
+            };
+            lineItems.Add(lineItem);
+        }
+
+        PurchaseEntity purchaseEntity = new PurchaseEntity() {
+            Id = Guid.NewGuid(),
+            BillingParty = billingParty,
+            Date = date,
+            InvoiceNumber = request.InvoiceNumber,
+            PaidAmount = request.PaidAmount,
+            Remarks = request.Remarks,
+            VatAmount = request.VatAmount,
+            TransportFee = request.TransportFee,
+            Purchases = lineItems
+        };
+
+        // All the domain logic are inside this domain service, this way we dont put any logic in the handler
+        // That is the whole point of domain driven design, and then it will be tested in an unit test
+        AddPurchaseService.AddPurchase(purchaseEntity);
+        await _purchaseRepository.AddAsync(purchaseEntity);
+        await _unitOfWork.SaveChangesAsync(cancellationToken);
+        return new AddPurchase.Response(purchaseEntity.Id.ToString());
+
+    }
+
+
+    private async Task<ItemEntity> IfExists(string id) {
+        bool tryParseItemId = Guid.TryParse(id, out Guid itemId);
+        if (!tryParseItemId)
+        {
+            throw new DomainValidationException("ItemId", ErrorCode.BadRequest,
+                ErrorMessages.IdInvalid(id));
+        }
+
+        ItemEntity? item = await _itemRepository.GetByIdAsync(itemId);
+        if (item is null)
+        {
+            throw new DomainValidationException("ItemId", ErrorCode.NotFound,
+                ErrorMessages.ItemNotFound(itemId));
+        }
+
+        return item;
+    }
+
+    private async Task<(DateOnly,BillingPartyEntity)> CheckForValidDataExistence(AddPurchase.Request request) {
         bool parsed = DateOnly.TryParseExact(request.Date, Constants.DateFormat, out DateOnly date);
         if (!parsed)
         {
@@ -44,74 +98,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
             throw new DomainValidationException("BillingPartyId", ErrorCode.NotFound,
                 ErrorMessages.BillingPartyNotFound(billingPartyId));
         }
+        return (date, billingParty);
 
-        List<PurchaseLineItem> lineItems = new();
-        double totalAmount = 0.00;
-        foreach (var purchase in request.PurchaseLines)
-        {
-            bool tryParseItemId = Guid.TryParse(purchase.ItemId, out Guid itemId);
-            if (!tryParseItemId)
-            {
-                throw new DomainValidationException("ItemId", ErrorCode.BadRequest,
-                    ErrorMessages.IdInvalid(purchase.ItemId));
-            }
-
-            ItemEntity? item = await _itemRepository.GetByIdAsync(itemId);
-            if (item is null)
-            {
-                throw new DomainValidationException("ItemId", ErrorCode.NotFound,
-                    ErrorMessages.ItemNotFound(itemId));
-            }
-
-            PurchaseLineItem lineItem = new PurchaseLineItem()
-            {
-                ItemEntity = item,
-                Price = purchase.UnitPrice,
-                Quantity = purchase.Quantity,
-                Report = purchase.Report
-            };
-            totalAmount += (lineItem.Quantity * lineItem.Price);
-            totalAmount -= lineItem.Report ?? 0;
-            lineItems.Add(lineItem);
-            
-            Stock stock = new Stock()
-            {
-                Date = date,
-                EntryCategory = StockEntryCategory.Purchase,
-                Weight = purchase.Quantity,
-                ExpectedValuePerKilo = purchase.UnitPrice,
-                Remarks = "Added from purchase entry."
-            };
-            item.AddStock(stock);
-        }
-
-        PurchaseEntity purchaseEntity = new PurchaseEntity()
-        {
-            Id = Guid.NewGuid(),
-            BillingParty = billingParty,
-            Date = date,
-            InvoiceNumber = request.InvoiceNumber,
-            PaidAmount = request.PaidAmount,
-            Remarks = request.Remarks,
-            VatAmount = request.VatAmount,
-            TransportFee = request.TransportFee,
-            Purchases = lineItems
-        };
-        totalAmount += purchaseEntity.TransportFee ?? 0;
-        totalAmount += purchaseEntity.VatAmount ?? 0;
-        double amount = 0.0;
-        if (purchaseEntity.PaidAmount.HasValue)
-        {
-            amount =purchaseEntity.PaidAmount.Value - totalAmount;
-        }else
-        {
-            amount = -1* totalAmount;
-        }
-        
-        double roundedAmount = Math.Round(amount, 2);
-        billingParty.UpdateBalance(roundedAmount);
-        await _purchaseRepository.AddAsync(purchaseEntity);
-        await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return new AddPurchase.Response(purchaseEntity.Id.ToString());
     }
 }
