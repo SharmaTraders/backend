@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(WriteDatabaseContext))]
-    [Migration("20240513123612_purchaseTableNullable")]
-    partial class purchaseTableNullable
+    [Migration("20240516115555_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -87,6 +87,31 @@ namespace Data.Migrations
                     b.ToTable("BillingParties");
                 });
 
+            modelBuilder.Entity("Domain.Entity.IncomeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double precision");
+
+                    b.Property<Guid>("BillingPartyId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateOnly>("Date")
+                        .HasColumnType("date");
+
+                    b.Property<string>("Remarks")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("BillingPartyId");
+
+                    b.ToTable("Incomes");
+                });
+
             modelBuilder.Entity("Domain.Entity.ItemEntity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -126,7 +151,7 @@ namespace Data.Migrations
                     b.Property<int?>("InvoiceNumber")
                         .HasColumnType("integer");
 
-                    b.Property<double>("PaidAmount")
+                    b.Property<double?>("PaidAmount")
                         .HasColumnType("double precision");
 
                     b.Property<string>("Remarks")
@@ -143,6 +168,17 @@ namespace Data.Migrations
                     b.HasIndex("BillingPartyId");
 
                     b.ToTable("Purchases");
+                });
+
+            modelBuilder.Entity("Domain.Entity.IncomeEntity", b =>
+                {
+                    b.HasOne("Domain.Entity.BillingPartyEntity", "BillingParty")
+                        .WithMany()
+                        .HasForeignKey("BillingPartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("BillingParty");
                 });
 
             modelBuilder.Entity("Domain.Entity.ItemEntity", b =>
@@ -211,7 +247,7 @@ namespace Data.Migrations
                             b1.Property<double>("Quantity")
                                 .HasColumnType("double precision");
 
-                            b1.Property<double>("Report")
+                            b1.Property<double?>("Report")
                                 .HasColumnType("double precision");
 
                             b1.HasKey("Id");

@@ -13,7 +13,7 @@ public partial class PurchaseLineItem
 
     public double Price { get; set; }
 
-    public double Report { get; set; }
+    public double? Report { get; set; }
 
     public Guid PurchaseEntityId { get; set; }
 

@@ -1,8 +1,9 @@
-﻿using Domain.Entity.ValueObjects;
+﻿using Domain.common;
+using Domain.Entity.ValueObjects;
 
 namespace Domain.Entity;
 
-public class IncomeEntity {
+public class IncomeEntity : IEntity<Guid> {
     public Guid Id { get; set; }
 
     private NonFutureDate _date;
@@ -20,17 +21,17 @@ public class IncomeEntity {
         set => _remarks = value != null ? new Remarks(value) : null;
     }
 
-    private double amount;
+    private double _amount;
     public double Amount {
-        get => amount;
+        get => _amount;
         set {
             ValidateAmount(value);
-            amount = value;
+            _amount = value;
         }
     }
 
-    private void ValidateAmount(double value) {
-        if (value < 0) {
+    private static void ValidateAmount(double value) {
+        if (value <= 0) {
             throw new DomainValidationException("Amount", ErrorCode.BadRequest,
                 ErrorMessages.IncomeAmountMustBePositive);
         }

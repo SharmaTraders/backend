@@ -13,7 +13,7 @@ public partial class Purchase
 
     public double? TransportFee { get; set; }
 
-    public double PaidAmount { get; set; }
+    public double? PaidAmount { get; set; }
 
     public string? Remarks { get; set; }
 

@@ -1,4 +1,5 @@
-﻿using CommandContracts.purchase;
+﻿using System.Globalization;
+using CommandContracts.purchase;
 using Domain.common;
 using Domain.DomainServices;
 using Domain.Entity;
@@ -23,7 +24,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
     }
 
     public async Task<AddPurchase.Response> Handle(AddPurchase.Request request, CancellationToken cancellationToken) {
-        var (date, billingParty) = await CheckForValidDataExistence(request);
+        var (date, billingParty) = await CheckForValidDataExistenceAsync(request);
 
         List<PurchaseLineItem> lineItems = new List<PurchaseLineItem>();
         foreach (AddPurchase.PurchaseLines line in request.PurchaseLines) {
@@ -61,13 +62,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
 
 
     private async Task<ItemEntity> IfExists(string id) {
-        bool tryParseItemId = Guid.TryParse(id, out Guid itemId);
-        if (!tryParseItemId)
-        {
-            throw new DomainValidationException("ItemId", ErrorCode.BadRequest,
-                ErrorMessages.IdInvalid(id));
-        }
-
+        Guid itemId = GuidParser.ParseGuid(id, "ItemId");
         ItemEntity? item = await _itemRepository.GetByIdAsync(itemId);
         if (item is null)
         {
@@ -78,12 +73,8 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
         return item;
     }
 
-    private async Task<(DateOnly,BillingPartyEntity)> CheckForValidDataExistence(AddPurchase.Request request) {
-        bool parsed = DateOnly.TryParseExact(request.Date, Constants.DateFormat, out DateOnly date);
-        if (!parsed)
-        {
-            throw new DomainValidationException("Date", ErrorCode.BadRequest, ErrorMessages.DateFormatInvalid);
-        }
+    private async Task<(DateOnly,BillingPartyEntity)> CheckForValidDataExistenceAsync(AddPurchase.Request request) {
+        DateOnly date = DateParser.ParseDate(request.Date);
 
         bool tryParse = Guid.TryParse(request.BillingPartyId, out Guid billingPartyId);
         if (!tryParse)

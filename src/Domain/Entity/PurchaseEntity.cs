@@ -75,6 +75,9 @@ public class PurchaseEntity : IEntity<Guid> {
         set =>
             _date = new NonFutureDate(value);
     }
+    public double GetExtraAmount() {
+        return (PaidAmount ?? 0) - GetTotalAmount();
+    }
 
     // If needed can be made public later
     private double GetTotalAmount() {
@@ -84,27 +87,23 @@ public class PurchaseEntity : IEntity<Guid> {
         return Math.Round(totalAmount, 2);
     }
 
-    public double GetExtraAmount() {
-        return (PaidAmount ?? 0) - GetTotalAmount();
-    }
-
     // Validation methods
 
-    private void ValidateInvoiceNumber(int? value) {
+    private static void ValidateInvoiceNumber(int? value) {
         if (value is not null && value < 0) {
             throw new DomainValidationException("InvoiceNumber", ErrorCode.BadRequest,
                 ErrorMessages.PurchaseEntityInvoiceNumberPositive);
         }
     }
 
-    private void ValidatePurchases(ICollection<PurchaseLineItem> value) {
+    private static void ValidatePurchases(ICollection<PurchaseLineItem> value) {
         if (value is null || value.Count == 0) {
             throw new DomainValidationException("Purchases", ErrorCode.BadRequest,
                 ErrorMessages.PurchaseEntityPurchaseLinesRequired);
         }
     }
 
-    private void ValidateTwoDecimalPlaces(double? value, string propertyName, string errorMessage) {
+    private static void ValidateTwoDecimalPlaces(double? value, string propertyName, string errorMessage) {
         if (!value.HasValue) return;
 
         if (value < 0) {

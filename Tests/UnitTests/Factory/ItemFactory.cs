@@ -71,22 +71,6 @@ internal static class ItemFactory {
         };
     }
 
-    public static IEnumerable<object[]> GetValidStockRemarks() {
-        return new List<object[]>() {
-            new object[] {null},
-            new object[] {""},
-            new object[] {"a".PadRight(20, 'a')},
-            new object[] {"a".PadRight(500, 'a')}
-        };
-    }
-
-
-    public static IEnumerable<object[]> GetInvalidStockRemarks() {
-        return new List<object[]>() {
-            new object[] {"a".PadRight(501, 'a')},
-            new object[] {"a".PadRight(1000, 'a')}
-        };
-    }
 
     public static IEnumerable<object[]> GetValidDate() {
         return new List<object[]>() {

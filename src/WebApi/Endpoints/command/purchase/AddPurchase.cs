@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.ComponentModel.DataAnnotations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -41,7 +42,7 @@ public class AddPurchase : CommandEndPointBase
 
 public class AddPurchaseRequest
 {
-    [FromBody] public Body RequestBody { get; set; }
+    [FromBody] public Body RequestBody { get; set; }= null!;
     public record Body( 
         string BillingPartyId,
         List<PurchaseLines> PurchaseLines,
@@ -49,13 +50,19 @@ public class AddPurchaseRequest
         string? Remarks,
         double? VatAmount,
         double? TransportFee,
+        [Required]
         double PaidAmount,
         int? InvoiceNumber
         );
     
     public record PurchaseLines(
         string ItemId,
+        [Required]
         double Quantity,
+
+        [Required]
         double UnitPrice,
+
+        [Required]
         double Report);
 }

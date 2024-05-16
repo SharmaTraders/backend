@@ -18,20 +18,16 @@ public class AddStockHandler : IRequestHandler<AddStockCommand.Request> {
     }
 
     public async Task Handle(AddStockCommand.Request request, CancellationToken cancellationToken) {
-        bool tryParse = Guid.TryParse(request.ItemId, out Guid itemId);
-        if (!tryParse) {
-            throw new DomainValidationException("ItemId", ErrorCode.BadRequest, ErrorMessages.IdInvalid(request.ItemId));
-        }
+        Guid itemId = GuidParser.ParseGuid(request.ItemId, "ItemId");
+
 
         ItemEntity? entity = await _itemRepository.GetByIdAsync(itemId);
         if (entity is null) {
             throw new DomainValidationException("ItemId", ErrorCode.NotFound, ErrorMessages.ItemNotFound(itemId));
         }
 
-        bool parsed = DateOnly.TryParseExact(request.Date, Constants.DateFormat, out DateOnly date);
-        if (!parsed) {
-            throw new DomainValidationException("Date", ErrorCode.BadRequest, ErrorMessages.DateFormatInvalid); 
-        }
+        DateOnly date = DateParser.ParseDate(request.Date);
+
 
         Stock stock = new Stock() {
             Date = date,

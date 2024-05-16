@@ -36,6 +36,7 @@ builder.Services.AddScoped<IAdminRepository, AdminRepository>();
 builder.Services.AddScoped<IItemRepository, ItemRepository>();
 builder.Services.AddScoped<IBillingPartyRepository, BillingPartyRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 
 
 // Services
@@ -101,7 +102,7 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment()) {
     app.UseSwagger();
     app.UseSwaggerUI();
-    app.ApplyMigrations();
+    await app.ApplyMigrations().WithPrefilledDatabase();
 }
 
 app.UseHttpsRedirection();
@@ -121,6 +122,6 @@ app.MapControllers();
 app.Run();
 
 
-public partial class Program {
+public abstract partial class Program {
 
 }

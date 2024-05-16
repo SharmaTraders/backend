@@ -28,7 +28,7 @@ public class Update : CommandEndPointBase
 public class UpdateBillingPartyRequest {
     [FromRoute] public string Id { get; set; }= null!;
     
-    [FromBody] public Body RequestBody { get; set; }
+    [FromBody] public Body RequestBody { get; set; }= null!;
 
     public record Body(
         string Name,
