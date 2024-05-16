@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class purchaseTableNullable : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -56,6 +56,27 @@ namespace Data.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Incomes",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Date = table.Column<DateOnly>(type: "date", nullable: false),
+                    BillingPartyId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Remarks = table.Column<string>(type: "text", nullable: true),
+                    Amount = table.Column<double>(type: "double precision", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Incomes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Incomes_BillingParties_BillingPartyId",
+                        column: x => x.BillingPartyId,
+                        principalTable: "BillingParties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Purchases",
                 columns: table => new
                 {
@@ -63,7 +84,7 @@ namespace Data.Migrations
                     BillingPartyId = table.Column<Guid>(type: "uuid", nullable: false),
                     VatAmount = table.Column<double>(type: "double precision", nullable: true),
                     TransportFee = table.Column<double>(type: "double precision", nullable: true),
-                    PaidAmount = table.Column<double>(type: "double precision", nullable: false),
+                    PaidAmount = table.Column<double>(type: "double precision", nullable: true),
                     Remarks = table.Column<string>(type: "text", nullable: true),
                     InvoiceNumber = table.Column<int>(type: "integer", nullable: true),
                     Date = table.Column<DateOnly>(type: "date", nullable: false)
@@ -110,7 +131,7 @@ namespace Data.Migrations
                     ItemEntityId = table.Column<Guid>(type: "uuid", nullable: false),
                     Quantity = table.Column<double>(type: "double precision", nullable: false),
                     Price = table.Column<double>(type: "double precision", nullable: false),
-                    Report = table.Column<double>(type: "double precision", nullable: false),
+                    Report = table.Column<double>(type: "double precision", nullable: true),
                     PurchaseEntityId = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
@@ -155,6 +176,11 @@ namespace Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Incomes_BillingPartyId",
+                table: "Incomes",
+                column: "BillingPartyId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Items_Name",
                 table: "Items",
                 column: "Name",
@@ -186,6 +212,9 @@ namespace Data.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Admins");
+
+            migrationBuilder.DropTable(
+                name: "Incomes");
 
             migrationBuilder.DropTable(
                 name: "PurchaseLineItem");

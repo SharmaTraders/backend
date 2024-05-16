@@ -36,10 +36,8 @@ public class UpdateBillingPartyHandler: IRequestHandler<UpdateBillingPartyComman
             VatNumber = request.VatNumber
         };
 
-        bool tryParse = Guid.TryParse(request.Id, out Guid guid);
-        if (!tryParse) {
-            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid(request.Id));
-        }
+        Guid guid = GuidParser.ParseGuid(request.Id, "Id");
+
 
         BillingPartyEntity? billingPartyEntity = await _billingPartyRepository.GetByIdAsync(guid);
         if (billingPartyEntity is null) {

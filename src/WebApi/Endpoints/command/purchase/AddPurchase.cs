@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.ComponentModel.DataAnnotations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -31,7 +32,7 @@ public class AddPurchase : CommandEndPointBase
             request.RequestBody.Remarks,
             request.RequestBody.VatAmount,
             request.RequestBody.TransportFee,
-            request.RequestBody.PaidAmount,
+            request.RequestBody.PaidAmount ?? 0,
             request.RequestBody.InvoiceNumber
         );
          var response = await _mediator.Send(commandRequest);
@@ -41,7 +42,7 @@ public class AddPurchase : CommandEndPointBase
 
 public class AddPurchaseRequest
 {
-    [FromBody] public Body RequestBody { get; set; }
+    [FromBody] public Body RequestBody { get; set; }= null!;
     public record Body( 
         string BillingPartyId,
         List<PurchaseLines> PurchaseLines,
@@ -49,13 +50,17 @@ public class AddPurchaseRequest
         string? Remarks,
         double? VatAmount,
         double? TransportFee,
-        double PaidAmount,
+        double? PaidAmount,
         int? InvoiceNumber
         );
     
     public record PurchaseLines(
         string ItemId,
+        [Required]
         double Quantity,
+
+        [Required]
         double UnitPrice,
-        double Report);
+
+        double? Report);
 }

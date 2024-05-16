@@ -19,6 +19,8 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<BillingParty> BillingParties { get; set; }
 
+    public virtual DbSet<Income> Incomes { get; set; }
+
     public virtual DbSet<Item> Items { get; set; }
 
     public virtual DbSet<Purchase> Purchases { get; set; }
@@ -27,8 +29,7 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Stock> Stocks { get; set; }
 
-
-
+  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Admin>(entity =>
@@ -47,6 +48,15 @@ public partial class SharmaTradersContext : DbContext
             entity.HasIndex(e => e.VatNumber, "IX_BillingParties_VatNumber").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Income>(entity =>
+        {
+            entity.HasIndex(e => e.BillingPartyId, "IX_Incomes_BillingPartyId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.BillingParty).WithMany(p => p.Incomes).HasForeignKey(d => d.BillingPartyId);
         });
 
         modelBuilder.Entity<Item>(entity =>

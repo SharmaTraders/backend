@@ -28,7 +28,7 @@ public class Create : CommandEndPointBase
 
 public class CreateBillingPartyRequest {
     
-    [FromBody] public Body RequestBody { get; set; }
+    [FromBody] public Body RequestBody { get; set; }= null!;
 
     public record Body(
         string Name,

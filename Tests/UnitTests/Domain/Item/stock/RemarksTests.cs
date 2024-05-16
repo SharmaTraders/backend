@@ -6,7 +6,7 @@ namespace UnitTests.Domain.Item.stock;
 public class RemarksTests {
     
     [Theory]
-    [MemberData(nameof(ItemFactory.GetValidStockRemarks), MemberType = typeof(ItemFactory))]
+    [MemberData(nameof(RemarksFactory.GetValidRemarks), MemberType = typeof(RemarksFactory))]
     public void Stock_WithValidRemarks_CanBeCreated(string validRemarks) {
         // No exception is thrown
         Stock stock = new Stock {
@@ -20,7 +20,7 @@ public class RemarksTests {
     }
 
     [Theory]
-    [MemberData(nameof(ItemFactory.GetInvalidStockRemarks), MemberType = typeof(ItemFactory))]
+    [MemberData(nameof(RemarksFactory.GetInvalidRemarks), MemberType = typeof(RemarksFactory))]
     public void Stock_WithInValidRemarks_CannotBeCreated(string invalidRemarks) {
         // No exception is thrown
         var exception = Assert.Throws<DomainValidationException>( () => new Stock {

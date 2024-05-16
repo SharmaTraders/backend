@@ -19,5 +19,7 @@ public partial class BillingParty
 
     public string? VatNumber { get; set; }
 
+    public virtual ICollection<Income> Incomes { get; set; } = new List<Income>();
+
     public virtual ICollection<Purchase> Purchases { get; set; } = new List<Purchase>();
 }

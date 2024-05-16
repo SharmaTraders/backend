@@ -1,4 +1,5 @@
-﻿using CommandContracts.item;
+﻿using System.ComponentModel.DataAnnotations;
+using CommandContracts.item;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -32,5 +33,5 @@ public class AddStockRequest {
 
     [FromBody] public Body RequestBody { get; set; } = null!;
 
-    public record Body(double Weight, double ExpectedValuePerKilo, string Date, string? Remarks);
+    public record Body([Required]double Weight, [Required]double ExpectedValuePerKilo, string Date, string? Remarks);
 }
