@@ -7,7 +7,7 @@ namespace WebApi.Endpoints.command.invoice.purchase;
 
 public class AddPurchase : CommandEndPointBase
     .WithRequest<AddPurchaseRequest>
-    .WithResponse<CommandContracts.invoice.purchase.AddPurchase.Response> {
+    .WithResponse<CommandContracts.purchase.AddPurchase.Response> {
     
     private readonly IMediator _mediator;
 
@@ -18,11 +18,11 @@ public class AddPurchase : CommandEndPointBase
 
     [HttpPost, Route("purchase")]
     [Authorize(Roles = "Admin")]
-    public override async Task<ActionResult<CommandContracts.invoice.purchase.AddPurchase.Response>> HandleAsync(AddPurchaseRequest request)
+    public override async Task<ActionResult<CommandContracts.purchase.AddPurchase.Response>> HandleAsync(AddPurchaseRequest request)
     {
-        var commandRequest = new CommandContracts.invoice.purchase.AddPurchase.Request(
+        var commandRequest = new CommandContracts.purchase.AddPurchase.Request(
             request.RequestBody.BillingPartyId,
-            request.RequestBody.PurchaseLines.Select(x => new CommandContracts.invoice.purchase.AddPurchase.PurchaseLines(
+            request.RequestBody.PurchaseLines.Select(x => new CommandContracts.purchase.AddPurchase.PurchaseLines(
                 x.ItemId,
                 x.Quantity,
                 x.UnitPrice,

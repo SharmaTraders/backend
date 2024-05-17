@@ -1,5 +1,5 @@
 ﻿using Application.CommandHandlers.invoice.sale;
-using CommandContracts.invoice.sale;
+using CommandContracts.sale;
 using Domain.Entity;
 using Domain.Repository;
 using Moq;

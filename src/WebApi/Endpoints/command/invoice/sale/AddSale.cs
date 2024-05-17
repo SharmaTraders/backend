@@ -7,7 +7,7 @@ namespace WebApi.Endpoints.command.invoice.sale;
 
 public class AddSale : CommandEndPointBase
     .WithRequest<AddSaleRequest>
-    .WithResponse<CommandContracts.invoice.sale.AddSale.Response> {
+    .WithResponse<CommandContracts.sale.AddSale.Response> {
     
     private readonly IMediator _mediator;
 
@@ -18,11 +18,11 @@ public class AddSale : CommandEndPointBase
 
     [HttpPost, Route("sale")]
     [Authorize(Roles = "Admin")]
-    public override async Task<ActionResult<CommandContracts.invoice.sale.AddSale.Response>> HandleAsync(AddSaleRequest request)
+    public override async Task<ActionResult<CommandContracts.sale.AddSale.Response>> HandleAsync(AddSaleRequest request)
     {
-        var commandRequest = new CommandContracts.invoice.sale.AddSale.Request(
+        var commandRequest = new CommandContracts.sale.AddSale.Request(
             request.RequestBody.BillingPartyId,
-            request.RequestBody.SaleLines.Select(x => new CommandContracts.invoice.sale.AddSale.SaleLines(
+            request.RequestBody.SaleLines.Select(x => new CommandContracts.sale.AddSale.SaleLines(
                 x.ItemId,
                 x.Quantity,
                 x.UnitPrice,

@@ -1,24 +1,25 @@
 ﻿using MediatR;
 
-namespace CommandContracts.invoice.sale;
+namespace CommandContracts.purchase;
 
-public static class AddSale
+public static class AddPurchase
 {
     public record Request(
         string BillingPartyId,
-        List<SaleLines> SaleLines,
+        List<PurchaseLines> PurchaseLines,
         string Date,
         string? Remarks,
         double? VatAmount,
         double? TransportFee,
-        double? ReceivedAmount,
-        int? InvoiceNumber) : IRequest<Response>;
-    
-    public record SaleLines(
+        double PaidAmount,
+        int? InvoiceNumber
+        ) : IRequest<Response>;
+
+    public record PurchaseLines(
         string ItemId,
         double Quantity,
         double UnitPrice,
         double? Report);
     
-    public record Response(string SaleId);
+    public record Response(string PurchaseId);
 }

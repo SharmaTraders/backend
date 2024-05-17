@@ -1,4 +1,4 @@
-﻿using CommandContracts.invoice.purchase;
+﻿using CommandContracts.purchase;
 using Domain.common;
 using Domain.DomainServices;
 using Domain.Entity;
