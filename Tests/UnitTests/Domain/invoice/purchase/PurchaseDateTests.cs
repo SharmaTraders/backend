@@ -1,12 +1,12 @@
 ﻿using Domain.Entity;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain.purchase;
+namespace UnitTests.Domain.invoice.purchase;
 
 public class PurchaseDateTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidPurchaseDates), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetValidInvoiceDates), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithValidDate_CanBeCreated(DateOnly validDate)
     {
         // Arrange
@@ -28,7 +28,7 @@ public class PurchaseDateTests
     }
     
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidPurchaseDates), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetInValidInvoiceDates), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithInValidDate_CannotBeCreated(DateOnly invalidDate)
     {
         // Arrange
@@ -51,7 +51,7 @@ public class PurchaseDateTests
     }
     
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInvalidDateTypes), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetInvalidDateTypes), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithInvalidDateType_ThrowsException(object invalidDate)
     {
         // Arrange

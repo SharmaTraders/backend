@@ -1,12 +1,12 @@
 ﻿using Domain.Entity;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain.purchase;
+namespace UnitTests.Domain.invoice.purchase;
 
 public class TransportFeeTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidNumberInclZero), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetValidNumberInclZero), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithValidTransportFee_CanBeCreated(double validNumber)
     {
         // Arrange
@@ -28,7 +28,7 @@ public class TransportFeeTests
     }
     
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidNumbers), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetInValidNumbers), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithInValidTransportFee_CannotBeCreated(double invalidNumber)
     {
         // Arrange

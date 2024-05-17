@@ -15,6 +15,18 @@ public static class ValidObjects
             Report = 0.00
         };
     }
+    
+    public static SaleLineItem GetValidSaleLineItem()
+    {
+        return new SaleLineItem()
+        {
+            Id = Guid.NewGuid(),
+            ItemEntity = GetValidItem(),
+            Price = 10,
+            Quantity = 1,
+            Report = 0.00
+        };
+    }
 
     public static ItemEntity GetValidItem()
     {

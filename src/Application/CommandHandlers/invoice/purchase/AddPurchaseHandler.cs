@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using CommandContracts.purchase;
+﻿using CommandContracts.invoice.purchase;
 using Domain.common;
 using Domain.DomainServices;
 using Domain.Entity;
@@ -7,7 +6,7 @@ using Domain.Repository;
 using MediatR;
 using Tools;
 
-namespace Application.CommandHandlers.purchase;
+namespace Application.CommandHandlers.invoice.purchase;
 
 public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurchase.Response> {
     

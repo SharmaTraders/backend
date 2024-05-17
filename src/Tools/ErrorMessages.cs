@@ -81,24 +81,24 @@ public static class ErrorMessages
     public const string BillingPartyUpdateAmountMustBeAtMax2DecimalPlaces =
         "Billing party update amount must be at most 2 decimal places";
     
-// PurchaseLineItem
-    public const string PurchaseLineItemQuantityPositive = "The quantity must be a positive number.";
-    public const string PurchaseLineItemPricePositive = "The price must be a positive number.";
-    public const string PurchaseLineItemPriceRequired = "The price of the item is required.";
-    public const string PurchaseLineItemEntityRequired = "The item is required and cannot be null.";
-    public const string PurchaseLineItemQuantityRequired = "The quantity of the item is required.";
-    public const string PurchaseLineItemReportPositive = "The report value must be a positive number.";
+    // Invoice-Item
+    public const string InvoiceItemQuantityPositive = "The quantity must be a positive number.";
+    public const string InvoiceItemPricePositive = "The price must be a positive number.";
+    public const string InvoiceItemPriceRequired = "The price of the item is required.";
+    public const string InvoiceItemEntityRequired = "The item is required and cannot be null.";
+    public const string InvoiceItemQuantityRequired = "The quantity of the item is required.";
+    public const string InvoiceItemReportPositive = "The report value must be a positive number.";
 
-    // PurchaseEntity
-    public const string PurchaseEntityBillingPartyRequired = "The billing party information is required.";
-    public const string PurchaseEntityPurchaseLinesRequired = "At least one item must be included.";
-    public const string PurchaseEntityVatAmountPositive = "The VAT amount must be a positive number.";
-    public const string PurchaseEntityTransportFeePositive = "The transport fee must be a positive number.";
+    // Invoice 
+    public const string InvoiceBillingPartyRequired = "The billing party information is required.";
+    public const string InvoiceItemLineRequired = "At least one item must be included.";
+    public const string InvoiceVatAmountPositive = "The VAT amount must be a positive number.";
+    public const string InvoiceTransportFeePositive = "The transport fee must be a positive number.";
     public const string PurchaseEntityPaidAmountPositive = "The paid amount must be a positive number.";
-    public const string PurchaseEntityRemarksTooLong = "Remarks cannot exceed 500 characters.";
-    public const string PurchaseEntityInvoiceNumberPositive = "The invoice number must be a positive integer.";
-    public const string PurchaseEntityDateRequired = "The purchase date is required.";
-
+    public const string InvoiceNumberPositive = "The invoice number must be a positive integer.";
+    public const string SaleEntityReceivedAmountPositive = "The received amount must be a positive number.";
+    
+    
     // IncomeEntity
     public const string IncomeAmountMustBePositive = "The income amount must be a positive number.";
 }

@@ -1,12 +1,12 @@
 ﻿using Domain.Entity;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain.purchase;
+namespace UnitTests.Domain.invoice.purchase.purchaseLine;
 
 public class ReportTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidNumberInclZero), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetValidNumberInclZero), MemberType = typeof(InvoiceFactory))]
     public void PurchaseLineItem_WithValidReport_CanBeCreated(double validNumber)
     {
         // Arrange
@@ -24,7 +24,7 @@ public class ReportTests
     }
     
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetInValidNumbers), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetInValidNumbers), MemberType = typeof(InvoiceFactory))]
     public void PurchaseLineItem_WithInValidReport_CannotBeCreated(double invalidNumber)
     {
         // Arrange

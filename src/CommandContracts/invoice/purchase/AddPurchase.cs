@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace CommandContracts.purchase;
+namespace CommandContracts.invoice.purchase;
 
 public static class AddPurchase
 {

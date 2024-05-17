@@ -2,7 +2,7 @@
 
 namespace Domain.Entity;
 
-public class PurchaseLineItem
+public class SaleLineItem
 {
     public Guid Id { get; set; }
 
@@ -54,16 +54,16 @@ public class PurchaseLineItem
     {
         return (Quantity * Price) - (Report ?? 0);
     }
-
+    
     private void ValidateTwoDecimalPlaces(double value, string type)
     {
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
         {
-            throw new DomainValidationException(type, ErrorCode.BadRequest, ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
+            throw new DomainValidationException(type, ErrorCode.BadRequest,
+                ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
         }
     }
-
     private void ValidateIsMoreThanZero(double value, string property, string errorMessage)
     {
         if (value <= 0)
@@ -71,7 +71,6 @@ public class PurchaseLineItem
             throw new DomainValidationException(property, ErrorCode.BadRequest, errorMessage);
         }
     }
-
     private void ValidateIsPositiveNumber(double value, string property, string errorMessage)
     {
         if (value < 0)
