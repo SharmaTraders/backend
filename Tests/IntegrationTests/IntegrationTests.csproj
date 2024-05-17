@@ -36,9 +36,5 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\WebApi\WebApi.csproj" />
     </ItemGroup>
-    
-    <ItemGroup>
-      <Folder Include="Invoice\" />
-    </ItemGroup>
 
 </Project>
