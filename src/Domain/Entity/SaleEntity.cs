@@ -89,7 +89,7 @@ public class SaleEntity : IEntity<Guid>
         return Math.Round(totalAmount, 2);
     }
     
-    private void ValidateTwoDecimalPlaces(double value, string propertyName)
+    private static void ValidateTwoDecimalPlaces(double value, string propertyName)
     {
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
@@ -98,7 +98,7 @@ public class SaleEntity : IEntity<Guid>
         }
     }
     
-    private void ValidateIsPositiveNumber(double value, string propertyName, string errorMessage)
+    private static void ValidateIsPositiveNumber(double value, string propertyName, string errorMessage)
     {
         if (value < 0)
         {
@@ -107,7 +107,7 @@ public class SaleEntity : IEntity<Guid>
         }
     }
     
-    private void ValidateReceivedAmount(double? value)
+    private static void ValidateReceivedAmount(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "ReceivedAmount");
@@ -115,7 +115,7 @@ public class SaleEntity : IEntity<Guid>
     }
     
 
-    private void ValidateTransportFees(double? value)
+    private static void ValidateTransportFees(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "TransportFee");
@@ -123,20 +123,20 @@ public class SaleEntity : IEntity<Guid>
     }
 
 
-    private void ValidateVatAmount(double? value)
+    private static void ValidateVatAmount(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "VatAmount");
         ValidateIsPositiveNumber(value.Value, "VatAmount", ErrorMessages.InvoiceVatAmountPositive);
     }
 
-    private void ValidateInvoiceNumber(int? value)
+    private static void ValidateInvoiceNumber(int? value)
     {
         if (!value.HasValue) return;
         ValidateIsPositiveNumber(value.Value, "InvoiceNumber", ErrorMessages.InvoiceNumberPositive);
     }
     
-    private void ValidateSales(ICollection<SaleLineItem> value)
+    private static void ValidateSales(ICollection<SaleLineItem> value)
     {
         if (value is null || value.Count == 0)
         {

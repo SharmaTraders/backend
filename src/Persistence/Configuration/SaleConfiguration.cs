@@ -12,9 +12,9 @@ public class SaleConfiguration : IEntityTypeConfiguration<SaleEntity>
             builder.HasOne(sale => sale.BillingParty)
                 .WithMany();
             builder.OwnsMany(sale => sale.Sales,
-                purchaseBuilder => {
-                    purchaseBuilder.HasKey(purchase => purchase.Id);
-                    purchaseBuilder.HasOne(purchase => purchase.ItemEntity)
+                saleLineItemBuilder => {
+                    saleLineItemBuilder.HasKey(saleLineItem => saleLineItem.Id);
+                    saleLineItemBuilder.HasOne(saleLineItem => saleLineItem.ItemEntity)
                         .WithMany();
                 });
         

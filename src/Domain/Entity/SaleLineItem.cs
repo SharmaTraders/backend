@@ -55,7 +55,7 @@ public class SaleLineItem
         return (Quantity * Price) - (Report ?? 0);
     }
     
-    private void ValidateTwoDecimalPlaces(double value, string type)
+    private static void ValidateTwoDecimalPlaces(double value, string type)
     {
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
@@ -64,14 +64,14 @@ public class SaleLineItem
                 ErrorMessages.ValueMustBe2DecimalPlacesAtMax);
         }
     }
-    private void ValidateIsMoreThanZero(double value, string property, string errorMessage)
+    private static void ValidateIsMoreThanZero(double value, string property, string errorMessage)
     {
         if (value <= 0)
         {
             throw new DomainValidationException(property, ErrorCode.BadRequest, errorMessage);
         }
     }
-    private void ValidateIsPositiveNumber(double value, string property, string errorMessage)
+    private static void ValidateIsPositiveNumber(double value, string property, string errorMessage)
     {
         if (value < 0)
         {
@@ -79,19 +79,19 @@ public class SaleLineItem
         }
     }
 
-    private void ValidateQuantity(double value)
+    private static void ValidateQuantity(double value)
     {
         ValidateTwoDecimalPlaces(value, "Quantity");
         ValidateIsMoreThanZero(value, "Quantity", ErrorMessages.InvoiceItemQuantityPositive);
     }
 
-    private void ValidatePrice(double value)
+    private static void ValidatePrice(double value)
     {
         ValidateTwoDecimalPlaces(value, "Price");
         ValidateIsMoreThanZero(value, "Price", ErrorMessages.InvoiceItemPricePositive);
     }
 
-    private void ValidateReport(double? value)
+    private static void ValidateReport(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "Report");

@@ -89,7 +89,7 @@ public class PurchaseEntity : IEntity<Guid>
     }
     
 
-    private void ValidateTwoDecimalPlaces(double value, string propertyName)
+    private static void ValidateTwoDecimalPlaces(double value, string propertyName)
     {
         double roundedValue = Math.Round(value, 2);
         if (Math.Abs(roundedValue - value) > 0.0001)
@@ -98,7 +98,7 @@ public class PurchaseEntity : IEntity<Guid>
         }
     }
     
-    private void ValidateIsPositiveNumber(double value, string propertyName, string errorMessage)
+    private static void ValidateIsPositiveNumber(double value, string propertyName, string errorMessage)
     {
         if (value < 0)
         {
@@ -107,34 +107,34 @@ public class PurchaseEntity : IEntity<Guid>
         }
     }
     
-    private void ValidatePaidAmount(double? value)
+    private static void ValidatePaidAmount(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "PaidAmount");
         ValidateIsPositiveNumber(value.Value, "PaidAmount", ErrorMessages.PurchaseEntityPaidAmountPositive);
     }
 
-    private void ValidateTransportFees(double? value)
+    private static void ValidateTransportFees(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "TransportFee");
         ValidateIsPositiveNumber(value.Value, "TransportFee", ErrorMessages.InvoiceTransportFeePositive);
     }
 
-    private void ValidateVatAmount(double? value)
+    private static void ValidateVatAmount(double? value)
     {
         if (!value.HasValue) return;
         ValidateTwoDecimalPlaces(value.Value, "VatAmount");
         ValidateIsPositiveNumber(value.Value, "VatAmount", ErrorMessages.InvoiceVatAmountPositive);
     }
 
-    private void ValidateInvoiceNumber(int? value)
+    private static void ValidateInvoiceNumber(int? value)
     {
         if (!value.HasValue) return;
         ValidateIsPositiveNumber(value.Value, "InvoiceNumber", ErrorMessages.InvoiceNumberPositive);
     }
     
-    private void ValidatePurchases(ICollection<PurchaseLineItem> value)
+    private static void ValidatePurchases(ICollection<PurchaseLineItem> value)
     {
         if (value is null || value.Count == 0)
         {

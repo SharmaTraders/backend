@@ -140,8 +140,9 @@ namespace IntegrationTests.Invoice.Sale
         {
             // Arrange
             string validAdminToken = await SetupLoggedInAdmin();
+            Guid itemId = Guid.NewGuid();
             var billingParty = new BillingPartyEntity { Id = Guid.NewGuid(), Name = "Valid Party", Address = "Valid Address" };
-            var item = new ItemEntity { Id = Guid.NewGuid(), Name = "Valid Item", CurrentStockAmount = 100, CurrentEstimatedStockValuePerKilo = 50 };
+            var item = new ItemEntity { Id = itemId, Name = "Valid Item", CurrentStockAmount = 100, CurrentEstimatedStockValuePerKilo = 50 };
         
             // adding valid billing party and item
             WriteDbContext.BillingParties.Add(billingParty);
@@ -163,7 +164,7 @@ namespace IntegrationTests.Invoice.Sale
                     null,
                     0,
                     0,
-                    0,
+                    2,
                     null
                 )
             };
@@ -188,6 +189,13 @@ namespace IntegrationTests.Invoice.Sale
             var saleIdString = jsonResponse["saleId"]?.ToString();
             Assert.NotNull(saleIdString);
             Assert.True(Guid.TryParse(saleIdString, out _));
+            // check if the stock is reduced
+            Query.Item? itemEntity = await ReadDbContext.Items.FindAsync(itemId);
+            Assert.Equal(99, itemEntity.CurrentStockAmount);
+            
+            // check if the amount is added to billing party
+            Query.BillingParty? billingPartyEntity = await ReadDbContext.BillingParties.FindAsync(billingParty.Id);
+            Assert.Equal(8, billingPartyEntity.Balance);
         }
     }
 }
