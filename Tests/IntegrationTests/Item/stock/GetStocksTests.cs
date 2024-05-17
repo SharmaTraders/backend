@@ -47,7 +47,7 @@ public class GetStocksTests : BaseIntegrationTest{
             CurrentStockAmount = 0,
             CurrentEstimatedStockValuePerKilo = 0
         };
-        WriteDbContext.Items.Add(itemEntity);
+        await WriteDbContext.Items.AddAsync(itemEntity);
         await WriteDbContext.SaveChangesAsync();
 
         string validAdminToken = await SetupLoggedInAdmin();
@@ -65,7 +65,7 @@ public class GetStocksTests : BaseIntegrationTest{
 
  
     [Fact]
-    public async Task GetStocks_WhenItemExists_AndStocksAlsoExists_ReturnsSuccessWithEmptyList() {
+    public async Task GetStocks_WhenItemExists_AndStocksAlsoExists_ReturnsSuccessWithNonEmptyList() {
         ItemEntity itemEntity = new ItemEntity() {
             Id = Guid.NewGuid(),
             Name = "Test Name",
