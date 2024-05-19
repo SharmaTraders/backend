@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using Application.CommandHandlers;
+using MediatR;
 using Microsoft.EntityFrameworkCore;
 using QueryContracts.item;
 using Tools;
@@ -15,10 +16,7 @@ public class GetStocksByItemHandler : IRequestHandler<GetStocksByItem.Query, Get
 
     public async Task<GetStocksByItem.Answer> Handle(GetStocksByItem.Query request, CancellationToken cancellationToken) {
 
-        bool canParse =Guid.TryParse(request.ItemId, out var itemId);
-        if (!canParse) {
-            throw new DomainValidationException("Id", ErrorCode.BadRequest, ErrorMessages.IdInvalid(request.ItemId));
-        }
+        Guid itemId = GuidParser.ParseGuid(request.ItemId, "ItemId");
 
         IQueryable<Stock> queryable = _context.Stocks
             .Where(stock => stock.ItemEntityId == itemId);
