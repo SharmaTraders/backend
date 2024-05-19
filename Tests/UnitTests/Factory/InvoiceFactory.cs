@@ -2,9 +2,9 @@
 
 namespace UnitTests.Factory;
 
-internal static class PurchaseFactory
+internal static class InvoiceFactory
 {
-    public static IEnumerable<object[]> GetValidPurchaseDates()
+    public static IEnumerable<object[]> GetValidInvoiceDates()
     {
         return new List<object[]>
         {
@@ -14,7 +14,7 @@ internal static class PurchaseFactory
         };
     }
     
-    public static IEnumerable<object[]> GetInValidPurchaseDates()
+    public static IEnumerable<object[]> GetInValidInvoiceDates()
     {
         return new List<object[]>
         {
@@ -40,6 +40,16 @@ internal static class PurchaseFactory
             new object[] { new PurchaseLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 10, Price = 20.5, Report = 5.77 } },
             new object[] { new PurchaseLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 3333, Price = 20.99, Report = null } },
             new object[] { new PurchaseLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 1, Price = 0.5, Report = 0 } }
+        };
+    }
+    
+    public static IEnumerable<object[]> GetValidSaleLineItems()
+    {
+        return new List<object[]>
+        {
+            new object[] { new SaleLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 10, Price = 20.5, Report = 5.77 } },
+            new object[] { new SaleLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 3333, Price = 20.99, Report = null } },
+            new object[] { new SaleLineItem { Id = Guid.NewGuid(), ItemEntity = ValidObjects.GetValidItem(), Quantity = 1, Price = 0.5, Report = 0 } }
         };
     }
     

@@ -1,4 +1,4 @@
-﻿using Application.CommandHandlers.purchase;
+﻿using Application.CommandHandlers.invoice.purchase;
 using CommandContracts.purchase;
 using Domain.Entity;
 using Domain.Repository;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Query;
 
-public partial class PurchaseLineItem
+public partial class SaleLineItem
 {
     public Guid Id { get; set; }
 
@@ -15,11 +15,9 @@ public partial class PurchaseLineItem
 
     public double? Report { get; set; }
 
-    public Guid PurchaseEntityId { get; set; }
-
-    public string? Remarks { get; set; }
+    public Guid SaleEntityId { get; set; }
 
     public virtual Item ItemEntity { get; set; } = null!;
 
-    public virtual Purchase PurchaseEntity { get; set; } = null!;
+    public virtual Sale SaleEntity { get; set; } = null!;
 }

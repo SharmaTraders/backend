@@ -3,7 +3,7 @@ using Domain.Entity;
 using IntegrationTests.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using WebApi.Endpoints.command.purchase;
+using WebApi.Endpoints.command.invoice.purchase;
 
 namespace IntegrationTests.Purchase;
 

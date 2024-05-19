@@ -27,6 +27,10 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<PurchaseLineItem> PurchaseLineItems { get; set; }
 
+    public virtual DbSet<Sale> Sales { get; set; }
+
+    public virtual DbSet<SaleLineItem> SaleLineItems { get; set; }
+
     public virtual DbSet<Stock> Stocks { get; set; }
 
   
@@ -88,6 +92,30 @@ public partial class SharmaTradersContext : DbContext
             entity.HasOne(d => d.ItemEntity).WithMany(p => p.PurchaseLineItems).HasForeignKey(d => d.ItemEntityId);
 
             entity.HasOne(d => d.PurchaseEntity).WithMany(p => p.PurchaseLineItems).HasForeignKey(d => d.PurchaseEntityId);
+        });
+
+        modelBuilder.Entity<Sale>(entity =>
+        {
+            entity.HasIndex(e => e.BillingPartyId, "IX_Sales_BillingPartyId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.BillingParty).WithMany(p => p.Sales).HasForeignKey(d => d.BillingPartyId);
+        });
+
+        modelBuilder.Entity<SaleLineItem>(entity =>
+        {
+            entity.ToTable("SaleLineItem");
+
+            entity.HasIndex(e => e.ItemEntityId, "IX_SaleLineItem_ItemEntityId");
+
+            entity.HasIndex(e => e.SaleEntityId, "IX_SaleLineItem_SaleEntityId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.ItemEntity).WithMany(p => p.SaleLineItems).HasForeignKey(d => d.ItemEntityId);
+
+            entity.HasOne(d => d.SaleEntity).WithMany(p => p.SaleLineItems).HasForeignKey(d => d.SaleEntityId);
         });
 
         modelBuilder.Entity<Stock>(entity =>

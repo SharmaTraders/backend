@@ -1,12 +1,12 @@
 ﻿using Domain.Entity;
 using UnitTests.Factory;
 
-namespace UnitTests.Domain.purchase;
+namespace UnitTests.Domain.invoice.purchase;
 
 public class PurchaseBillingItemTests
 {
     [Theory]
-    [MemberData(nameof(PurchaseFactory.GetValidPurchaseLineItems), MemberType = typeof(PurchaseFactory))]
+    [MemberData(nameof(InvoiceFactory.GetValidPurchaseLineItems), MemberType = typeof(InvoiceFactory))]
     public void Purchase_WithValidPurchaseLineItem_CanBeCreated(PurchaseLineItem validPurchaseLineItem)
     {
         // Arrange
