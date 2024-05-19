@@ -8,7 +8,7 @@ public class AddSaleService
     {
         // Update balance of billing party
         double amountForBillingParty = saleEntity.GetExtraAmount();
-        saleEntity.BillingParty.UpdateBalance(amountForBillingParty);
+        saleEntity.BillingParty.AddBalance(amountForBillingParty);
 
         // Remove stock for each item in sale
         foreach (SaleLineItem lineItem in saleEntity.Sales)

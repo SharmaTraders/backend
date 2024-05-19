@@ -7,7 +7,7 @@ public static class AddPurchaseService {
 
         // Update balance of billing party
         double amountForBillingParty = purchaseEntity.GetExtraAmount();
-        purchaseEntity.BillingParty.UpdateBalance(amountForBillingParty);
+        purchaseEntity.BillingParty.AddBalance(amountForBillingParty);
 
 
         // Add stock for each item in purchase

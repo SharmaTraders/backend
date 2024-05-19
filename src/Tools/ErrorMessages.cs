@@ -1,7 +1,6 @@
 namespace Tools;
 
-public static class ErrorMessages
-{
+public static class ErrorMessages {
     // Common
     public const string EmailInvalidFormat = "Invalid email format";
     public const string EmailRequired = "Email is required";
@@ -10,7 +9,6 @@ public static class ErrorMessages
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
     public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
     public const string ValueMustBe2DecimalPlacesAtMax = "The value must be rounded to two decimal places or fewer.";
-
 
 
     // Admin
@@ -25,10 +23,9 @@ public static class ErrorMessages
     public const string AdminPasswordIncorrect = "Incorrect password";
 
     // Item
-    public static string ItemNotFound(Guid id)
-    {
-        return $"Item with id : {id} not found";
-    }
+    public static string ItemNotFound(Guid id) =>
+        $"Item with id : {id} not found";
+
 
     public static string ItemNameAlreadyExists(string itemName) => $"Item name : {itemName} already exists";
     public const string ItemNameIsRequired = "Item must have a name";
@@ -45,10 +42,7 @@ public static class ErrorMessages
 
 
     // Billing parties
-    public static string BillingPartyNotFound(Guid id)
-    {
-        return $"Billing party with id : {id} not found";
-    }
+    public static string BillingPartyNotFound(Guid id) => $"Billing party with id : {id} not found";
 
     public static string BillingPartyNameAlreadyExists(string billingPartyName) =>
         $"Billing party name : {billingPartyName} already exists";
@@ -80,7 +74,7 @@ public static class ErrorMessages
 
     public const string BillingPartyUpdateAmountMustBeAtMax2DecimalPlaces =
         "Billing party update amount must be at most 2 decimal places";
-    
+
     // Invoice-Item
     public const string InvoiceItemQuantityPositive = "The quantity must be a positive number.";
     public const string InvoiceItemPricePositive = "The price must be a positive number.";
@@ -97,8 +91,20 @@ public static class ErrorMessages
     public const string PurchaseEntityPaidAmountPositive = "The paid amount must be a positive number.";
     public const string InvoiceNumberPositive = "The invoice number must be a positive integer.";
     public const string SaleEntityReceivedAmountPositive = "The received amount must be a positive number.";
-    
-    
+
+
     // IncomeEntity
     public const string IncomeAmountMustBePositive = "The income amount must be a positive number.";
+
+    // ExpenseCategoryEntity
+    public const string ExpenseCategoryNameRequired = "The expense category name is required.";
+    public static string ExpenseCategoryNotFound(string name) => $"Expense category with name : {name} not found";
+
+    // Expense
+    public const string ExpenseCategoryNameBetween2And100 =
+        "The expense category name must be between 2 and 100 characters long (inclusive).";
+    public const string ExpenseCategoryNameAlreadyExists = "The expense category name already exists.";
+    public const string ExpenseEitherCategoryOrBillingPartyRequired =
+        "One of category or billing party is required";
+
 }

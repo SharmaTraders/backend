@@ -1,6 +1,7 @@
 using System.Text;
 using Application;
 using Application.services.billingParty;
+using Application.services.expense;
 using Application.services.item;
 using CommandContracts;
 using Data;
@@ -13,6 +14,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Query;
 using Query.Services.billingParty;
+using Query.Services.expense;
 using Query.Services.item;
 using QueryContracts;
 using WebApi;
@@ -38,6 +40,8 @@ builder.Services.AddScoped<IBillingPartyRepository, BillingPartyRepository>();
 builder.Services.AddScoped<IPurchaseRepository, PurchaseRepository>();
 builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
+builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
+builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
 
 
 // Services
@@ -45,6 +49,7 @@ builder.Services.AddScoped<IUniqueBillingPartyNameChecker, UniqueBillingPartyNam
 builder.Services.AddScoped<IUniqueBillingPartyEmailChecker, UniqueBillingPartyEmailChecker>();
 builder.Services.AddScoped<IUniqueBillingPartyVatNumberChecker, UniqueBillingPartyVatNumberChecker>();
 builder.Services.AddScoped<IUniqueItemNameChecker, UniqueItemNameChecker>();
+builder.Services.AddScoped<IUniqueExpenseNameChecker, UniqueExpenseNameChecker>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
@@ -111,7 +116,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();             
 app.UseCors(policyBuilder => policyBuilder.AllowAnyMethod()
     .AllowAnyHeader()
-    .SetIsOriginAllowed(origin => true)
+    .SetIsOriginAllowed((_) => true)
     .AllowCredentials());
 
 app.UseAuthorization();
