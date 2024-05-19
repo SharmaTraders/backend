@@ -32,7 +32,7 @@ public class RegisterIncomeHandler : IRequestHandler<RegisterIncomeCommand.Reque
             Date = date,
             Remarks = request.Remarks
         };
-        AddIncomeService.AddIncome(incomeEntity);
+        RegisterIncomeService.RegisterIncome(incomeEntity);
         await _incomeRepository.AddAsync(incomeEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
         return new RegisterIncomeCommand.Answer(incomeEntity.Id.ToString());

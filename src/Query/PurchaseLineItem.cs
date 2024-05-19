@@ -17,8 +17,6 @@ public partial class PurchaseLineItem
 
     public Guid PurchaseEntityId { get; set; }
 
-    public string? Remarks { get; set; }
-
     public virtual Item ItemEntity { get; set; } = null!;
 
     public virtual Purchase PurchaseEntity { get; set; } = null!;

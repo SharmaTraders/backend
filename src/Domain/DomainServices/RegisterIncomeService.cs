@@ -2,13 +2,13 @@
 
 namespace Domain.DomainServices;
 
-public static class AddIncomeService {
+public static class RegisterIncomeService {
 
-    public static void AddIncome(IncomeEntity incomeEntity) {
+    public static void RegisterIncome(IncomeEntity incomeEntity) {
         BillingPartyEntity partyEntity = incomeEntity.BillingParty;
         // Income means we decrease the balance of the party, since they paid us
         double amountToUpdate = incomeEntity.Amount * -1;
-        partyEntity.UpdateBalance(amountToUpdate);
+        partyEntity.AddBalance(amountToUpdate);
 
     }
     

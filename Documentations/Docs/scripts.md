@@ -14,7 +14,7 @@ docker compose up
 Please replace {migrationName} with the name of the migration
 ```bash
 cd ..\..\src\Persistence\
- dotnet ef --startup-project ../WebApi/ migrations add {migrationName} --context ReadDatabaseContext
+ dotnet ef --startup-project ../WebApi/ migrations add addExpense --context WriteDatabaseContext
 ```
 
 ### Scaffold the database:

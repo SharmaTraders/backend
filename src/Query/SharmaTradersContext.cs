@@ -19,6 +19,10 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<BillingParty> BillingParties { get; set; }
 
+    public virtual DbSet<Expense> Expenses { get; set; }
+
+    public virtual DbSet<ExpenseCategory> ExpenseCategories { get; set; }
+
     public virtual DbSet<Income> Incomes { get; set; }
 
     public virtual DbSet<Item> Items { get; set; }
@@ -33,7 +37,6 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Stock> Stocks { get; set; }
 
-  
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Admin>(entity =>
@@ -52,6 +55,24 @@ public partial class SharmaTradersContext : DbContext
             entity.HasIndex(e => e.VatNumber, "IX_BillingParties_VatNumber").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Expense>(entity =>
+        {
+            entity.HasIndex(e => e.BillingPartyId, "IX_Expenses_BillingPartyId");
+
+            entity.HasIndex(e => e.CategoryName, "IX_Expenses_CategoryName");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.BillingParty).WithMany(p => p.Expenses).HasForeignKey(d => d.BillingPartyId);
+
+            entity.HasOne(d => d.CategoryNameNavigation).WithMany(p => p.Expenses).HasForeignKey(d => d.CategoryName);
+        });
+
+        modelBuilder.Entity<ExpenseCategory>(entity =>
+        {
+            entity.HasKey(e => e.Name);
         });
 
         modelBuilder.Entity<Income>(entity =>
