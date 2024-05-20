@@ -5,10 +5,14 @@ public static class ErrorMessages {
     public const string EmailInvalidFormat = "Invalid email format";
     public const string EmailRequired = "Email is required";
     public const string RemarksTooLong = "Remarks must be at most 500 characters long";
+
     public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
     public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
     public const string ValueMustBe2DecimalPlacesAtMax = "The value must be rounded to two decimal places or fewer.";
+    public const string NameRequired = "Full name is required";
+    public static string AddressIsRequired(string type) => $"{type} address is required";
+    public static string AddressBetween3And60(string type) =>$"{type} address length must be between 3 and 60 (inclusive)";
 
 
     // Admin
@@ -57,14 +61,9 @@ public static class ErrorMessages {
 
     public const string BillingPartyNameBetween3And30 =
         "Billing party name length must be between 3 and 30 (inclusive)";
-
-    public const string BillingPartyAddressIsRequired = "Billing party address have a name";
-
-    public const string BillingPartyAddressBetween3And60 =
-        "Billing party address length must be between 3 and 60 (inclusive)";
-
+    
     public const string BillingPartyPhoneNumberMustBeAllDigits = "Phone number must contain only digits";
-    public const string BillingPartyPhoneNumberMustBe10DigitsLong = "Phone number must be 10 digits long";
+    public const string PhoneNumberMustBe10DigitsLong = "Phone number must be 10 digits long";
 
     public const string BillingPartyOpeningBalanceMustBeAtMax2DecimalPlaces =
         "Opening balance must be at most 2 decimal places";
@@ -106,5 +105,19 @@ public static class ErrorMessages {
     public const string ExpenseCategoryNameAlreadyExists = "The expense category name already exists.";
     public const string ExpenseEitherCategoryOrBillingPartyRequired =
         "One of category or billing party is required";
+
+    // Employee
+    public const string EmployeeFullNameBetween3And50 = "Full name length must be between 3 and 50 (inclusive)";
+    public const string EmployeePhoneNumberMustBeAllDigits = "Phone number must contain only digits";
+    public const string EmployeeStatusInvalid = "Employee status must be either 'active' or 'inactive' or 'terminated'";
+    public const string EmployeeStatusIsRequired = "Employee status is required";
+
+    public static string EmployeeEmailAlreadyExists(string employeeEntityEmail) =>
+        $"Employee with email : {employeeEntityEmail} already exists";
+
+    public static string EmployeePhoneNumberAlreadyExists(string employeeEntityPhoneNumber) =>
+        $"Employee with phone number : {employeeEntityPhoneNumber} already exists";
+    
+    public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid} not found";
 
 }

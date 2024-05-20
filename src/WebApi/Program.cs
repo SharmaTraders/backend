@@ -1,6 +1,7 @@
 using System.Text;
 using Application;
 using Application.services.billingParty;
+using Application.services.employee;
 using Application.services.expense;
 using Application.services.item;
 using CommandContracts;
@@ -14,6 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Query;
 using Query.Services.billingParty;
+using Query.Services.employee;
 using Query.Services.expense;
 using Query.Services.item;
 using QueryContracts;
@@ -42,6 +44,7 @@ builder.Services.AddScoped<IIncomeRepository, IncomeRepository>();
 builder.Services.AddScoped<ISaleRepository, SaleRepository>();
 builder.Services.AddScoped<IExpenseRepository, ExpenseRepository>();
 builder.Services.AddScoped<IExpenseCategoryRepository, ExpenseCategoryRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
 
 // Services
@@ -50,6 +53,8 @@ builder.Services.AddScoped<IUniqueBillingPartyEmailChecker, UniqueBillingPartyEm
 builder.Services.AddScoped<IUniqueBillingPartyVatNumberChecker, UniqueBillingPartyVatNumberChecker>();
 builder.Services.AddScoped<IUniqueItemNameChecker, UniqueItemNameChecker>();
 builder.Services.AddScoped<IUniqueExpenseNameChecker, UniqueExpenseNameChecker>();
+builder.Services.AddScoped<IUniqueEmployeeEmailChecker, UniqueEmployeeEmailChecker>();
+builder.Services.AddScoped<IUniqueEmployeePhoneNumberChecker, UniqueEmployeePhoneNumberChecker>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
