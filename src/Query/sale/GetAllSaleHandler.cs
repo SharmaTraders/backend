@@ -33,7 +33,8 @@ namespace Query.sale
                     sale.InvoiceNumber,
                     sale.Date.ToString(),
                     GetTotalAmount(sale.SaleLineItems, sale.TransportFee, sale.VatAmount),
-                    GetRemainingAmount(sale.SaleLineItems, sale.TransportFee, sale.VatAmount, sale.ReceivedAmount)
+                    GetRemainingAmount(sale.SaleLineItems, sale.TransportFee, sale.VatAmount, sale.ReceivedAmount),
+                    sale.Remarks
                 ))
                 .ToListAsync(cancellationToken);
 

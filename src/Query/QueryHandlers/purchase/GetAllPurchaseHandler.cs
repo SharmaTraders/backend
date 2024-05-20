@@ -32,7 +32,8 @@ public class GetAllPurchaseHandler : IRequestHandler<GetAllPurchases.Query, GetA
                 purchase.InvoiceNumber,
                 purchase.Date.ToString(),
                 GetTotalAmount(purchase.PurchaseLineItems, purchase.TransportFee, purchase.VatAmount),
-                GetRemainingAmount(purchase.PurchaseLineItems, purchase.TransportFee, purchase.VatAmount, purchase.PaidAmount)
+                GetRemainingAmount(purchase.PurchaseLineItems, purchase.TransportFee, purchase.VatAmount, purchase.PaidAmount),
+                purchase.Remarks
             ))
             .ToListAsync(cancellationToken);
 
