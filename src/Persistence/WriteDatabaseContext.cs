@@ -11,7 +11,7 @@ public class WriteDatabaseContext : DbContext {
     public required DbSet<PurchaseEntity> Purchases { get; init; }
     public required DbSet<SaleEntity> Sales { get; init; }
     public required DbSet<IncomeEntity> Incomes { get; init; }
-
+    public required DbSet<EmployeeEntity> Employees { get; init; }
     public DbSet<ExpenseCategoryEntity> ExpenseCategories { get; set; }
 
     public DbSet<ExpenseEntity> Expenses { get; set; }

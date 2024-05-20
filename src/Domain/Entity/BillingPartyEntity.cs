@@ -81,12 +81,12 @@ public class BillingPartyEntity: IEntity<Guid> {
 
     private static void ValidateAddress(string value) {
         if (string.IsNullOrEmpty(value)) {
-            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressIsRequired);
+            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.AddressIsRequired("Billing Party"));
         }
 
         //Length between 3 and 30 characters (inclusive)
         if (value.Length is < 3 or > 60) {
-            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.BillingPartyAddressBetween3And60);
+            throw new DomainValidationException("Address", ErrorCode.BadRequest, ErrorMessages.AddressBetween3And60("Billing Party"));
         }
     }
 
@@ -121,7 +121,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
         if (value.Length != 10) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
-                ErrorMessages.BillingPartyPhoneNumberMustBe10DigitsLong);
+                ErrorMessages.PhoneNumberMustBe10DigitsLong);
         }
     }
 

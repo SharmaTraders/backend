@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(WriteDatabaseContext))]
-    partial class WriteDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240520103055_AddEmployee")]
+    partial class AddEmployee
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,12 +112,6 @@ namespace Data.Migrations
                         .HasColumnType("text");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Email")
-                        .IsUnique();
-
-                    b.HasIndex("PhoneNumber")
-                        .IsUnique();
 
                     b.ToTable("Employees");
                 });
@@ -275,42 +272,6 @@ namespace Data.Migrations
                     b.HasIndex("BillingPartyId");
 
                     b.ToTable("Sales");
-                });
-
-            modelBuilder.Entity("Domain.Entity.EmployeeEntity", b =>
-                {
-                    b.OwnsMany("Domain.Entity.EmployeeTimeRecord", "TimeRecords", b1 =>
-                        {
-                            b1.Property<Guid>("Id")
-                                .ValueGeneratedOnAdd()
-                                .HasColumnType("uuid");
-
-                            b1.Property<TimeSpan>("Break")
-                                .HasColumnType("interval");
-
-                            b1.Property<DateOnly>("Date")
-                                .HasColumnType("date");
-
-                            b1.Property<Guid>("EmployeeEntityId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<TimeSpan>("EndTime")
-                                .HasColumnType("interval");
-
-                            b1.Property<TimeSpan>("StartTime")
-                                .HasColumnType("interval");
-
-                            b1.HasKey("Id");
-
-                            b1.HasIndex("EmployeeEntityId");
-
-                            b1.ToTable("EmployeeTimeRecord");
-
-                            b1.WithOwner()
-                                .HasForeignKey("EmployeeEntityId");
-                        });
-
-                    b.Navigation("TimeRecords");
                 });
 
             modelBuilder.Entity("Domain.Entity.ExpenseEntity", b =>
