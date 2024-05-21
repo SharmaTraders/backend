@@ -37,22 +37,20 @@ public class ItemEntity : IEntity<Guid> {
 
     public void AddStock(Stock stock) {
         StockHistory.Add(stock);
-        CurrentStockAmount += stock.Weight;
+        CurrentStockAmount += Math.Round(stock.Weight, 2);
         CurrentEstimatedStockValuePerKilo = stock.ExpectedValuePerKilo != 0
             ? stock.ExpectedValuePerKilo
             : CurrentEstimatedStockValuePerKilo;
     }
 
     public void ReduceStock(Stock stock) {
-       
-
         if (_currentStockAmount < stock.Weight) {
             throw new DomainValidationException("weight", ErrorCode.BadRequest, ErrorMessages.StockReduceCannotBeMoreThanCurrentStock);
             
         }
 
         StockHistory.Add(stock);
-        CurrentStockAmount -= stock.Weight;
+        CurrentStockAmount -= Math.Round(stock.Weight, 2);
     }
 
 
