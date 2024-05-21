@@ -107,4 +107,8 @@ public static class ErrorMessages {
     public const string ExpenseEitherCategoryOrBillingPartyRequired =
         "One of category or billing party is required";
 
+
+    // Reports
+    public const string ReportFromDateBeforeToDate = "From date must be before to date";
+
 }
