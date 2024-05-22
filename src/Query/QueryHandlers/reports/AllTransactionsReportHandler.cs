@@ -21,7 +21,7 @@ public class AllTransactionsReportHandler : IRequestHandler<AllTransactionsRepor
 
         if (dateFrom > dateTo) {
             throw new DomainValidationException("dates", ErrorCode.BadRequest,
-                ErrorMessages.ReportFromDateBeforeToDate);
+                ErrorMessages.FromDateBeforeToDate);
         }
 
         var expenses =await GetExpensesAsync(dateFrom, dateTo, cancellationToken);

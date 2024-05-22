@@ -3,26 +3,26 @@ using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace WebApi.Endpoints.command.invoice.sale;
+namespace WebApi.Endpoints.command.invoice.purchase;
 
-public class AddSale : CommandEndPointBase
-    .WithRequest<AddSaleRequest>
-    .WithResponse<CommandContracts.sale.AddSale.Response> {
+public class RegisterPurchase : CommandEndPointBase
+    .WithRequest<AddPurchaseRequest>
+    .WithResponse<CommandContracts.purchase.RegisterPurchase.Response> {
     
     private readonly IMediator _mediator;
 
-    public AddSale(IMediator mediator)
+    public RegisterPurchase(IMediator mediator)
     {
         _mediator = mediator;
     }
 
-    [HttpPost, Route("sale")]
+    [HttpPost, Route("purchase")]
     [Authorize(Roles = "Admin")]
-    public override async Task<ActionResult<CommandContracts.sale.AddSale.Response>> HandleAsync(AddSaleRequest request)
+    public override async Task<ActionResult<CommandContracts.purchase.RegisterPurchase.Response>> HandleAsync(AddPurchaseRequest request)
     {
-        var commandRequest = new CommandContracts.sale.AddSale.Request(
+        var commandRequest = new CommandContracts.purchase.RegisterPurchase.Request(
             request.RequestBody.BillingPartyId,
-            request.RequestBody.SaleLines.Select(x => new CommandContracts.sale.AddSale.SaleLines(
+            request.RequestBody.PurchaseLines.Select(x => new CommandContracts.purchase.RegisterPurchase.PurchaseLines(
                 x.ItemId,
                 x.Quantity,
                 x.UnitPrice,
@@ -32,7 +32,7 @@ public class AddSale : CommandEndPointBase
             request.RequestBody.Remarks,
             request.RequestBody.VatAmount,
             request.RequestBody.TransportFee,
-            request.RequestBody.ReceivedAmount ?? 0,
+            request.RequestBody.PaidAmount ?? 0,
             request.RequestBody.InvoiceNumber
         );
          var response = await _mediator.Send(commandRequest);
@@ -40,26 +40,27 @@ public class AddSale : CommandEndPointBase
     }
 }
 
-public class AddSaleRequest
+public class AddPurchaseRequest
 {
     [FromBody] public Body RequestBody { get; set; }= null!;
     public record Body( 
         string BillingPartyId,
-        List<SaleLines> SaleLines,
+        List<PurchaseLines> PurchaseLines,
         string Date,
         string? Remarks,
         double? VatAmount,
         double? TransportFee,
-        double? ReceivedAmount,
+        double? PaidAmount,
         int? InvoiceNumber
         );
     
-    public record SaleLines(
+    public record PurchaseLines(
         string ItemId,
         [Required]
         double Quantity,
+
         [Required]
         double UnitPrice,
-        double? Report
-        );
+
+        double? Report);
 }

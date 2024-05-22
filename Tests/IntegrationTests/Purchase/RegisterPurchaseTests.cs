@@ -7,8 +7,8 @@ using WebApi.Endpoints.command.invoice.purchase;
 
 namespace IntegrationTests.Purchase;
 
-public class AddPurchaseTests : BaseIntegrationTest {
-    public AddPurchaseTests(IntegrationTestsWebAppFactory application) : base(application) {
+public class RegisterPurchaseTests : BaseIntegrationTest {
+    public RegisterPurchaseTests(IntegrationTestsWebAppFactory application) : base(application) {
     }
 
     [Fact]

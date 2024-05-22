@@ -28,7 +28,7 @@ public class
 
             if (dateFrom > dateTo) {
                 throw new DomainValidationException("dates", ErrorCode.BadRequest,
-                    ErrorMessages.ReportFromDateBeforeToDate);
+                    ErrorMessages.FromDateBeforeToDate);
             }
 
             query = query.Where(expense => expense.Date >= dateFrom && expense.Date <= dateTo);

@@ -8,7 +8,7 @@ using Tools;
 
 namespace Application.CommandHandlers.invoice.purchase;
 
-public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurchase.Response> {
+public class AddPurchaseHandler : IRequestHandler<RegisterPurchase.Request, RegisterPurchase.Response> {
     
     private readonly IPurchaseRepository _purchaseRepository;
     private readonly IBillingPartyRepository _billingPartyRepository;
@@ -22,11 +22,11 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<AddPurchase.Response> Handle(AddPurchase.Request request, CancellationToken cancellationToken) {
+    public async Task<RegisterPurchase.Response> Handle(RegisterPurchase.Request request, CancellationToken cancellationToken) {
         var (date, billingParty) = await CheckForValidDataExistenceAsync(request);
 
         List<PurchaseLineItem> lineItems = new List<PurchaseLineItem>();
-        foreach (AddPurchase.PurchaseLines line in request.PurchaseLines) {
+        foreach (RegisterPurchase.PurchaseLines line in request.PurchaseLines) {
             ItemEntity item = await IfExists(line.ItemId);
             PurchaseLineItem lineItem = new PurchaseLineItem()
             {
@@ -55,7 +55,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
         AddPurchaseService.AddPurchase(purchaseEntity);
         await _purchaseRepository.AddAsync(purchaseEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return new AddPurchase.Response(purchaseEntity.Id.ToString());
+        return new RegisterPurchase.Response(purchaseEntity.Id.ToString());
 
     }
 
@@ -72,7 +72,7 @@ public class AddPurchaseHandler : IRequestHandler<AddPurchase.Request, AddPurcha
         return item;
     }
 
-    private async Task<(DateOnly,BillingPartyEntity)> CheckForValidDataExistenceAsync(AddPurchase.Request request) {
+    private async Task<(DateOnly,BillingPartyEntity)> CheckForValidDataExistenceAsync(RegisterPurchase.Request request) {
         DateOnly date = DateParser.ParseDate(request.Date);
 
         bool tryParse = Guid.TryParse(request.BillingPartyId, out Guid billingPartyId);
