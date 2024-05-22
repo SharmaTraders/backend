@@ -15,6 +15,7 @@ public class GetAllPartyTransactions : QueryEndpointBase
         _mediator = mediator;
     }
 
+    [HttpGet, Route("billingParty/{Id}/transactions")]
     public override async Task<ActionResult<GetAllBillingPartyTransaction.Answer>> HandleAsync(GetAllPartyTransactionsRequest request) {
         var query = new GetAllBillingPartyTransaction.Query(request.Id, request.PageNumber, request.PageSize);
         var answer = await _mediator.Send(query);
