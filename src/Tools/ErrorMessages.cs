@@ -9,6 +9,8 @@ public static class ErrorMessages {
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
     public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
     public const string ValueMustBe2DecimalPlacesAtMax = "The value must be rounded to two decimal places or fewer.";
+    public const string FromDateBeforeToDate = "From date must be before to date";
+
 
 
     // Admin
@@ -108,7 +110,5 @@ public static class ErrorMessages {
         "One of category or billing party is required";
 
 
-    // Reports
-    public const string ReportFromDateBeforeToDate = "From date must be before to date";
 
 }

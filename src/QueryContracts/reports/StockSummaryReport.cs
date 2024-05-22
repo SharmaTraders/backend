@@ -3,7 +3,7 @@
 namespace QueryContracts.reports;
 
 public static class StockSummaryReport {
-    public record Query(): IRequest<Answer>;
+    public record Query(string FromDate, string ToDate): IRequest<Answer>;
 
     public record Answer(ICollection<StockSummaryDto> StockSummary);
 

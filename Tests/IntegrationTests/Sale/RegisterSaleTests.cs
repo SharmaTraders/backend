@@ -7,9 +7,9 @@ using WebApi.Endpoints.command.invoice.sale;
 
 namespace IntegrationTests.Invoice.Sale
 {
-    public class AddSaleTests : BaseIntegrationTest
+    public class RegisterSaleTests : BaseIntegrationTest
     {
-        public AddSaleTests(IntegrationTestsWebAppFactory application) : base(application)
+        public RegisterSaleTests(IntegrationTestsWebAppFactory application) : base(application)
         {
         }
         
