@@ -2,7 +2,7 @@
 
 namespace CommandContracts.purchase;
 
-public static class AddPurchase
+public static class RegisterPurchase
 {
     public record Request(
         string BillingPartyId,

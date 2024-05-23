@@ -13,7 +13,7 @@ public static class ErrorMessages {
     public const string NameRequired = "Full name is required";
     public static string AddressIsRequired(string type) => $"{type} address is required";
     public static string AddressBetween3And60(string type) =>$"{type} address length must be between 3 and 60 (inclusive)";
-
+    public const string FromDateBeforeToDate = "From date must be before to date";
 
     // Admin
     public const string AdminEmailAlreadyExists = "Admin with this email already exists";

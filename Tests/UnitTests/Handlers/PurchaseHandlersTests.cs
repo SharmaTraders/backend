@@ -18,11 +18,11 @@ public class PurchaseHandlersTests {
         var handler = new AddPurchaseHandler(purchaseRepoMock.Object, billingPartyRepoMock.Object, itemRepoMock.Object,
             unitOfWorkMock);
 
-        var request = new AddPurchase.Request(
+        var request = new RegisterPurchase.Request(
             BillingPartyId: "invalid-guid",
             Date: "2023-01-01",
-            PurchaseLines: new List<AddPurchase.PurchaseLines> {
-                new AddPurchase.PurchaseLines(ItemId: Guid.NewGuid().ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
+            PurchaseLines: new List<RegisterPurchase.PurchaseLines> {
+                new RegisterPurchase.PurchaseLines(ItemId: Guid.NewGuid().ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
             },
             Remarks: "remarks",
             VatAmount: 3,
@@ -53,11 +53,11 @@ public class PurchaseHandlersTests {
 
 
         Guid billingPartyId = Guid.NewGuid();
-        var request = new AddPurchase.Request(
+        var request = new RegisterPurchase.Request(
             BillingPartyId: billingPartyId.ToString(),
             Date: "2023-01-01",
-            PurchaseLines: new List<AddPurchase.PurchaseLines> {
-                new AddPurchase.PurchaseLines(ItemId: Guid.NewGuid().ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
+            PurchaseLines: new List<RegisterPurchase.PurchaseLines> {
+                new RegisterPurchase.PurchaseLines(ItemId: Guid.NewGuid().ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
             },
             Remarks: "remarks",
             VatAmount: 3,
@@ -95,11 +95,11 @@ public class PurchaseHandlersTests {
             billingPartyRepositoryMock.Object, itemRepositoryMock.Object, unitOfWorkMock);
 
         Guid itemId = Guid.NewGuid();
-        var request = new AddPurchase.Request(
+        var request = new RegisterPurchase.Request(
             BillingPartyId: billingParty.Id.ToString(),
             Date: "2023-01-01",
-            PurchaseLines: new List<AddPurchase.PurchaseLines> {
-                new AddPurchase.PurchaseLines(ItemId: itemId.ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
+            PurchaseLines: new List<RegisterPurchase.PurchaseLines> {
+                new RegisterPurchase.PurchaseLines(ItemId: itemId.ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
             },
             Remarks: "remarks",
             VatAmount: 3,
@@ -136,11 +136,11 @@ public class PurchaseHandlersTests {
             billingPartyRepositoryMock.Object, itemRepositoryMock.Object, unitOfWorkMock);
 
         Guid itemId = Guid.NewGuid();
-        var request = new AddPurchase.Request(
+        var request = new RegisterPurchase.Request(
             BillingPartyId: billingParty.Id.ToString(),
             Date: "2023-01-01",
-            PurchaseLines: new List<AddPurchase.PurchaseLines> {
-                new AddPurchase.PurchaseLines(ItemId: "invalid-guid", Quantity: 1, UnitPrice: 10, Report: 1)
+            PurchaseLines: new List<RegisterPurchase.PurchaseLines> {
+                new RegisterPurchase.PurchaseLines(ItemId: "invalid-guid", Quantity: 1, UnitPrice: 10, Report: 1)
             },
             Remarks: "remarks",
             VatAmount: 3,
@@ -179,11 +179,11 @@ public class PurchaseHandlersTests {
         var handler = new AddPurchaseHandler(purchaseRepositoryMock.Object,
             billingPartyRepositoryMock.Object, itemRepositoryMock.Object, unitOfWorkMock);
 
-        var request = new AddPurchase.Request(
+        var request = new RegisterPurchase.Request(
             BillingPartyId: billingParty.Id.ToString(),
             Date: "2023-01-01",
-            PurchaseLines: new List<AddPurchase.PurchaseLines> {
-                new AddPurchase.PurchaseLines(ItemId: item.Id.ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
+            PurchaseLines: new List<RegisterPurchase.PurchaseLines> {
+                new RegisterPurchase.PurchaseLines(ItemId: item.Id.ToString(), Quantity: 1, UnitPrice: 10, Report: 1)
             },
             Remarks: "remarks",
             VatAmount: 3,
