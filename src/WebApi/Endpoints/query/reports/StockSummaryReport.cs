@@ -26,6 +26,6 @@ public class StockSummaryReport : QueryEndpointBase
 }
 
 public class StockSummaryReportRequest {
-    [Required] public string FromDate { get; set; } = null!;
-    [Required] public string ToDate { get; set; } = null!;
+    [Required] [FromQuery] public string FromDate { get; set; } = null!;
+    [Required] [FromQuery] public string ToDate { get; set; } = null!;
 }
