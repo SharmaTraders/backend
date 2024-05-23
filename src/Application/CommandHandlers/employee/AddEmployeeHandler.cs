@@ -8,14 +8,14 @@ using Tools;
 
 namespace Application.CommandHandlers.employee;
 
-public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand.Request, CreateEmployeeCommand.Response> {
+public class AddEmployeeHandler : IRequestHandler<AddEmployeeCommand.Request, AddEmployeeCommand.Response> {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     private readonly IUniqueEmployeeEmailChecker _employeeEmailChecker;
     private readonly IUniqueEmployeePhoneNumberChecker _employeePhoneNumberChecker;
 
-    public CreateEmployeeHandler(IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork,
+    public AddEmployeeHandler(IEmployeeRepository employeeRepository, IUnitOfWork unitOfWork,
         IUniqueEmployeeEmailChecker employeeEmailChecker, IUniqueEmployeePhoneNumberChecker employeePhoneNumberChecker) {
         _employeeRepository = employeeRepository;
         _unitOfWork = unitOfWork;
@@ -23,17 +23,25 @@ public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand.Reque
         _employeePhoneNumberChecker = employeePhoneNumberChecker;
     }
 
-    public async Task<CreateEmployeeCommand.Response> Handle(CreateEmployeeCommand.Request request,
+    public async Task<AddEmployeeCommand.Response> Handle(AddEmployeeCommand.Request request,
         CancellationToken cancellationToken) {
         EmployeeEntity employeeEntity = new EmployeeEntity() {
             Id = Guid.NewGuid(),
-            FullName = request.FullName,
+            Name = request.Name,
             Address = request.Address,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
-            Status = request.Status
+            Status = EmployeeStatusCategory.Active,
+            Balance = request.OpeningBalance ?? 0,
+            NormalDailyWorkingHours = TimeOnly.Parse(request.NormalDailyWorkingHours),
         };
-
+        
+        EmployeeSalaryRecord salaryRecord = new EmployeeSalaryRecord() {
+            FromDate = DateOnly.MinValue,
+            SalaryPerHr = request.SalaryPerHour,
+            OvertimeSalaryPerHr = request.OvertimeSalaryPerHour
+        };
+        
         if (!string.IsNullOrEmpty(employeeEntity.Email)) {
             bool isUnique = await _employeeEmailChecker.IsUniqueAsync(employeeEntity.Email);
             if (!isUnique) {
@@ -49,9 +57,11 @@ public class CreateEmployeeHandler : IRequestHandler<CreateEmployeeCommand.Reque
                     ErrorMessages.EmployeePhoneNumberAlreadyExists(employeeEntity.PhoneNumber));
             }
         }
-
+        
+        employeeEntity.AddSalaryRecord(salaryRecord);
+        
         await _employeeRepository.AddAsync(employeeEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return new CreateEmployeeCommand.Response(employeeEntity.Id.ToString());
+        return new AddEmployeeCommand.Response(employeeEntity.Id.ToString());
     }
 }

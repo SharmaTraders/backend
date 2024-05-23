@@ -1,5 +1,6 @@
 ﻿using Domain.Entity;
 using Domain.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Data.Repository;
 
@@ -17,4 +18,5 @@ public class EmployeeRepository : IEmployeeRepository {
     public async Task<EmployeeEntity?> GetByIdAsync(Guid id) {
         return await _context.Employees.FindAsync(id);
     }
+    
 }

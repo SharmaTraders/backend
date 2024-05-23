@@ -3,17 +3,17 @@ using System.Collections.Generic;
 
 namespace Query;
 
-public partial class EmployeeTimeRecord
+public partial class EmployeeSalaryRecord
 {
     public Guid Id { get; set; }
 
-    public DateOnly Date { get; set; }
+    public DateOnly FromDate { get; set; }
 
-    public TimeOnly StartTime { get; set; }
+    public double SalaryPerHr { get; set; }
 
-    public TimeOnly EndTime { get; set; }
+    public double OvertimeSalaryPerHr { get; set; }
 
-    public int BreakMinutes { get; set; }
+    public DateOnly? ToDate { get; set; }
 
     public Guid EmployeeEntityId { get; set; }
 

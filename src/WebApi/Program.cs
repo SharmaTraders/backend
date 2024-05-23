@@ -55,6 +55,7 @@ builder.Services.AddScoped<IUniqueItemNameChecker, UniqueItemNameChecker>();
 builder.Services.AddScoped<IUniqueExpenseNameChecker, UniqueExpenseNameChecker>();
 builder.Services.AddScoped<IUniqueEmployeeEmailChecker, UniqueEmployeeEmailChecker>();
 builder.Services.AddScoped<IUniqueEmployeePhoneNumberChecker, UniqueEmployeePhoneNumberChecker>();
+builder.Services.AddScoped<IHasOverlappingShiftChecker, HasOverlappingShiftChecker>();
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 

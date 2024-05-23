@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Query;
 
-public partial class EmployeeTimeRecord
+public partial class EmployeeWorkShift
 {
     public Guid Id { get; set; }
 

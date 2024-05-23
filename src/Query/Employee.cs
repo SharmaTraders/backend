@@ -7,7 +7,11 @@ public partial class Employee
 {
     public Guid Id { get; set; }
 
-    public string FullName { get; set; } = null!;
+    public double Balance { get; set; }
+
+    public string Status { get; set; } = null!;
+
+    public string Name { get; set; } = null!;
 
     public string Address { get; set; } = null!;
 
@@ -15,7 +19,9 @@ public partial class Employee
 
     public string? PhoneNumber { get; set; }
 
-    public string Status { get; set; } = null!;
+    public TimeOnly NormalDailyWorkingHours { get; set; }
 
-    public virtual ICollection<EmployeeTimeRecord> EmployeeTimeRecords { get; set; } = new List<EmployeeTimeRecord>();
+    public virtual ICollection<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; } = new List<EmployeeSalaryRecord>();
+
+    public virtual ICollection<EmployeeWorkShift> EmployeeWorkShifts { get; set; } = new List<EmployeeWorkShift>();
 }

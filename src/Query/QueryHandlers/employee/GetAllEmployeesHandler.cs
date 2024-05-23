@@ -14,15 +14,15 @@ public class GetAllEmployeesHandler : IRequestHandler<GetAllEmployees.Query, Get
 
     public async Task<GetAllEmployees.Answer> Handle(GetAllEmployees.Query request, CancellationToken cancellationToken)
     {
-        
             var employees = await _context.Employees
             .Select(e => new GetAllEmployees.EmployeeDto(
                 e.Id.ToString(),
-                e.FullName,
+                e.Name,
                 e.Address,
                 e.Email,
                 e.PhoneNumber,
-                e.Status
+                e.Status,
+                e.Balance
             ))
             .ToListAsync(cancellationToken);
 

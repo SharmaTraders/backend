@@ -13,6 +13,7 @@ public static class GetAllEmployees {
         string Address,
         string? Email,
         string? PhoneNumber,
-        string Status
+        string Status,
+        double Balance
     );
 }

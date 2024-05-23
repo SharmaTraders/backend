@@ -111,6 +111,12 @@ public static class ErrorMessages {
     public const string EmployeePhoneNumberMustBeAllDigits = "Phone number must contain only digits";
     public const string EmployeeStatusInvalid = "Employee status must be either 'active' or 'inactive' or 'terminated'";
     public const string EmployeeStatusIsRequired = "Employee status is required";
+    public const string EndTimeBeforeStartTime = "End time cannot be before start time";
+    public const string BreakTimeInvalid = "Break time must be between 0 and 1440 minutes";
+    public const string BreakTimeMoreThanWorkTime = "Break time cannot be more than total work time";
+    public const string NormalDailyWorkHoursValidMinutes = "Normal daily work hours must be valid minutes";
+    public const string ToDateBeforeFromDate = "To date cannot be before from date";
+    public const string EmployeeShiftOverlaps = "Shift overlap detected. Please adjust the start or end time";
 
     public static string EmployeeEmailAlreadyExists(string employeeEntityEmail) =>
         $"Employee with email : {employeeEntityEmail} already exists";
@@ -120,4 +126,7 @@ public static class ErrorMessages {
     
     public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid} not found";
 
+    public static string SalaryPerHrInvalid(string propertyName) => $"Salary per hour is invalid for {propertyName}, it must be greater than or equal to 0";
+
+    public static string SalaryRecordNotFound(DateOnly workShiftDate) => $"Salary record for date : {workShiftDate} not found";
 }

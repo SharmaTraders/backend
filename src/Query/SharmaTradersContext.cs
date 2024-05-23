@@ -21,7 +21,9 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<EmployeeTimeRecord> EmployeeTimeRecords { get; set; }
+    public virtual DbSet<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; }
+
+    public virtual DbSet<EmployeeWorkShift> EmployeeWorkShifts { get; set; }
 
     public virtual DbSet<Expense> Expenses { get; set; }
 
@@ -70,15 +72,28 @@ public partial class SharmaTradersContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
-        modelBuilder.Entity<EmployeeTimeRecord>(entity =>
+        modelBuilder.Entity<EmployeeSalaryRecord>(entity =>
         {
-            entity.ToTable("EmployeeTimeRecord");
+            entity.ToTable("EmployeeSalaryRecord");
 
-            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeTimeRecord_EmployeeEntityId");
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeSalaryRecord_EmployeeEntityId");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeTimeRecords).HasForeignKey(d => d.EmployeeEntityId);
+            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeSalaryRecords).HasForeignKey(d => d.EmployeeEntityId);
+        });
+
+        modelBuilder.Entity<EmployeeWorkShift>(entity =>
+        {
+            entity.ToTable("EmployeeWorkShift");
+
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeWorkShift_EmployeeEntityId");
+
+            entity.HasIndex(e => e.Date, "IX_EmployeeWorkShifts_EmployeeId_Date");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeWorkShifts).HasForeignKey(d => d.EmployeeEntityId);
         });
 
         modelBuilder.Entity<Expense>(entity =>
