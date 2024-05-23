@@ -25,7 +25,7 @@ public class AddEmployee : CommandEndPointBase
             request.RequestBody.PhoneNumber,
             request.RequestBody.Email,
             request.RequestBody.OpeningBalance,
-            request.RequestBody.NormalDailyWorkingHours,
+            request.RequestBody.NormalDailyWorkingMinute,
             request.RequestBody.SalaryPerHour,
             request.RequestBody.OvertimeSalaryPerHour
         );
@@ -46,7 +46,7 @@ public class AddEmployeeRequest {
         string? PhoneNumber,
         string? Email,
         double? OpeningBalance,
-        string NormalDailyWorkingHours,
+        int NormalDailyWorkingMinute,
         double SalaryPerHour,
         double OvertimeSalaryPerHour
         ); 

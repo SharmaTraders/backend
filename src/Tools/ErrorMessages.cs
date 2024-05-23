@@ -117,6 +117,7 @@ public static class ErrorMessages {
     public const string NormalDailyWorkHoursValidMinutes = "Normal daily work hours must be valid minutes";
     public const string ToDateBeforeFromDate = "To date cannot be before from date";
     public const string EmployeeShiftOverlaps = "Shift overlap detected. Please adjust the start or end time";
+    public const string TimeFormatInvalid = "Invalid time format, The time must be in the format HH:mm";
 
     public static string EmployeeEmailAlreadyExists(string employeeEntityEmail) =>
         $"Employee with email : {employeeEntityEmail} already exists";

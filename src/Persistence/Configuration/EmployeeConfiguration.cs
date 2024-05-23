@@ -29,12 +29,9 @@ namespace Data.Configuration
                     workShiftRecordBuilder.HasKey(workShift => workShift.Id);
                     workShiftRecordBuilder.Property(workShift => workShift.StartTime).IsRequired();
                     workShiftRecordBuilder.Property(workShift => workShift.EndTime).IsRequired();
+                    workShiftRecordBuilder.HasIndex(workShift => workShift.Date);
                     workShiftRecordBuilder.Property(workShift => workShift.Date).IsRequired();
-                    // Add index for EmployeeEntityId and Date 
-                    // to make sure that there is only one record for a given employee on a given date and it makes the query faster 
-                    workShiftRecordBuilder.HasIndex(workShift => new { workShift.Date })
-                        .HasDatabaseName("IX_EmployeeWorkShifts_EmployeeId_Date");
-                    
+                    workShiftRecordBuilder.Property(workShift => workShift.BreakMinutes).IsRequired();
                 });
             
             builder.OwnsMany(employee => employee.SalaryRecords,

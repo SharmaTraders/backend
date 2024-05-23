@@ -30,17 +30,15 @@ public class RegisterEmployeeWorkShiftHandler : IRequestHandler<RegisterEmployee
             throw new DomainValidationException("Id", ErrorCode.NotFound, ErrorMessages.EmployeeNotFound(guid));
         }
         
-        Console.WriteLine("Adding time record for employee: " + employeeEntity.Name);
-
         EmployeeWorkShift employeeWorkShift = new EmployeeWorkShift()
         {
-            StartTime = TimeOnly.Parse(request.StartTime),
-            EndTime = TimeOnly.Parse(request.EndTime),
+            StartTime = TimeOnlyParser.ParseTime(request.StartTime),
+            EndTime = TimeOnlyParser.ParseTime(request.EndTime),
             Date = DateParser.ParseDate(request.Date),
             BreakMinutes = request.BreakInMinutes
         };
 
-        if (_hasOverlappingShiftChecker.HasOverlappingShiftAsync(employeeEntity.Id, employeeWorkShift).Result)
+        if (await _hasOverlappingShiftChecker.HasOverlappingShiftAsync(employeeEntity.Id, employeeWorkShift))
         {
             throw new DomainValidationException("WorkShift", ErrorCode.Conflict, ErrorMessages.EmployeeShiftOverlaps);
         }

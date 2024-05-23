@@ -12,7 +12,7 @@ public class EmployeeEntity : IEntity<Guid>
     private string? _phoneNumber;
     public double Balance { get; set; }
     public required EmployeeStatusCategory Status { get; set; }
-    private TimeOnly _normalDailyWorkingHours;
+    private int _normalDailyWorkingMinute;
 
     public ICollection<EmployeeWorkShift> WorkShifts { get; set; } = new List<EmployeeWorkShift>();
 
@@ -37,9 +37,9 @@ public class EmployeeEntity : IEntity<Guid>
                                workShift.BreakMinutes;
         
         // If the total work minutes exceed the normal daily working hours, calculate the overtime salary
-        if (totalWorkMinutes > NormalDailyWorkingHours.ToTimeSpan().TotalMinutes)
+        if (totalWorkMinutes > NormalDailyWorkingMinute)
         {
-            var overtimeMinutes = totalWorkMinutes - NormalDailyWorkingHours.ToTimeSpan().TotalMinutes;
+            var overtimeMinutes = totalWorkMinutes - NormalDailyWorkingMinute;
             Balance += (overtimeMinutes/60) * salaryRecord.OvertimeSalaryPerHr;
             totalWorkMinutes -= overtimeMinutes;
         }
@@ -100,21 +100,21 @@ public class EmployeeEntity : IEntity<Guid>
         }
     }
 
-    public required TimeOnly NormalDailyWorkingHours
+    public required int NormalDailyWorkingMinute
     {
-        get => _normalDailyWorkingHours;
+        get => _normalDailyWorkingMinute;
         set
         {
-            ValidateNormalDailyWorkHours(value);
-            _normalDailyWorkingHours = value;
+            ValidateNormalDailyWorkingMinute(value);
+            _normalDailyWorkingMinute = value;
         }
     }
 
-    private static void ValidateNormalDailyWorkHours(TimeOnly value)
+    private static void ValidateNormalDailyWorkingMinute(int value)
     {
-        if (value.ToTimeSpan().TotalMinutes <= 0 || value.ToTimeSpan().TotalMinutes > 1440)
+        if (value is <= 0 or > 1440)
         {
-            throw new DomainValidationException("NormalDailyWorkingHours", ErrorCode.BadRequest,
+            throw new DomainValidationException("NormalDailyWorkingMinute", ErrorCode.BadRequest,
                 ErrorMessages.NormalDailyWorkHoursValidMinutes);
         }
     }

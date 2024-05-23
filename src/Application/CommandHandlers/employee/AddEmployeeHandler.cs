@@ -11,7 +11,6 @@ namespace Application.CommandHandlers.employee;
 public class AddEmployeeHandler : IRequestHandler<AddEmployeeCommand.Request, AddEmployeeCommand.Response> {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IUnitOfWork _unitOfWork;
-
     private readonly IUniqueEmployeeEmailChecker _employeeEmailChecker;
     private readonly IUniqueEmployeePhoneNumberChecker _employeePhoneNumberChecker;
 
@@ -33,7 +32,7 @@ public class AddEmployeeHandler : IRequestHandler<AddEmployeeCommand.Request, Ad
             PhoneNumber = request.PhoneNumber,
             Status = EmployeeStatusCategory.Active,
             Balance = request.OpeningBalance ?? 0,
-            NormalDailyWorkingHours = TimeOnly.Parse(request.NormalDailyWorkingHours),
+            NormalDailyWorkingMinute = request.NormalDailyWorkingMinute,
         };
         
         EmployeeSalaryRecord salaryRecord = new EmployeeSalaryRecord() {

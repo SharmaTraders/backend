@@ -19,7 +19,7 @@ public partial class Employee
 
     public string? PhoneNumber { get; set; }
 
-    public TimeOnly NormalDailyWorkingHours { get; set; }
+    public int NormalDailyWorkingMinute { get; set; }
 
     public virtual ICollection<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; } = new List<EmployeeSalaryRecord>();
 

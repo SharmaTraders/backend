@@ -9,7 +9,7 @@ public static class AddEmployeeCommand {
         string? PhoneNumber,
         string? Email,
         double? OpeningBalance,
-        string NormalDailyWorkingHours,
+        int NormalDailyWorkingMinute,
         double SalaryPerHour,
         double OvertimeSalaryPerHour
         ) : IRequest<Response>;

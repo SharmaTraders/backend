@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Data.Migrations
 {
     /// <inheritdoc />
-    public partial class addEmployee : Migration
+    public partial class ModifyEmployee : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -22,7 +22,7 @@ namespace Data.Migrations
                     Address = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "text", nullable: true),
-                    NormalDailyWorkingHours = table.Column<TimeOnly>(type: "time without time zone", nullable: false)
+                    NormalDailyWorkingMinute = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -79,14 +79,14 @@ namespace Data.Migrations
                 column: "EmployeeEntityId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_EmployeeWorkShift_Date",
+                table: "EmployeeWorkShift",
+                column: "Date");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_EmployeeWorkShift_EmployeeEntityId",
                 table: "EmployeeWorkShift",
                 column: "EmployeeEntityId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_EmployeeWorkShifts_EmployeeId_Date",
-                table: "EmployeeWorkShift",
-                column: "Date");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_Email",

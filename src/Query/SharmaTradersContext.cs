@@ -87,9 +87,9 @@ public partial class SharmaTradersContext : DbContext
         {
             entity.ToTable("EmployeeWorkShift");
 
-            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeWorkShift_EmployeeEntityId");
+            entity.HasIndex(e => e.Date, "IX_EmployeeWorkShift_Date");
 
-            entity.HasIndex(e => e.Date, "IX_EmployeeWorkShifts_EmployeeId_Date");
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeWorkShift_EmployeeEntityId");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
