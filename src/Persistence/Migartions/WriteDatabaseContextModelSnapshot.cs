@@ -84,6 +84,47 @@ namespace Data.Migrations
                     b.ToTable("BillingParties");
                 });
 
+            modelBuilder.Entity("Domain.Entity.EmployeeEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<double>("Balance")
+                        .HasColumnType("double precision");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("NormalDailyWorkingMinute")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("PhoneNumber")
+                        .IsUnique();
+
+                    b.ToTable("Employees");
+                });
+
             modelBuilder.Entity("Domain.Entity.ExpenseCategoryEntity", b =>
                 {
                     b.Property<string>("Name")
@@ -240,6 +281,77 @@ namespace Data.Migrations
                     b.HasIndex("BillingPartyId");
 
                     b.ToTable("Sales");
+                });
+
+            modelBuilder.Entity("Domain.Entity.EmployeeEntity", b =>
+                {
+                    b.OwnsMany("Domain.Entity.EmployeeSalaryRecord", "SalaryRecords", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<Guid>("EmployeeEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateOnly>("FromDate")
+                                .HasColumnType("date");
+
+                            b1.Property<double>("OvertimeSalaryPerHr")
+                                .HasColumnType("double precision");
+
+                            b1.Property<double>("SalaryPerHr")
+                                .HasColumnType("double precision");
+
+                            b1.Property<DateOnly?>("ToDate")
+                                .HasColumnType("date");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("EmployeeEntityId");
+
+                            b1.ToTable("EmployeeSalaryRecord");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeEntityId");
+                        });
+
+                    b.OwnsMany("Domain.Entity.EmployeeWorkShift", "WorkShifts", b1 =>
+                        {
+                            b1.Property<Guid>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("BreakMinutes")
+                                .HasColumnType("integer");
+
+                            b1.Property<DateOnly>("Date")
+                                .HasColumnType("date");
+
+                            b1.Property<Guid>("EmployeeEntityId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<TimeOnly>("EndTime")
+                                .HasColumnType("time without time zone");
+
+                            b1.Property<TimeOnly>("StartTime")
+                                .HasColumnType("time without time zone");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("Date");
+
+                            b1.HasIndex("EmployeeEntityId");
+
+                            b1.ToTable("EmployeeWorkShift");
+
+                            b1.WithOwner()
+                                .HasForeignKey("EmployeeEntityId");
+                        });
+
+                    b.Navigation("SalaryRecords");
+
+                    b.Navigation("WorkShifts");
                 });
 
             modelBuilder.Entity("Domain.Entity.ExpenseEntity", b =>

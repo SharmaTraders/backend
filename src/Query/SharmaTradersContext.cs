@@ -19,6 +19,12 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<BillingParty> BillingParties { get; set; }
 
+    public virtual DbSet<Employee> Employees { get; set; }
+
+    public virtual DbSet<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; }
+
+    public virtual DbSet<EmployeeWorkShift> EmployeeWorkShifts { get; set; }
+
     public virtual DbSet<Expense> Expenses { get; set; }
 
     public virtual DbSet<ExpenseCategory> ExpenseCategories { get; set; }
@@ -55,6 +61,39 @@ public partial class SharmaTradersContext : DbContext
             entity.HasIndex(e => e.VatNumber, "IX_BillingParties_VatNumber").IsUnique();
 
             entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<Employee>(entity =>
+        {
+            entity.HasIndex(e => e.Email, "IX_Employees_Email").IsUnique();
+
+            entity.HasIndex(e => e.PhoneNumber, "IX_Employees_PhoneNumber").IsUnique();
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+        });
+
+        modelBuilder.Entity<EmployeeSalaryRecord>(entity =>
+        {
+            entity.ToTable("EmployeeSalaryRecord");
+
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeSalaryRecord_EmployeeEntityId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeSalaryRecords).HasForeignKey(d => d.EmployeeEntityId);
+        });
+
+        modelBuilder.Entity<EmployeeWorkShift>(entity =>
+        {
+            entity.ToTable("EmployeeWorkShift");
+
+            entity.HasIndex(e => e.Date, "IX_EmployeeWorkShift_Date");
+
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeWorkShift_EmployeeEntityId");
+
+            entity.Property(e => e.Id).ValueGeneratedNever();
+
+            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeWorkShifts).HasForeignKey(d => d.EmployeeEntityId);
         });
 
         modelBuilder.Entity<Expense>(entity =>
