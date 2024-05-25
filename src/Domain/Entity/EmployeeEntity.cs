@@ -60,15 +60,30 @@ public class EmployeeEntity : IEntity<Guid> {
 
     public void UpdateSalary(EmployeeSalary salary, [Optional] bool force) {
         if (!force) {
-            bool salaryExists = SalaryRecords.Any(existingSalary => existingSalary.FromDate <= salary.FromDate);
+            bool salaryExists = SalaryRecords.Any(existingSalary => existingSalary.FromDate <= salary.FromDate
+                                                                    && existingSalary.ToDate is not null &&
+                                                                    existingSalary.ToDate >= salary.ToDate);
             if (salaryExists) {
                 throw new DomainValidationException("SalaryRecordAlreadyExists", ErrorCode.Conflict,
                     ErrorMessages.SalaryRecordExists(salary.FromDate));
             }
         }
+
+        EmployeeSalary? recordForDate = FindSalaryRecordForDate(salary.FromDate);
+        if (recordForDate is not null) {
+            if (Math.Abs(recordForDate.SalaryPerHour - salary.SalaryPerHour) < 0.01 &&
+                Math.Abs(recordForDate.OvertimeSalaryPerHour - salary.OvertimeSalaryPerHour) < 0.01) {
+                throw new DomainValidationException("SalaryRecord", ErrorCode.BadRequest,
+                    ErrorMessages.SalaryRecordNoChange);
+            }
+
+            // End the previous salary record
+            recordForDate.ToDate = salary.FromDate.AddDays(-1);
+        }
+
         SalaryRecords.Add(salary);
     }
-                                                                                     
+
     public void AddTimeRecord(EmployeeWorkShift workShift) {
         CalculateAndApplyWorkShiftEarnings(workShift);
         WorkShifts.Add(workShift);
@@ -96,9 +111,9 @@ public class EmployeeEntity : IEntity<Guid> {
         Balance += Math.Round(((totalWorkMinutes / 60) * salaryRecord.SalaryPerHour), 2);
     }
 
-    private EmployeeSalary? FindSalaryRecordForDate(DateOnly workShiftDate) {
-        return SalaryRecords.Where(record => record.FromDate <= workShiftDate
-                                             && (record.ToDate is null || record.ToDate >= workShiftDate)
+    private EmployeeSalary? FindSalaryRecordForDate(DateOnly date) {
+        return SalaryRecords.Where(record => record.FromDate <= date
+                                             && (record.ToDate is null || record.ToDate >= date)
         ).MaxBy(record => record.FromDate);
     }
 

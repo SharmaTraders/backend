@@ -1,26 +1,26 @@
 ﻿### Build docker: 
 ```bash
-cd ..\..\
 docker build ./src -t backend_server
+cd ..\..\
 ```
 
 ### Run the container: 
 ```bash
-cd ..\..\
 docker compose up
+cd ..\..\
 ```
 
 ### Build Ef migrations:
 Please replace {migrationName} with the name of the migration
 ```bash
+ dotnet ef --startup-project ../WebApi/ migrations add EmployeeSalary --context WriteDatabaseContext
 cd ..\..\src\Persistence\
- dotnet ef --startup-project ../WebApi/ migrations add addExpense --context WriteDatabaseContext
 ```
 
 ### Scaffold the database:
 ```bash
-cd ..\..\src\Query\
 dotnet ef dbcontext scaffold "Server=localhost;Database=SharmaTraders;Port=5432;User ID=postgres;Password=postgres;" Npgsql.EntityFrameworkCore.PostgreSQL --force
+cd ..\..\src\Query\
 ```
 
 
