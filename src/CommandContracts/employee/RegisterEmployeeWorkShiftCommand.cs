@@ -2,7 +2,7 @@
 
 namespace CommandContracts.employee;
 
-public static class RegisterEmployeeWorkShift
+public static class RegisterEmployeeWorkShiftCommand
 {
     public record Request(
         string Id,

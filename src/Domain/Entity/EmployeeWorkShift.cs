@@ -3,7 +3,7 @@ using Domain.Entity.ValueObjects;
 
 namespace Domain.Entity
 {
-    public class EmployeeWorkShift : IEntity<Guid>
+    public class EmployeeWorkShift
     {
         public Guid Id { get; set; }
         

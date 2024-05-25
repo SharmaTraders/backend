@@ -16,7 +16,8 @@ public class EmployeeRepository : IEmployeeRepository {
     }
     
     public async Task<EmployeeEntity?> GetByIdAsync(Guid id) {
-        return await _context.Employees.FindAsync(id);
+        return await _context.Employees
+            .Include(entity => entity.SalaryRecords)
+            .FirstOrDefaultAsync(entity => entity.Id == id);
     }
-    
 }

@@ -125,9 +125,12 @@ public static class ErrorMessages {
     public static string EmployeePhoneNumberAlreadyExists(string employeeEntityPhoneNumber) =>
         $"Employee with phone number : {employeeEntityPhoneNumber} already exists";
     
-    public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid} not found";
+    public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid.ToString()} not found";
 
     public static string SalaryPerHrInvalid(string propertyName) => $"Salary per hour is invalid for {propertyName}, it must be greater than or equal to 0";
 
-    public static string SalaryRecordNotFound(DateOnly workShiftDate) => $"Salary record for date : {workShiftDate} not found";
+    public static string SalaryRecordNotFound(DateOnly workShiftDate) => $"Salary record for date : {workShiftDate.ToString()} not found";
+
+    public static string SalaryRecordExists(DateOnly salaryFromDate) =>
+        $"Salary record for date : {salaryFromDate.ToString()} already exists; Use force update to update anyway.";
 }

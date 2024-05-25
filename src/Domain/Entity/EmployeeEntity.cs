@@ -1,10 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using Domain.common;
 
 namespace Domain.Entity;
 
-public class EmployeeEntity : IEntity<Guid>
-{
+public class EmployeeEntity : IEntity<Guid> {
     public Guid Id { get; set; }
     private string _name;
     private string _address;
@@ -16,159 +16,127 @@ public class EmployeeEntity : IEntity<Guid>
 
     public ICollection<EmployeeWorkShift> WorkShifts { get; set; } = new List<EmployeeWorkShift>();
 
-    public void AddTimeRecord(EmployeeWorkShift workShift)
-    {
-        CalculateAndApplyWorkShiftEarnings(workShift);
-        WorkShifts.Add(workShift);
-    }
+    public ICollection<EmployeeSalary> SalaryRecords { get; set; } = new List<EmployeeSalary>();
 
-    private void CalculateAndApplyWorkShiftEarnings(EmployeeWorkShift workShift)
-    {
-        // Find the salary record for the date of the work shift
-        EmployeeSalaryRecord? salaryRecord = FindSalaryRecordForDate(workShift.Date);
-        if (salaryRecord is null)
-        {
-            throw new DomainValidationException("SalaryRecord", ErrorCode.NotFound,
-                ErrorMessages.SalaryRecordNotFound(workShift.Date));
-        }
-        
-        // Convert the work shift start and end times to total minutes and subtract the break time
-        var totalWorkMinutes = (workShift.EndTime.ToTimeSpan() - workShift.StartTime.ToTimeSpan()).TotalMinutes -
-                               workShift.BreakMinutes;
-        
-        // If the total work minutes exceed the normal daily working hours, calculate the overtime salary
-        if (totalWorkMinutes > NormalDailyWorkingMinute)
-        {
-            var overtimeMinutes = totalWorkMinutes - NormalDailyWorkingMinute;
-            Balance += (overtimeMinutes/60) * salaryRecord.OvertimeSalaryPerHr;
-            totalWorkMinutes -= overtimeMinutes;
-        }
-        Balance += Math.Round(((totalWorkMinutes / 60) * salaryRecord.SalaryPerHr), 2);
-    }
-
-    private EmployeeSalaryRecord? FindSalaryRecordForDate(DateOnly workShiftDate)
-    {
-        return SalaryRecords.Where( record => record.FromDate <= workShiftDate 
-                                              && (record.ToDate is null || record.ToDate >= workShiftDate)
-        ).MaxBy(record => record.FromDate);
-    }
-
-    public ICollection<EmployeeSalaryRecord> SalaryRecords { get; set; } = new List<EmployeeSalaryRecord>();
-
-    public void AddSalaryRecord(EmployeeSalaryRecord salaryRecord)
-    {
-        SalaryRecords.Add(salaryRecord);
-    }
-
-    public required string Name
-    {
+    public required string Name {
         get => _name;
-        set
-        {
+        set {
             ValidateName(value);
             _name = value;
         }
     }
 
-    public required string Address
-    {
+    public required string Address {
         get => _address;
-        set
-        {
+        set {
             ValidateAddress(value);
             _address = value;
         }
     }
 
-    public string? Email
-    {
+    public string? Email {
         get => _email;
-        set
-        {
+        set {
             ValidateEmail(value);
             _email = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
-    public string? PhoneNumber
-    {
+    public string? PhoneNumber {
         get => _phoneNumber;
-        set
-        {
+        set {
             ValidatePhoneNumber(value);
             _phoneNumber = string.IsNullOrEmpty(value) ? null : value;
         }
     }
 
-    public required int NormalDailyWorkingMinute
-    {
+    public required int NormalDailyWorkingMinute {
         get => _normalDailyWorkingMinute;
-        set
-        {
+        set {
             ValidateNormalDailyWorkingMinute(value);
             _normalDailyWorkingMinute = value;
         }
     }
 
-    private static void ValidateNormalDailyWorkingMinute(int value)
-    {
-        if (value is <= 0 or > 1440)
-        {
+    public void UpdateSalary(EmployeeSalary salary, [Optional] bool force) {
+        if (!force) {
+            bool salaryExists = SalaryRecords.Any(existingSalary => existingSalary.FromDate <= salary.FromDate);
+            if (salaryExists) {
+                throw new DomainValidationException("SalaryRecordAlreadyExists", ErrorCode.Conflict,
+                    ErrorMessages.SalaryRecordExists(salary.FromDate));
+            }
+        }
+        SalaryRecords.Add(salary);
+    }
+                                                                                     
+    public void AddTimeRecord(EmployeeWorkShift workShift) {
+        CalculateAndApplyWorkShiftEarnings(workShift);
+        WorkShifts.Add(workShift);
+    }
+
+    private void CalculateAndApplyWorkShiftEarnings(EmployeeWorkShift workShift) {
+        // Find the salary record for the date of the work shift
+        EmployeeSalary? salaryRecord = FindSalaryRecordForDate(workShift.Date);
+        if (salaryRecord is null) {
+            throw new DomainValidationException("SalaryRecord", ErrorCode.NotFound,
+                ErrorMessages.SalaryRecordNotFound(workShift.Date));
+        }
+
+        // Convert the work shift start and end times to total minutes and subtract the break time
+        double totalWorkMinutes = (workShift.EndTime.ToTimeSpan() - workShift.StartTime.ToTimeSpan()).TotalMinutes -
+                                  workShift.BreakMinutes;
+
+        // If the total work minutes exceed the normal daily working hours, calculate the overtime salary
+        if (totalWorkMinutes > NormalDailyWorkingMinute) {
+            var overtimeMinutes = totalWorkMinutes - NormalDailyWorkingMinute;
+            Balance += (overtimeMinutes / 60) * salaryRecord.OvertimeSalaryPerHour;
+            totalWorkMinutes -= overtimeMinutes;
+        }
+
+        Balance += Math.Round(((totalWorkMinutes / 60) * salaryRecord.SalaryPerHour), 2);
+    }
+
+    private EmployeeSalary? FindSalaryRecordForDate(DateOnly workShiftDate) {
+        return SalaryRecords.Where(record => record.FromDate <= workShiftDate
+                                             && (record.ToDate is null || record.ToDate >= workShiftDate)
+        ).MaxBy(record => record.FromDate);
+    }
+
+    private static void ValidateNormalDailyWorkingMinute(int value) {
+        if (value is <= 0 or > 1440) {
             throw new DomainValidationException("NormalDailyWorkingMinute", ErrorCode.BadRequest,
                 ErrorMessages.NormalDailyWorkHoursValidMinutes);
         }
     }
 
-    private static void ValidateName(string value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
+    private static void ValidateName(string value) {
+        if (string.IsNullOrEmpty(value)) {
             throw new DomainValidationException("Name", ErrorCode.BadRequest, ErrorMessages.NameRequired);
         }
 
         // Length between 3 and 50 characters (inclusive)
-        if (value.Length is < 3 or > 50)
-        {
+        if (value.Length is < 3 or > 50) {
             throw new DomainValidationException("Name", ErrorCode.BadRequest,
                 ErrorMessages.EmployeeFullNameBetween3And50);
         }
     }
-    private bool HasOverlappingShift(EmployeeWorkShift newShift)
-    {
-        foreach (var existingShift in WorkShifts)
-        {
-            if (existingShift.Date == newShift.Date && 
-                ((newShift.StartTime < existingShift.EndTime && newShift.EndTime > existingShift.StartTime) || 
-                 (existingShift.StartTime < newShift.EndTime && existingShift.EndTime > newShift.StartTime)))
-            {
-                return true;
-            }
-        }
-        return false;
-    }
-    
 
-    private static void ValidateAddress(string value)
-    {
-        if (string.IsNullOrEmpty(value))
-        {
+    private static void ValidateAddress(string value) {
+        if (string.IsNullOrEmpty(value)) {
             throw new DomainValidationException("Address", ErrorCode.BadRequest,
                 ErrorMessages.AddressIsRequired("Employee"));
         }
 
         // Length between 3 and 60 characters (inclusive)
-        if (value.Length is < 3 or > 60)
-        {
+        if (value.Length is < 3 or > 60) {
             throw new DomainValidationException("Address", ErrorCode.BadRequest,
                 ErrorMessages.AddressBetween3And60("Employee"));
         }
     }
 
-    private static void ValidateEmail(string? value)
-    {
+    private static void ValidateEmail(string? value) {
         // Email is optional
-        if (string.IsNullOrEmpty(value))
-        {
+        if (string.IsNullOrEmpty(value)) {
             return;
         }
 
@@ -179,28 +147,23 @@ public class EmployeeEntity : IEntity<Guid>
 
         Match match = regex.Match(value);
 
-        if (!match.Success)
-        {
+        if (!match.Success) {
             throw new DomainValidationException("Email", ErrorCode.BadRequest, ErrorMessages.EmailInvalidFormat);
         }
     }
 
-    private static void ValidatePhoneNumber(string? value)
-    {
+    private static void ValidatePhoneNumber(string? value) {
         // Phone number is optional
-        if (string.IsNullOrEmpty(value))
-        {
+        if (string.IsNullOrEmpty(value)) {
             return;
         }
 
-        if (!Regex.IsMatch(value, @"^\d+$"))
-        {
+        if (!Regex.IsMatch(value, @"^\d+$")) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
                 ErrorMessages.EmployeePhoneNumberMustBeAllDigits);
         }
 
-        if (value.Length != 10)
-        {
+        if (value.Length != 10) {
             throw new DomainValidationException("PhoneNumber", ErrorCode.BadRequest,
                 ErrorMessages.PhoneNumberMustBe10DigitsLong);
         }

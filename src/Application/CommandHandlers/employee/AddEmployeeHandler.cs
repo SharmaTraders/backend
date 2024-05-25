@@ -1,4 +1,4 @@
-﻿﻿using Application.services.employee;
+﻿using Application.services.employee;
 using CommandContracts.employee;
 using Domain.common;
 using Domain.Entity;
@@ -35,10 +35,10 @@ public class AddEmployeeHandler : IRequestHandler<AddEmployeeCommand.Request, Ad
             NormalDailyWorkingMinute = request.NormalDailyWorkingMinute,
         };
         
-        EmployeeSalaryRecord salaryRecord = new EmployeeSalaryRecord() {
+        EmployeeSalary salary = new EmployeeSalary() {
             FromDate = DateOnly.MinValue,
-            SalaryPerHr = request.SalaryPerHour,
-            OvertimeSalaryPerHr = request.OvertimeSalaryPerHour
+            SalaryPerHour = request.SalaryPerHour,
+            OvertimeSalaryPerHour = request.OvertimeSalaryPerHour
         };
         
         if (!string.IsNullOrEmpty(employeeEntity.Email)) {
@@ -57,7 +57,7 @@ public class AddEmployeeHandler : IRequestHandler<AddEmployeeCommand.Request, Ad
             }
         }
         
-        employeeEntity.AddSalaryRecord(salaryRecord);
+        employeeEntity.UpdateSalary(salary);
         
         await _employeeRepository.AddAsync(employeeEntity);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
