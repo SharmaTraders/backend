@@ -43,7 +43,6 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Stock> Stocks { get; set; }
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Admin>(entity =>
@@ -103,11 +102,15 @@ public partial class SharmaTradersContext : DbContext
 
             entity.HasIndex(e => e.CategoryName, "IX_Expenses_CategoryName");
 
+            entity.HasIndex(e => e.EmployeeId, "IX_Expenses_EmployeeId");
+
             entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.BillingParty).WithMany(p => p.Expenses).HasForeignKey(d => d.BillingPartyId);
 
             entity.HasOne(d => d.CategoryNameNavigation).WithMany(p => p.Expenses).HasForeignKey(d => d.CategoryName);
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Expenses).HasForeignKey(d => d.EmployeeId);
         });
 
         modelBuilder.Entity<ExpenseCategory>(entity =>
