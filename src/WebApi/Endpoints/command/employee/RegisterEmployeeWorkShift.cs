@@ -15,7 +15,7 @@ public class RegisterEmployeeWorkShift: CommandEndPointBase
         _mediator = mediator;
     }
 
-    [HttpPost, Route("employee/{id}/work-shift")]
+    [HttpPost, Route("employees/{Id}/work-shift")]
     [Authorize(Roles = "Admin")]
     public override async Task<ActionResult<CommandContracts.employee.RegisterEmployeeWorkShiftCommand.Response>> HandleAsync(RegisterEmployeeWorkShiftRequest request)
     {

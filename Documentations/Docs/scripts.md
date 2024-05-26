@@ -13,7 +13,7 @@ cd ..\..\
 ### Build Ef migrations:
 Please replace {migrationName} with the name of the migration
 ```bash
- dotnet ef --startup-project ../WebApi/ migrations add EmployeeSalary --context WriteDatabaseContext
+ dotnet ef --startup-project ../WebApi/ migrations add ExpenseTakesEmployee --context WriteDatabaseContext
 cd ..\..\src\Persistence\
 ```
 

@@ -17,7 +17,7 @@ public static class AddPurchaseService {
                 Date = purchaseEntity.Date,
                 EntryCategory = StockEntryCategory.Purchase,
                 ExpectedValuePerKilo = lineItem.Price,
-                Remarks = "Added from purchase entry.",
+                Remarks = "Purchased by: " + purchaseEntity.BillingParty.Name +".",
                 Weight = lineItem.Quantity
             };
             itemEntity.AddStock(stock);

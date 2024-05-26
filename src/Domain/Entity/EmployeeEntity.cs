@@ -58,6 +58,10 @@ public class EmployeeEntity : IEntity<Guid> {
         }
     }
 
+    public void AddBalance(double amount) {
+        Balance += amount;
+    }
+
     public void UpdateSalary(EmployeeSalary salary, [Optional] bool force) {
         if (!force) {
             bool salaryExists = SalaryRecords.Any(existingSalary => existingSalary.FromDate <= salary.FromDate

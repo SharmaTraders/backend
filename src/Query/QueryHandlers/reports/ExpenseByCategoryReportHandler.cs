@@ -38,7 +38,7 @@ public class
             .GroupBy(expense => expense.CategoryName)
             .Select(group => new ExpenseByCategoryReport.ExpenseByCategoryDto(
                 group.Key,
-                group.Sum(expense => expense.Amount)
+                Math.Round(group.Sum(expense => expense.Amount))
             ))
             .ToListAsync(cancellationToken);
 

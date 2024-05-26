@@ -22,7 +22,7 @@ public class GetAllEmployeesHandler : IRequestHandler<GetAllEmployees.Query, Get
                 e.Email,
                 e.PhoneNumber,
                 e.Status,
-                e.Balance
+                Math.Round(e.Balance, 2)
             ))
             .ToListAsync(cancellationToken);
 

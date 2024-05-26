@@ -3,15 +3,15 @@ using System.Collections.Generic;
 
 namespace Query;
 
-public partial class EmployeeSalaryRecord
+public partial class EmployeeSalary
 {
     public Guid Id { get; set; }
 
     public DateOnly FromDate { get; set; }
 
-    public double SalaryPerHr { get; set; }
+    public double SalaryPerHour { get; set; }
 
-    public double OvertimeSalaryPerHr { get; set; }
+    public double OvertimeSalaryPerHour { get; set; }
 
     public DateOnly? ToDate { get; set; }
 

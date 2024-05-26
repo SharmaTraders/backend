@@ -17,6 +17,9 @@ public class ExpenseEntity : IEntity<Guid> {
     // Expense can or cannot have a billing party
     public BillingPartyEntity? BillingParty { get; set; }
 
+    // Expense can or cannot have Employee
+    public EmployeeEntity? Employee { get; set; }
+
     private Remarks? _remarks;
     public string? Remarks {
         get => _remarks?.Value;

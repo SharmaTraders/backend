@@ -16,7 +16,7 @@ public class UpdateSalary : CommandEndPointBase
         _mediator = mediator;
     }
 
-    [HttpPatch, Route("employee/{Id}/salary")]
+    [HttpPatch, Route("employees/{Id}/salary")]
     [Authorize(Roles = "Admin")]
     public override async Task<ActionResult> HandleAsync(UpdateSalaryRequest request) {
         var commandRequest = new UpdateSalaryCommand.Request(
