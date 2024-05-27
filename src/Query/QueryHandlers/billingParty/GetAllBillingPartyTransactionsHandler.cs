@@ -26,6 +26,7 @@ public class GetAllBillingPartyTransactionsHandler : IRequestHandler<GetAllBilli
            .Concat(sales.Item1)
            .Concat(purchases.Item1)
            .OrderByDescending(transaction => DateTime.Parse(transaction.Date))
+           .Skip((request.PageNumber - 1) * request.PageSize)
            .Take(request.PageSize) // Take only the required number of items
            .ToList();
 
@@ -41,12 +42,7 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetExp
         .AsNoTracking()
         .Where(expense => expense.BillingPartyId == billingPartyId);
 
-    int totalCount = await queryable.CountAsync(cancellationToken);
-
      var allExpenses =await queryable
-        .OrderByDescending(expense => expense.Date)
-        .Skip((pageNumber - 1) * pageSize) // Skip to the start of the current page
-        .Take(pageSize) // Take only the required number of items for the current page
         .Select(expense => new GetAllBillingPartyTransaction.TransactionDto(
             expense.Date.ToString(),
             expense.Remarks,
@@ -55,7 +51,7 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetExp
             "Expense"))
         .ToArrayAsync(cancellationToken);
 
-     return (allExpenses, totalCount);
+     return (allExpenses, allExpenses.Length);
 }
 
 private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetIncomeAsync(Guid billingPartyId, int pageNumber, int pageSize, CancellationToken cancellationToken) {
@@ -63,12 +59,8 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetInc
         .AsNoTracking()
         .Where(income => income.BillingPartyId == billingPartyId);
 
-    int totalCount = await queryable.CountAsync(cancellationToken);
 
     var allIncome = await queryable
-        .OrderByDescending(income => income.Date)
-        .Skip((pageNumber - 1) * pageSize)
-        .Take(pageSize)
         .Select(income => new GetAllBillingPartyTransaction.TransactionDto(
             income.Date.ToString(),
             income.Remarks,
@@ -77,7 +69,7 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetInc
             "Income"))
         .ToArrayAsync(cancellationToken);
 
-    return (allIncome, totalCount);
+    return (allIncome, allIncome.Length);
 }
 
 private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetPurchasesAsync(Guid billingPartyId, int pageNumber, int pageSize, CancellationToken cancellationToken) {
@@ -85,12 +77,8 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetPur
         .AsNoTracking()
         .Where(purchase => purchase.BillingPartyId == billingPartyId);
 
-    int totalCount = await queryable.CountAsync(cancellationToken);
 
     var allPurchases = await queryable
-        .OrderByDescending(purchase => purchase.Date)
-        .Skip((pageNumber - 1) * pageSize)
-        .Take(pageSize)
         .Select(purchase => new GetAllBillingPartyTransaction.TransactionDto(
             purchase.Date.ToString(),
             purchase.Remarks,
@@ -99,7 +87,7 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetPur
             "Purchase"))
         .ToArrayAsync(cancellationToken);
 
-    return (allPurchases, totalCount);
+    return (allPurchases, allPurchases.Length);
 }
 
 private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetSalesAsync(Guid billingPartyId, int pageNumber, int pageSize, CancellationToken cancellationToken) {
@@ -107,12 +95,8 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetSal
         .AsNoTracking()
         .Where(sale => sale.BillingPartyId == billingPartyId);
 
-    int totalCount = await queryable.CountAsync(cancellationToken);
-
     var allSales = await queryable
         .OrderByDescending(sale => sale.Date)
-        .Skip((pageNumber - 1) * pageSize)
-        .Take(pageSize)
         .Select(sale => new GetAllBillingPartyTransaction.TransactionDto(
             sale.Date.ToString(),
             sale.Remarks,
@@ -121,7 +105,7 @@ private async Task<(GetAllBillingPartyTransaction.TransactionDto[], int)> GetSal
             "Sales"))
         .ToArrayAsync(cancellationToken);
 
-    return (allSales, totalCount);
+    return (allSales, allSales.Length);
 }
 
 }
