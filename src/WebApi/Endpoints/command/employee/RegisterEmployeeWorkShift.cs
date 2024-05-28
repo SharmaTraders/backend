@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using System.ComponentModel.DataAnnotations;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,7 +7,7 @@ namespace WebApi.Endpoints.command.employee;
 
 public class RegisterEmployeeWorkShift: CommandEndPointBase
     .WithRequest<RegisterEmployeeWorkShiftRequest>
-    .WithResponse<RegisterEmployeeWorkShiftRequest.RegisterEmployeeWorkShiftResponse> {
+    .WithResponse<CommandContracts.employee.RegisterEmployeeWorkShiftCommand.Response> {
     
     private readonly IMediator _mediator;
 
@@ -14,15 +15,13 @@ public class RegisterEmployeeWorkShift: CommandEndPointBase
         _mediator = mediator;
     }
 
-    [HttpPost, Route("employee/{id}")]
+    [HttpPost, Route("employees/{Id}/work-shift")]
     [Authorize(Roles = "Admin")]
-    public override async Task<ActionResult<RegisterEmployeeWorkShiftRequest.RegisterEmployeeWorkShiftResponse>> HandleAsync(RegisterEmployeeWorkShiftRequest request)
+    public override async Task<ActionResult<CommandContracts.employee.RegisterEmployeeWorkShiftCommand.Response>> HandleAsync(RegisterEmployeeWorkShiftRequest request)
     {
-        var commandRequest = new CommandContracts.employee.RegisterEmployeeWorkShift.Request(request.Id, request.RequestBody.StartTime, request.RequestBody.EndTime, request.RequestBody.Date, request.RequestBody.BreakInMinutes);
+        var commandRequest = new CommandContracts.employee.RegisterEmployeeWorkShiftCommand.Request(request.Id, request.RequestBody.StartTime, request.RequestBody.EndTime, request.RequestBody.Date, request.RequestBody.BreakInMinutes);
         var result = await _mediator.Send(commandRequest);
-        return Ok(new RegisterEmployeeWorkShiftRequest.RegisterEmployeeWorkShiftResponse() {
-            Id = result.Id
-        });
+        return Ok(result);
     }
 }
 
@@ -36,9 +35,6 @@ public class RegisterEmployeeWorkShiftRequest
         string StartTime,
         string EndTime,
         string Date,
+        [Required]
         int BreakInMinutes);
-    
-    public class RegisterEmployeeWorkShiftResponse {
-        public string Id { get; set; }
-    }
 }

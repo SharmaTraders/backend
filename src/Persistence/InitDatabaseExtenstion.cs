@@ -26,12 +26,22 @@ public static class InitDatabaseExtenstion {
         }
 
 
-        // Insert a billingparty category if not exist.
+        // Insert a billing party category if not exist.
         bool billingPartyCategoryExists =
             await context.ExpenseCategories.AnyAsync(category => category.Name.ToLower().Equals("billing party"));
         if (!billingPartyCategoryExists) {
             ExpenseCategoryEntity categoryEntity = new ExpenseCategoryEntity() {
                 Name = "Billing Party"
+            };
+            await context.ExpenseCategories.AddAsync(categoryEntity);
+        }
+
+        // Insert a salary category if not exist.
+        bool salaryCategoryExists =
+            await context.ExpenseCategories.AnyAsync(category => category.Name.ToLower().Equals("salary"));
+        if (!salaryCategoryExists) {
+            ExpenseCategoryEntity categoryEntity = new ExpenseCategoryEntity() {
+                Name = "Salary"
             };
             await context.ExpenseCategories.AddAsync(categoryEntity);
         }

@@ -21,7 +21,7 @@ public partial class SharmaTradersContext : DbContext
 
     public virtual DbSet<Employee> Employees { get; set; }
 
-    public virtual DbSet<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; }
+    public virtual DbSet<EmployeeSalary> EmployeeSalaries { get; set; }
 
     public virtual DbSet<EmployeeWorkShift> EmployeeWorkShifts { get; set; }
 
@@ -72,15 +72,15 @@ public partial class SharmaTradersContext : DbContext
             entity.Property(e => e.Id).ValueGeneratedNever();
         });
 
-        modelBuilder.Entity<EmployeeSalaryRecord>(entity =>
+        modelBuilder.Entity<EmployeeSalary>(entity =>
         {
-            entity.ToTable("EmployeeSalaryRecord");
+            entity.ToTable("EmployeeSalary");
 
-            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeSalaryRecord_EmployeeEntityId");
+            entity.HasIndex(e => e.EmployeeEntityId, "IX_EmployeeSalary_EmployeeEntityId");
 
             entity.Property(e => e.Id).ValueGeneratedNever();
 
-            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeSalaryRecords).HasForeignKey(d => d.EmployeeEntityId);
+            entity.HasOne(d => d.EmployeeEntity).WithMany(p => p.EmployeeSalaries).HasForeignKey(d => d.EmployeeEntityId);
         });
 
         modelBuilder.Entity<EmployeeWorkShift>(entity =>
@@ -102,11 +102,15 @@ public partial class SharmaTradersContext : DbContext
 
             entity.HasIndex(e => e.CategoryName, "IX_Expenses_CategoryName");
 
+            entity.HasIndex(e => e.EmployeeId, "IX_Expenses_EmployeeId");
+
             entity.Property(e => e.Id).ValueGeneratedNever();
 
             entity.HasOne(d => d.BillingParty).WithMany(p => p.Expenses).HasForeignKey(d => d.BillingPartyId);
 
             entity.HasOne(d => d.CategoryNameNavigation).WithMany(p => p.Expenses).HasForeignKey(d => d.CategoryName);
+
+            entity.HasOne(d => d.Employee).WithMany(p => p.Expenses).HasForeignKey(d => d.EmployeeId);
         });
 
         modelBuilder.Entity<ExpenseCategory>(entity =>

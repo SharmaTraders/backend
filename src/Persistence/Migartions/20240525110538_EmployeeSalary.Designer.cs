@@ -3,6 +3,7 @@ using System;
 using Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(WriteDatabaseContext))]
-    partial class WriteDatabaseContextModelSnapshot : ModelSnapshot
+    [Migration("20240525110538_EmployeeSalary")]
+    partial class EmployeeSalary
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -154,9 +157,6 @@ namespace Data.Migrations
                     b.Property<DateOnly>("Date")
                         .HasColumnType("date");
 
-                    b.Property<Guid?>("EmployeeId")
-                        .HasColumnType("uuid");
-
                     b.Property<string>("Remarks")
                         .HasColumnType("text");
 
@@ -165,8 +165,6 @@ namespace Data.Migrations
                     b.HasIndex("BillingPartyId");
 
                     b.HasIndex("CategoryName");
-
-                    b.HasIndex("EmployeeId");
 
                     b.ToTable("Expenses");
                 });
@@ -371,15 +369,9 @@ namespace Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Entity.EmployeeEntity", "Employee")
-                        .WithMany()
-                        .HasForeignKey("EmployeeId");
-
                     b.Navigation("BillingParty");
 
                     b.Navigation("Category");
-
-                    b.Navigation("Employee");
                 });
 
             modelBuilder.Entity("Domain.Entity.IncomeEntity", b =>

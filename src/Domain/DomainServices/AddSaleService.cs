@@ -2,7 +2,7 @@
 
 namespace Domain.DomainServices;
 
-public class AddSaleService
+public static class AddSaleService
 {
     public static void AddSale(SaleEntity saleEntity)
     {
@@ -19,7 +19,7 @@ public class AddSaleService
                 Date = saleEntity.Date,
                 EntryCategory = StockEntryCategory.Sale,
                 ExpectedValuePerKilo = lineItem.Price,
-                Remarks = "Removed from sale entry to " + saleEntity.BillingParty.Name + ".",
+                Remarks = "Sold to: " + saleEntity.BillingParty.Name + ".",
                 Weight = lineItem.Quantity 
             };
             itemEntity.ReduceStock(stock);

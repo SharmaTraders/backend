@@ -21,7 +21,7 @@ public class GetAllBillingPartiesHandler : IRequestHandler<GetAllBillingParties.
                 p.Address,
                 p.Email,
                 p.PhoneNumber,
-                p.Balance,
+                Math.Round(p.Balance, 2),
                 p.VatNumber
             ))
             .ToListAsync(cancellationToken);

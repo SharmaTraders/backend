@@ -27,7 +27,11 @@ public class GetStocksByItemHandler : IRequestHandler<GetStocksByItem.Query, Get
             .OrderByDescending(stock => stock.Date)
             .Skip((request.PageNumber - 1) * request.PageSize)
             .Take(request.PageSize)
-            .Select(stock => new GetStocksByItem.StockDto(stock.Id.ToString(), stock.Weight, stock.Date.ToString(), stock.EntryCategory, stock.Remarks))
+            .Select(stock => new GetStocksByItem.StockDto(stock.Id.ToString(),
+                Math.Round(stock.Weight, 2),
+                stock.Date.ToString(),
+                stock.EntryCategory,
+                stock.Remarks))
             .ToListAsync(cancellationToken);
 
         return new GetStocksByItem.Answer(stocks, totalItems, request.PageNumber, request.PageSize);

@@ -5,7 +5,6 @@ public static class ErrorMessages {
     public const string EmailInvalidFormat = "Invalid email format";
     public const string EmailRequired = "Email is required";
     public const string RemarksTooLong = "Remarks must be at most 500 characters long";
-
     public static string IdInvalid(string id) => $"Provided id : {id} is not a valid GUID";
     public const string DateFormatInvalid = "Invalid date format, The date must be in the format yyyy-MM-dd";
     public const string DateCannotBeFutureDate = "Future date cannot be assigned.";
@@ -125,9 +124,15 @@ public static class ErrorMessages {
     public static string EmployeePhoneNumberAlreadyExists(string employeeEntityPhoneNumber) =>
         $"Employee with phone number : {employeeEntityPhoneNumber} already exists";
     
-    public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid} not found";
+    public static string EmployeeNotFound(Guid guid) => $"Employee with id : {guid.ToString()} not found";
 
     public static string SalaryPerHrInvalid(string propertyName) => $"Salary per hour is invalid for {propertyName}, it must be greater than or equal to 0";
 
-    public static string SalaryRecordNotFound(DateOnly workShiftDate) => $"Salary record for date : {workShiftDate} not found";
+    public static string SalaryRecordNotFound(DateOnly workShiftDate) => $"Salary record for date : {workShiftDate.ToString()} not found";
+
+    public static string SalaryRecordExists(DateOnly salaryFromDate) =>
+        $"Salary record for date : {salaryFromDate.ToString()} already exists; Use force update to update anyway.";
+
+    public const string SalaryRecordNoChange = "The provided salary record is the same as the previous one";
+
 }

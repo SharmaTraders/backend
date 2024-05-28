@@ -48,7 +48,7 @@ public class AllTransactionsReportHandler : IRequestHandler<AllTransactionsRepor
                 expense.Date.ToString(),
                 expense.Remarks,
                 expense.CategoryName,
-                expense.Amount,
+                Math.Round(expense.Amount,2),
                 "Expense"))
             .ToArrayAsync(cancellationToken);
     }
@@ -63,7 +63,7 @@ public class AllTransactionsReportHandler : IRequestHandler<AllTransactionsRepor
                 income.Date.ToString(),
                 income.Remarks,
                 "From Party: " + income.BillingParty.Name,
-                income.Amount,
+                Math.Round(income.Amount,2),
                 "Income"))
             .ToArrayAsync(cancellationToken);
     }

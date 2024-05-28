@@ -1,33 +1,30 @@
-﻿using Domain.common;
-using Domain.Entity.ValueObjects;
+﻿namespace Domain.Entity;
 
-namespace Domain.Entity;
-
-public class EmployeeSalaryRecord : IEntity<Guid>
+public class EmployeeSalary
 {
     public Guid Id { get; set; }
     public required DateOnly FromDate { get; set; }
     private DateOnly? _toDate;
-    private double _salaryPerHr;
-    private double _overtimeSalaryPerHr;
+    private double _salaryPerHour;
+    private double _overtimeSalaryPerHour;
     
-    public required double SalaryPerHr
+    public required double SalaryPerHour
     {
-        get => _salaryPerHr;
+        get => _salaryPerHour;
         set
         {
-            ValidaSalary(value, nameof(SalaryPerHr));
-            _salaryPerHr = value;
+            ValidateSalary(value, nameof(SalaryPerHour));
+            _salaryPerHour = value;
         }
     }
     
-    public required double OvertimeSalaryPerHr
+    public required double OvertimeSalaryPerHour
     {
-        get => _overtimeSalaryPerHr;
+        get => _overtimeSalaryPerHour;
         set
         {
-            ValidaSalary(value, nameof(OvertimeSalaryPerHr));
-            _overtimeSalaryPerHr = value;
+            ValidateSalary(value, nameof(OvertimeSalaryPerHour));
+            _overtimeSalaryPerHour = value;
         }
     }
 
@@ -41,7 +38,7 @@ public class EmployeeSalaryRecord : IEntity<Guid>
         }
     }
 
-    private static void ValidaSalary(double value, string propertyName)
+    private static void ValidateSalary(double value, string propertyName)
     {
         if (value < 0)
         {

@@ -21,7 +21,9 @@ public partial class Employee
 
     public int NormalDailyWorkingMinute { get; set; }
 
-    public virtual ICollection<EmployeeSalaryRecord> EmployeeSalaryRecords { get; set; } = new List<EmployeeSalaryRecord>();
+    public virtual ICollection<EmployeeSalary> EmployeeSalaries { get; set; } = new List<EmployeeSalary>();
 
     public virtual ICollection<EmployeeWorkShift> EmployeeWorkShifts { get; set; } = new List<EmployeeWorkShift>();
+
+    public virtual ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 }

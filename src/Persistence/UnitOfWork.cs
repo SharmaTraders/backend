@@ -10,10 +10,6 @@ public class UnitOfWork : IUnitOfWork {
         _context = context;
     }
 
-    public Task SaveChangesAsync() {
-       return _context.SaveChangesAsync();
-    }
-
     public Task SaveChangesAsync(CancellationToken cancellationToken) {
         return _context.SaveChangesAsync(cancellationToken);
     }

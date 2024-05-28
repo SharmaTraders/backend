@@ -17,8 +17,8 @@ public class GetAllItemsHandler : IRequestHandler<GetAllItems.Query, GetAllItems
             .Select(i => new GetAllItems.ItemDto(
                 i.Id.ToString(),
                 i.Name ,
-                i.CurrentStockAmount,
-                i.CurrentEstimatedStockValuePerKilo
+                Math.Round(i.CurrentStockAmount, 2),
+                Math.Round(i.CurrentEstimatedStockValuePerKilo, 2)
             ))
             .ToListAsync(cancellationToken);
 

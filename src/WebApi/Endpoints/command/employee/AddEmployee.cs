@@ -15,7 +15,7 @@ public class AddEmployee : CommandEndPointBase
         _mediator = mediator;
     }
 
-    [HttpPost, Route("employee")]
+    [HttpPost, Route("employees")]
     [Authorize(Roles = "Admin")]
 
     public override async Task<ActionResult<AddEmployeeResponse>> HandleAsync(AddEmployeeRequest request) {

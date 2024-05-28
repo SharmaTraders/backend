@@ -8,7 +8,7 @@ using Tools;
 
 namespace Application.CommandHandlers.employee;
 
-public class RegisterEmployeeWorkShiftHandler : IRequestHandler<RegisterEmployeeWorkShift.Request, RegisterEmployeeWorkShift.Response>
+public class RegisterEmployeeWorkShiftHandler : IRequestHandler<RegisterEmployeeWorkShiftCommand.Request, RegisterEmployeeWorkShiftCommand.Response>
 {
     private readonly IEmployeeRepository _employeeRepository;
     private readonly IHasOverlappingShiftChecker _hasOverlappingShiftChecker;
@@ -21,7 +21,7 @@ public class RegisterEmployeeWorkShiftHandler : IRequestHandler<RegisterEmployee
         _hasOverlappingShiftChecker = hasOverlappingShiftChecker;
     }
     
-    public async Task<RegisterEmployeeWorkShift.Response> Handle(RegisterEmployeeWorkShift.Request request, CancellationToken cancellationToken)
+    public async Task<RegisterEmployeeWorkShiftCommand.Response> Handle(RegisterEmployeeWorkShiftCommand.Request request, CancellationToken cancellationToken)
     {
         Guid guid = GuidParser.ParseGuid(request.Id, "Id");
         EmployeeEntity? employeeEntity = await _employeeRepository.GetByIdAsync(guid);
@@ -45,6 +45,6 @@ public class RegisterEmployeeWorkShiftHandler : IRequestHandler<RegisterEmployee
         
         employeeEntity.AddTimeRecord(employeeWorkShift);
         await _unitOfWork.SaveChangesAsync(cancellationToken);
-        return new RegisterEmployeeWorkShift.Response(employeeEntity.Id.ToString());
+        return new RegisterEmployeeWorkShiftCommand.Response(employeeEntity.Id.ToString());
     }
 }

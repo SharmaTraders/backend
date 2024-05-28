@@ -25,7 +25,7 @@ public class
             .Take(request.PageSize)
             .Select(income => new GetIncomeByBillingParty.IncomeDto(income.Id.ToString(),
                 income.Date.ToString(),
-                income.Amount,
+                Math.Round(income.Amount, 2),
                 income.Remarks))
             .ToListAsync(cancellationToken);
         return new GetIncomeByBillingParty.Answer(incomeDtos, totalCount, request.PageNumber, request.PageSize);

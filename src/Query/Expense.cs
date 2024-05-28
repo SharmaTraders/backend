@@ -17,7 +17,11 @@ public partial class Expense
 
     public string CategoryName { get; set; } = null!;
 
+    public Guid? EmployeeId { get; set; }
+
     public virtual BillingParty? BillingParty { get; set; }
 
     public virtual ExpenseCategory CategoryNameNavigation { get; set; } = null!;
+
+    public virtual Employee? Employee { get; set; }
 }

@@ -48,7 +48,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
 
     public double Balance {
-        get => _balance;
+        get => Math.Round(_balance , 2);
         set {
             ValidateBalance(value);
             _balance = value;
@@ -65,7 +65,7 @@ public class BillingPartyEntity: IEntity<Guid> {
 
     public void AddBalance(double amount) {
         ValidateBalanceForAdd(amount);
-        _balance += amount;
+        _balance += Math.Round(amount, 2);
     }
 
     private static void ValidateName(string value) {

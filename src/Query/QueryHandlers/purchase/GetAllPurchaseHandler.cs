@@ -51,6 +51,6 @@ public class GetAllPurchaseHandler : IRequestHandler<GetAllPurchases.Query, GetA
     private static double GetRemainingAmount(ICollection<PurchaseLineItem> purchaseLineItems, double? transportFee, double? vatAmount, double? paidAmount)
     {
         double totalAmount = GetTotalAmount(purchaseLineItems, transportFee, vatAmount);
-        return totalAmount - (paidAmount ?? 0);
+        return Math.Round(totalAmount - (paidAmount ?? 0), 2);
     }
 }

@@ -62,10 +62,10 @@ public class StockSummaryReportHandler : IRequestHandler<StockSummaryReport.Quer
 
             summaryDtos.Add(new StockSummaryReport.StockSummaryDto(
                 item.Name,
-                averageSalePrice,
-                averagePurchasePrice,
-                item.CurrentStockAmount,
-                item.CurrentEstimatedStockValuePerKilo
+                Math.Round(averageSalePrice, 2),
+                Math.Round(averagePurchasePrice,2),
+                Math.Round(item.CurrentStockAmount, 2),
+                Math.Round(item.CurrentEstimatedStockValuePerKilo,2)
             ));
         }
 

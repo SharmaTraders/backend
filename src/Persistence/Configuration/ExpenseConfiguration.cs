@@ -10,6 +10,7 @@ public class ExpenseConfiguration : IEntityTypeConfiguration<ExpenseEntity> {
         builder.HasOne(expense => expense.Category).WithMany();
         builder.HasOne(expense => expense.BillingParty).WithMany()
             .IsRequired(false);
-
+        builder.HasOne(expense => expense.Employee).WithMany()
+            .IsRequired(false);
     }
 }

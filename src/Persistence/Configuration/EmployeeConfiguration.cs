@@ -38,9 +38,9 @@ namespace Data.Configuration
                 salaryRecordBuilder =>
                 {
                     salaryRecordBuilder.HasKey(salaryRecord => salaryRecord.Id);
-                    salaryRecordBuilder.Property(salaryRecord => salaryRecord.SalaryPerHr).IsRequired();
+                    salaryRecordBuilder.Property(salaryRecord => salaryRecord.SalaryPerHour).IsRequired();
                     salaryRecordBuilder.Property(salaryRecord => salaryRecord.FromDate).IsRequired();
-                    salaryRecordBuilder.Property(salaryRecord => salaryRecord.OvertimeSalaryPerHr).IsRequired();
+                    salaryRecordBuilder.Property(salaryRecord => salaryRecord.OvertimeSalaryPerHour).IsRequired();
                 });
         }
 
